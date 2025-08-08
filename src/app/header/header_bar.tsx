@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import { Search, User, Trophy, Gamepad2, Zap, Award } from "lucide-react";
 import { Button } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 const GameRankHeader = () => {
+    const router = useRouter();
     const [activeCategory, setActiveCategory] = useState("커뮤니티");
     const [showPCDropdown, setShowPCDropdown] = useState(false);
     const [showConsoleDropdown, setShowConsoleDropdown] = useState(false);
@@ -35,7 +37,7 @@ const GameRankHeader = () => {
         { name: "Android", icon: "🤖" },
     ];
 
-    const handleCategoryClick = (categoryName) => {
+    const handleCategoryClick = (categoryName: string) => {
         setActiveCategory(categoryName);
         if (categoryName === "PC") {
             setShowPCDropdown(!showPCDropdown);
@@ -82,12 +84,12 @@ const GameRankHeader = () => {
                                 type="text"
                                 placeholder="Search games, rankings..."
                                 className="
-                  w-70 pl-9 pr-4 py-2 
-                  bg-slate-800 border border-slate-700 rounded-lg
-                  text-slate-300 placeholder-slate-500 text-sm
-                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-                  transition-all duration-200
-                "
+                                w-70 pl-9 pr-4 py-2 
+                                bg-slate-800 border border-slate-700 rounded-lg
+                                text-slate-300 placeholder-slate-500 text-sm
+                                focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                                transition-all duration-200
+                                "
                             />
                         </div>
                     </div>
@@ -244,6 +246,7 @@ const GameRankHeader = () => {
                     {/* 우측: 로그인 */}
                     <div className="flex items-center flex-shrink-0">
                         <button
+                            onClick={() => router.push("/login")}
                             className="
                             flex items-center space-x-2 px-4 py-2 
                             bg-gradient-to-r from-indigo-500 to-purple-600 
@@ -254,7 +257,7 @@ const GameRankHeader = () => {
             "
                         >
                             <User size={16} />
-                            <span>Sign in</span>
+                            <span>로그인</span>
                         </button>
                     </div>
                 </div>
