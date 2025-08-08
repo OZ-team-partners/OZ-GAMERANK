@@ -65,7 +65,7 @@ export default function Home() {
                         alt="게임 아이콘 2"
                         width={48}
                         height={48}
-                        className="absolute top-[10%] left-[30%] rotate-[15deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)] "
+                        className="absolute top-[10%] left-[30%] rotate-[15deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
                     />
                     <Image
                         src="/icon/page_icon/mainUpperIcon3.png"
@@ -79,21 +79,21 @@ export default function Home() {
                         alt="게임 아이콘 4"
                         width={100}
                         height={48}
-                        className="absolute top-[-1%] right-[35%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)] "
+                        className="absolute top-[-1%] right-[35%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
                     />
                     <Image
                         src="/icon/page_icon/mainUpperIcon5.png"
                         alt="게임 아이콘 5"
                         width={48}
                         height={48}
-                        className="absolute top-[10%] right-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)] "
+                        className="absolute top-[10%] right-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
                     />
                     <Image
                         src="/icon/page_icon/mainUpperIcon6.png"
                         alt="게임 아이콘 6"
                         width={48}
                         height={48}
-                        className="absolute top-[40%] left-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)] "
+                        className="absolute top-[40%] left-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
                     />
                 </div>
                 <div className="relative z-10 text-center text-white">
@@ -214,7 +214,7 @@ export default function Home() {
                                             currentSmallSlide,
                                             currentSmallSlide + 4
                                         )
-                                        .map((slide, index) => (
+                                        .map((slide) => (
                                             <div
                                                 key={slide.id}
                                                 className="bg-slate-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
