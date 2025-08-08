@@ -6,8 +6,7 @@ import GameRankHeader from "./header/header_bar";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [currentSmallSlide, setCurrentSmallSlide] = useState(0);
-
+  const [currentSmallSlide] = useState(0);
 
   const mainSlides = [
     { id: 1, title: "ICE-BREAKING", image: "/icon/page_icon/mainSlides1.png" },
@@ -17,12 +16,30 @@ export default function Home() {
   ];
 
   const smallSlides = [
-    { id: 1, title: "액션", image: "/action.jpg" },
-    { id: 2, title: "RPG", image: "/rpg.jpg" },
-    { id: 3, title: "전략", image: "/strategy.jpg" },
-    { id: 4, title: "스포츠", image: "/sports.jpg" },
-    { id: 5, title: "퍼즐", image: "/puzzle.jpg" },
-    { id: 6, title: "레이싱", image: "/racing.jpg" },
+    {
+      id: 1,
+      title: "디지털 heal 판매중!",
+      smallSlides_text: "지금이 제일 저렴할때!",
+      image: "/action.jpg",
+    },
+    {
+      id: 2,
+      title: "게임특전",
+      smallSlides_text: "지금이 제일 할인률이 높은거 아시죠?",
+      image: "/rpg.jpg",
+    },
+    {
+      id: 3,
+      title: "ads",
+      smallSlides_text: "S&P 500은 언제가 제일 싸다?",
+      image: "/strategy.jpg",
+    },
+    {
+      id: 4,
+      title: "game-bti",
+      smallSlides_text: "게임도 적성검사가 있는거 아세요?",
+      image: "/sports.jpg",
+    },
   ];
 
   const nextSlide = () => {
@@ -35,30 +52,20 @@ export default function Home() {
     );
   };
 
-  const nextSmallSlide = () => {
-    setCurrentSmallSlide((prev) => (prev + 1) % (smallSlides.length - 3));
-  };
-
-  const prevSmallSlide = () => {
-    setCurrentSmallSlide(
-      (prev) => (prev - 1 + (smallSlides.length - 3)) % (smallSlides.length - 3)
-    );
-  };
-
   return (
     <div className="min-h-screen bg-slate-900">
       {/* 헤더 */}
       <GameRankHeader />
 
       {/* 히어로 섹션 */}
-      <section className="relative h-20 bg-gradient-to-r from-indigo-600 to-orange-700 flex items-center justify-center">
+      <section className="relative h-20 bg-gradient-to-r from-purple to-purple flex items-center justify-center">
         <div className="absolute inset-0 bg-black opacity-40">
           <Image
             src="/icon/page_icon/mainUpperIcon1.png"
             alt="게임 아이콘 1"
             width={48}
             height={48}
-            className="absolute top-[20%] left-[10%] rotate-[-20deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
+            className="absolute top-[20%] left-[10%] rotate-[-20deg] drop-shadow-[0_2px_8px_rgba(255,,255,0.7)]"
           />
           <Image
             src="/icon/page_icon/mainUpperIcon2.png"
@@ -105,43 +112,44 @@ export default function Home() {
       </section>
 
       {/* 메인 슬라이더 */}
-    <section className="py-1 bg-slate-900">
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-    <div className="relative overflow-hidden">
-      <div
-        className="flex transition-transform duration-500"
-        style={{
-          width: `${mainSlides.length * 100}%`,
-          transform: `translateX(-${currentSlide * (100 / mainSlides.length)}%)`,
-          gap: "1rem",
-        }}
-      >
-        {mainSlides.map((slide, index) => (
-          <div
-            key={index}
-            className="flex-shrink-0"
-            style={{ width: `${100 / mainSlides.length}%` }}
-          >
+      <section className="py-10 bg-slate-900">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ]">
+          <div className="relative overflow-hidden">
             <div
-              className="rounded-lg overflow-hidden relative cursor-pointer h-80"
-              onClick={() => setCurrentSlide(index)}
+              className="flex transition-transform duration-500"
+              style={{
+                width: `${mainSlides.length * 100}%`,
+                transform: `translateX(-${
+                  currentSlide * (100 / mainSlides.length)
+                }%)`,
+                gap: "1rem",
+              }}
             >
-              <Image
-                src={slide.image}
-                alt={slide.title}
-                width={800}
-                height={320}
-                className="object-cover w-full h-full"
-              />
-              <div className="absolute inset-0  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
-                <h3 className="text-2xl font-bold">{slide.title}</h3>
-                <p>8월은 너무 더우니 시원한 Cool-GAME!!! </p>
-              </div>
+              {mainSlides.map((slide, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0"
+                  style={{ width: `${100 / mainSlides.length}%` }}
+                >
+                  <div
+                    className="rounded-lg overflow-hidden relative cursor-pointer h-110"
+                    onClick={() => setCurrentSlide(index)}
+                  >
+                    <Image
+                      src={slide.image}
+                      alt={slide.title}
+                      width={800}
+                      height={320}
+                      className="object-cover w-full h-full"
+                    />
+                    <div className="absolute inset-0  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
+                      <h3 className="text-2xl font-bold">{slide.title}</h3>
+                      <p>8월은 너무 더우니 시원한 Cool-GAME!!! </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
-      </div>
-
 
             {/* 좌우 버튼 */}
             <button
@@ -203,11 +211,12 @@ export default function Home() {
       </section>
 
       {/* 작은 슬라이더 (4개) */}
-      <section className="py-12 bg-slate-900">
+      <section className="py-7 bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative">
             <div className="flex items-center justify-between">
-              <button
+              {/* 좌우 페이지 버튼이동 구현 안함 */}
+              {/* <button
                 onClick={prevSmallSlide}
                 className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-slate-700 rounded-full p-2 shadow-lg hover:bg-slate-600 text-white"
               >
@@ -224,7 +233,7 @@ export default function Home() {
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-              </button>
+              </button> */}
 
               <div className="flex-1 mx-16">
                 <div className="grid grid-cols-4 gap-4">
@@ -233,19 +242,29 @@ export default function Home() {
                     .map((slide) => (
                       <div
                         key={slide.id}
-                        className="bg-slate-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                        className="bg-slate-600 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
                       >
-                        <div className="h-32 bg-gradient-to-br from-emerald-500 to-indigo-500 flex items-center justify-center">
-                          <div className="text-center text-white">
-                            <h4 className="font-semibold">{slide.title}</h4>
-                          </div>
+                        <div className="h-70 flex flex-col justify-end items-start p-4">
+                          <h3
+                            className={`font-semibold ${
+                              slide.title === "game-bti"
+                                ? "font-bangers text-xl"
+                                : ""
+                            }`}
+                          >
+                            {slide.title}
+                          </h3>
+                          <p className="text-sm text-gray-300 mt-1">
+                            {/* 작은 내용 넣기, 필요하면 slide에 추가 */}
+                            {slide.smallSlides_text}
+                          </p>
                         </div>
                       </div>
                     ))}
                 </div>
               </div>
-
-              <button
+              {/* 좌우 페이지 버튼이동 구현 안함 */}
+              {/* <button
                 onClick={nextSmallSlide}
                 className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-slate-700 rounded-full p-2 shadow-lg hover:bg-slate-600 text-white"
               >
@@ -262,7 +281,7 @@ export default function Home() {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

@@ -35,7 +35,8 @@ const GameRankHeader = () => {
     { name: "Android", icon: "🤖" },
   ];
 
-  const handleCategoryClick = (categoryName) => {
+  // categoryName의 타입을 명시적으로 지정하여 any 타입 오류를 해결합니다.
+  const handleCategoryClick = (categoryName: string) => {
     setActiveCategory(categoryName);
     if (categoryName === "PC") {
       setShowPCDropdown(!showPCDropdown);
