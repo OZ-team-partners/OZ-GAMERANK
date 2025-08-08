@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import GameRankHeader from "./header/header_bar";
 
 export default function Home() {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -47,62 +48,7 @@ export default function Home() {
     return (
         <div className="min-h-screen bg-slate-900">
             {/* 헤더 */}
-            <header className="bg-slate-800 shadow-lg border-b border-slate-700">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center space-x-8">
-                            <h1 className="text-2xl font-bold text-indigo-500 font-bangers">
-                                GAME RANK
-                            </h1>
-
-                            {/* 검색바 */}
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder="게임 검색..."
-                                    className="w-64 px-4 py-2 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-700 text-white placeholder-slate-400"
-                                />
-                                <button className="absolute right-3 top-2.5">
-                                    <svg
-                                        className="w-5 h-5 text-slate-400"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                        />
-                                    </svg>
-                                </button>
-                            </div>
-
-                            {/* 드롭다운 메뉴 */}
-                            <div className="flex space-x-4">
-                                <button className="px-3 py-2 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-700 text-white hover:bg-slate-600 transition-colors">
-                                    커뮤니티
-                                </button>
-                                <select className="px-3 py-2 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-700 text-white">
-                                    <option>PC</option>
-                                </select>
-                                <select className="px-3 py-2 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-700 text-white">
-                                    <option>Console</option>
-                                </select>
-                                <select className="px-3 py-2 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-700 text-white">
-                                    <option>Mobile</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        {/* Sign In 버튼 */}
-                        <button className="bg-indigo-500 text-white px-6 py-2 rounded-lg hover:bg-indigo-600 transition-colors">
-                            Sign In
-                        </button>
-                    </div>
-                </div>
-            </header>
+            <GameRankHeader />
 
             {/* 히어로 섹션 */}
             <section className="relative h-20 bg-gradient-to-r from-indigo-600 to-orange-700 flex items-center justify-center">
@@ -119,7 +65,7 @@ export default function Home() {
                         alt="게임 아이콘 2"
                         width={48}
                         height={48}
-                        className="absolute top-[10%] left-[30%] rotate-[15deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)] "
+                        className="absolute top-[10%] left-[30%] rotate-[15deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
                     />
                     <Image
                         src="/icon/page_icon/mainUpperIcon3.png"
@@ -133,21 +79,21 @@ export default function Home() {
                         alt="게임 아이콘 4"
                         width={100}
                         height={48}
-                        className="absolute top-[-1%] right-[35%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)] "
+                        className="absolute top-[-1%] right-[35%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
                     />
                     <Image
                         src="/icon/page_icon/mainUpperIcon5.png"
                         alt="게임 아이콘 5"
                         width={48}
                         height={48}
-                        className="absolute top-[10%] right-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)] "
+                        className="absolute top-[10%] right-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
                     />
                     <Image
                         src="/icon/page_icon/mainUpperIcon6.png"
                         alt="게임 아이콘 6"
                         width={48}
                         height={48}
-                        className="absolute top-[40%] left-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)] "
+                        className="absolute top-[40%] left-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
                     />
                 </div>
                 <div className="relative z-10 text-center text-white">
@@ -268,7 +214,7 @@ export default function Home() {
                                             currentSmallSlide,
                                             currentSmallSlide + 4
                                         )
-                                        .map((slide, index) => (
+                                        .map((slide) => (
                                             <div
                                                 key={slide.id}
                                                 className="bg-slate-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
