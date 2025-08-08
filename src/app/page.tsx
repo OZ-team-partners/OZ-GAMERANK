@@ -258,7 +258,7 @@ export default function Home() {
                 <div className="grid grid-cols-4 gap-4">
                   {smallSlides
                     .slice(currentSmallSlide, currentSmallSlide + 4)
-                    .map((slide, index) => (
+                    .map((slide) => (
                       <div
                         key={slide.id}
                         className="bg-slate-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
