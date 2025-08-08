@@ -8,11 +8,12 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentSmallSlide, setCurrentSmallSlide] = useState(0);
 
+
   const mainSlides = [
-    { id: 1, title: "ICE-BREAKING", image: "/game1.jpg" },
-    { id: 2, title: "콘솔 게임", image: "/game2.jpg" },
-    { id: 3, title: "모바일 게임", image: "/game3.jpg" },
-    { id: 4, title: "인디 게임", image: "/game4.jpg" },
+    { id: 1, title: "ICE-BREAKING", image: "/icon/page_icon/mainSlides1.png" },
+    { id: 2, title: "콘솔 게임", image: "/icon/page_icon/mainSlides2.png" },
+    { id: 3, title: "모바일 게임", image: "/icon/page_icon/mainSlides3.png" },
+    { id: 4, title: "인디 게임", image: "/icon/page_icon/mainSlides4.png" },
   ];
 
   const smallSlides = [
@@ -104,40 +105,43 @@ export default function Home() {
       </section>
 
       {/* 메인 슬라이더 */}
-      <section className="py-12 bg-slate-800">
-  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <section className="py-1 bg-slate-900">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
     <div className="relative overflow-hidden">
       <div
         className="flex transition-transform duration-500"
         style={{
-          width: `${mainSlides.length * 85}%`, // 슬라이드 폭 + gap 합산
-          transform: `translateX(-${currentSlide * 85}%)`, // 현재 슬라이드 위치에 맞게 이동
+          width: `${mainSlides.length * 100}%`,
+          transform: `translateX(-${currentSlide * (100 / mainSlides.length)}%)`,
           gap: "1rem",
         }}
       >
         {mainSlides.map((slide, index) => (
           <div
             key={index}
-            className={`flex-shrink-0 w-[80%] rounded-lg overflow-hidden relative cursor-pointer
-              ${
-                index === currentSlide ? "scale-100" : "scale-90 opacity-60"
-              } transition-transform duration-500`}
-            onClick={() => setCurrentSlide(index)}
+            className="flex-shrink-0"
+            style={{ width: `${100 / mainSlides.length}%` }}
           >
-            <Image
-              src={slide.image}
-              alt={slide.title}
-              width={800}
-              height={320}
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
-              <h3 className="text-2xl font-bold">{slide.title}</h3>
-              <p>8월은 너무 더우니 시원한 Cool-GAME!!! </p>
+            <div
+              className="rounded-lg overflow-hidden relative cursor-pointer h-80"
+              onClick={() => setCurrentSlide(index)}
+            >
+              <Image
+                src={slide.image}
+                alt={slide.title}
+                width={800}
+                height={320}
+                className="object-cover w-full h-full"
+              />
+              <div className="absolute inset-0  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
+                <h3 className="text-2xl font-bold">{slide.title}</h3>
+                <p>8월은 너무 더우니 시원한 Cool-GAME!!! </p>
+              </div>
             </div>
           </div>
         ))}
       </div>
+
 
             {/* 좌우 버튼 */}
             <button
@@ -265,7 +269,7 @@ export default function Home() {
       </section>
 
       {/* 순위 차트 */}
-      <section className="py-12 bg-slate-800">
+      <section className="py-12 bg-slate-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-8 text-white">
             게임 순위
