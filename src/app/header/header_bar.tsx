@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Search, User, Trophy, Gamepad2, Zap, Award } from "lucide-react";
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const GameRankHeader = () => {
     const router = useRouter();
@@ -21,20 +22,20 @@ const GameRankHeader = () => {
 
     // PC 카테고리 옵션들
     const pcOptions = [
-        { name: "온라인 게임", icon: "🌐" },
-        { name: "Steam", icon: "🎮" },
+        { name: "온라인 게임", path: "/rank/online", icon: "🌐" },
+        { name: "Steam", path: "/rank/steam", icon: "🎮" },
     ];
 
     // Console 카테고리 옵션들
     const consoleOptions = [
-        { name: "PS", icon: "🎮" },
-        { name: "Nintendo", icon: "🎯" },
+        { name: "PS", path: "/rank/ps", icon: "🎮" },
+        { name: "Nintendo", path: "/rank/nintendo", icon: "🎯" },
     ];
 
     // Mobile 카테고리 옵션들
     const mobileOptions = [
-        { name: "iOS", icon: "📱" },
-        { name: "Android", icon: "🤖" },
+        { name: "iOS", path: "/rank/ios", icon: "📱" },
+        { name: "Android", path: "/rank/android", icon: "🤖" },
     ];
 
     const handleCategoryClick = (categoryName: string) => {
@@ -144,22 +145,25 @@ const GameRankHeader = () => {
                                         <div className="bg-white/95 backdrop-blur-sm border border-slate-200 rounded-lg shadow-xl">
                                             <div className="p-3">
                                                 {pcOptions.map((option) => (
-                                                    <button
-                                                        key={option.name}
-                                                        className="
-                                                            w-full flex items-center space-x-3 px-4 py-3 rounded-lg
-                                                            hover:bg-indigo-50 hover:border-indigo-200
-                                                            transition-all duration-200
-                                                            group text-left border border-transparent
-                                                        "
-                                                    >
-                                                        <span className="text-lg">
-                                                            {option.icon}
-                                                        </span>
-                                                        <span className="text-slate-700 group-hover:text-slate-900 font-medium">
-                                                            {option.name}
-                                                        </span>
-                                                    </button>
+                                                    <Link 
+                                                    key={option.name}
+                                                    href={option.path}>
+                                                        <button
+                                                            className="
+                                                                w-full flex items-center space-x-3 px-4 py-3 rounded-lg
+                                                                hover:bg-indigo-50 hover:border-indigo-200
+                                                                transition-all duration-200
+                                                                group text-left border border-transparent
+                                                            "
+                                                        >
+                                                            <span className="text-lg">
+                                                                {option.icon}
+                                                            </span>
+                                                            <span className="text-slate-700 group-hover:text-slate-900 font-medium">
+                                                                {option.name}
+                                                            </span>
+                                                        </button>
+                                                    </Link>
                                                 ))}
                                             </div>
                                         </div>
