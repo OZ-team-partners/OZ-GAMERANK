@@ -22,19 +22,23 @@ import {
     Gamepad2,
     Shield,
     Star,
-    UserPlus,
+    User,
     Key,
 } from "lucide-react";
 
-const GameRankLogin = () => {
+const GameRankSignup = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [isLoading, setIsLoading] = useState("");
     const [showSuccess, setShowSuccess] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleSocialLogin = (provider: string) => {
+    const handleSocialSignup = (provider: string) => {
+        setError("");
         setIsLoading(provider);
         setTimeout(() => {
             setIsLoading("");
@@ -43,7 +47,12 @@ const GameRankLogin = () => {
         }, 1500);
     };
 
-    const handleEmailLogin = () => {
+    const handleEmailSignup = () => {
+        setError("");
+        if (password !== confirmPassword) {
+            setError("비밀번호가 일치하지 않습니다.");
+            return;
+        }
         setIsLoading("email");
         setTimeout(() => {
             setIsLoading("");
@@ -55,7 +64,7 @@ const GameRankLogin = () => {
     const socialButtons = [
         {
             name: "discord",
-            label: "Discord로 로그인",
+            label: "Discord로 회원가입",
             color: "#5865F2",
             hoverColor: "#4752C4",
             icon: (
@@ -72,7 +81,7 @@ const GameRankLogin = () => {
         },
         {
             name: "google",
-            label: "Google로 로그인",
+            label: "Google로 회원가입",
             color: "#ffffff",
             textColor: "#374151",
             border: true,
@@ -114,7 +123,26 @@ const GameRankLogin = () => {
                             "& .MuiAlert-icon": { color: "#22c55e" },
                         }}
                     >
-                        로그인이 완료되었습니다! 🎮
+                        회원가입이 완료되었습니다! 🎮
+                    </Alert>
+                </div>
+            </Slide>
+
+            {/* 에러 알림 */}
+            <Slide direction="down" in={!!error} mountOnEnter unmountOnExit>
+                <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+                    <Alert
+                        severity="error"
+                        className="shadow-2xl backdrop-blur-sm"
+                        onClose={() => setError("")}
+                        sx={{
+                            bgcolor: "rgba(239, 68, 68, 0.1)",
+                            color: "#ef4444",
+                            border: "1px solid rgba(239, 68, 68, 0.3)",
+                            "& .MuiAlert-icon": { color: "#ef4444" },
+                        }}
+                    >
+                        {error}
                     </Alert>
                 </div>
             </Slide>
@@ -126,7 +154,7 @@ const GameRankLogin = () => {
                 <div className="absolute bottom-32 left-40 w-40 h-40 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full blur-3xl animate-pulse delay-2000"></div>
                 <div className="absolute bottom-20 right-20 w-28 h-28 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-2xl animate-pulse delay-500"></div>
 
-                {/* 게임 플랫폼 로고들 */}
+                {/* 떠다니는 게임 아이콘들 */}
                 <div className="absolute top-32 left-1/4 animate-float">
                     <img
                         src="/icon/page_icon/mainUpperIcon1.png"
@@ -185,14 +213,6 @@ const GameRankLogin = () => {
                         <div className="text-center mb-8">
                             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 rounded-3xl mb-6 shadow-2xl shadow-indigo-500/25 relative">
                                 <Trophy className="text-white" size={36} />
-                                <div className="absolute -top-2 -right-2">
-                                    <div className="w-6 h-6 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full flex items-center justify-center">
-                                        <Star
-                                            className="text-white"
-                                            size={12}
-                                        />
-                                    </div>
-                                </div>
                             </div>
                             <h1 className="text-5xl font-bold font-bangers bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-3 drop-shadow-lg">
                                 GAME RANK
@@ -202,7 +222,7 @@ const GameRankLogin = () => {
                             </p>
                             <Chip
                                 icon={<Shield size={14} />}
-                                label="안전한 로그인"
+                                label="안전한 회원가입"
                                 size="small"
                                 className="mt-3"
                                 sx={{
@@ -215,10 +235,10 @@ const GameRankLogin = () => {
                         </div>
                     </Fade>
 
-                    {/* 메인 로그인 카드 */}
+                    {/* 메인 회원가입 카드 */}
                     <Fade in timeout={1200}>
                         <div className="backdrop-blur-xl bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-slate-900/90 rounded-3xl p-8 border border-slate-600/30 shadow-2xl shadow-slate-900/50">
-                            {/* 소셜 로그인 버튼들 */}
+                            {/* 소셜 회원가입 버튼들 */}
                             <div className="space-y-4 mb-6">
                                 {socialButtons.map((social, index) => (
                                     <Grow
@@ -243,7 +263,7 @@ const GameRankLogin = () => {
                                             )}
                                             <Button
                                                 onClick={() =>
-                                                    handleSocialLogin(
+                                                    handleSocialSignup(
                                                         social.name
                                                     )
                                                 }
@@ -326,7 +346,7 @@ const GameRankLogin = () => {
                                 />
                             </Divider>
 
-                            {/* 이메일 로그인 폼 */}
+                            {/* 이메일 회원가입 폼 */}
                             <Fade in timeout={1400}>
                                 <div className="space-y-0 mt-6">
                                     <TextField
@@ -435,8 +455,71 @@ const GameRankLogin = () => {
                                         }}
                                     />
 
+                                    <TextField
+                                        fullWidth
+                                        type={
+                                            showConfirmPassword
+                                                ? "text"
+                                                : "password"
+                                        }
+                                        label="비밀번호 확인"
+                                        value={confirmPassword}
+                                        onChange={(e) =>
+                                            setConfirmPassword(e.target.value)
+                                        }
+                                        placeholder="비밀번호를 다시 입력하세요"
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        onClick={() =>
+                                                            setShowConfirmPassword(
+                                                                !showConfirmPassword
+                                                            )
+                                                        }
+                                                        edge="end"
+                                                        sx={{
+                                                            color: "#94a3b8",
+                                                        }}
+                                                    >
+                                                        {showConfirmPassword ? (
+                                                            <EyeOff size={20} />
+                                                        ) : (
+                                                            <Eye size={20} />
+                                                        )}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{
+                                            mt: 3,
+                                            "& .MuiOutlinedInput-root": {
+                                                bgcolor:
+                                                    "rgba(51, 65, 85, 0.6)",
+                                                borderRadius: "12px",
+                                                "& fieldset": {
+                                                    borderColor:
+                                                        "rgba(148, 163, 184, 0.3)",
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor:
+                                                        "rgba(148, 163, 184, 0.5)",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "#6366f1",
+                                                },
+                                            },
+                                            "& .MuiInputLabel-root": {
+                                                color: "#94a3b8",
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                        }}
+                                    />
+
                                     <Button
-                                        onClick={handleEmailLogin}
+                                        onClick={handleEmailSignup}
                                         disabled={isLoading === "email"}
                                         fullWidth
                                         size="large"
@@ -473,10 +556,10 @@ const GameRankLogin = () => {
                                         {isLoading === "email" ? (
                                             <div className="flex items-center space-x-3">
                                                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                                <span>로그인 중...</span>
+                                                <span>가입 중...</span>
                                             </div>
                                         ) : (
-                                            "이메일로 로그인"
+                                            "이메일로 회원가입"
                                         )}
                                     </Button>
                                 </div>
@@ -486,6 +569,30 @@ const GameRankLogin = () => {
                             <Fade in timeout={1600}>
                                 <div className="mt-8 space-y-4">
                                     <div className="grid grid-cols-2 gap-3">
+                                        <Button
+                                            variant="outlined"
+                                            size="small"
+                                            startIcon={<User size={16} />}
+                                            onClick={() =>
+                                                router.push("/auth/login")
+                                            }
+                                            sx={{
+                                                borderColor:
+                                                    "rgba(148, 163, 184, 0.3)",
+                                                color: "#cbd5e1",
+                                                textTransform: "none",
+                                                fontSize: "14px",
+                                                "&:hover": {
+                                                    borderColor:
+                                                        "rgba(148, 163, 184, 0.5)",
+                                                    bgcolor:
+                                                        "rgba(148, 163, 184, 0.1)",
+                                                    color: "#fff",
+                                                },
+                                            }}
+                                        >
+                                            로그인으로 이동
+                                        </Button>
                                         <Button
                                             variant="outlined"
                                             size="small"
@@ -511,30 +618,6 @@ const GameRankLogin = () => {
                                             }}
                                         >
                                             비밀번호 재설정
-                                        </Button>
-                                        <Button
-                                            variant="outlined"
-                                            size="small"
-                                            startIcon={<UserPlus size={16} />}
-                                            onClick={() =>
-                                                router.push("/auth/signup")
-                                            }
-                                            sx={{
-                                                borderColor:
-                                                    "rgba(148, 163, 184, 0.3)",
-                                                color: "#cbd5e1",
-                                                textTransform: "none",
-                                                fontSize: "14px",
-                                                "&:hover": {
-                                                    borderColor:
-                                                        "rgba(148, 163, 184, 0.5)",
-                                                    bgcolor:
-                                                        "rgba(148, 163, 184, 0.1)",
-                                                    color: "#fff",
-                                                },
-                                            }}
-                                        >
-                                            회원가입으로 이동
                                         </Button>
                                     </div>
 
@@ -573,7 +656,7 @@ const GameRankLogin = () => {
                     <Fade in timeout={1800}>
                         <div className="text-center mt-6">
                             <p className="text-xs text-slate-400 leading-relaxed">
-                                로그인 시{" "}
+                                회원가입 시{" "}
                                 <span className="text-indigo-400 font-medium">
                                     이용약관
                                 </span>{" "}
@@ -630,4 +713,4 @@ const GameRankLogin = () => {
     );
 };
 
-export default GameRankLogin;
+export default GameRankSignup;
