@@ -15,6 +15,9 @@ import {
   Avatar,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
+import HeaderBarHero from "./header/header_barHero";
+
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -68,60 +71,8 @@ export default function Home() {
     <div className="min-h-screen bg-slate-900">
       {/* 헤더 */}
       <GameRankHeader />
-
       {/* 히어로 섹션 */}
-      <section className="relative h-20 bg-gradient-to-r from-purple to-purple flex items-center justify-center">
-        <div className="absolute inset-0 bg-black opacity-40">
-          <Image
-            src="/icon/page_icon/mainUpperIcon1.png"
-            alt="게임 아이콘 1"
-            width={48}
-            height={48}
-            className="absolute top-[20%] left-[10%] rotate-[-20deg] drop-shadow-[0_2px_8px_rgba(255,,255,0.7)]"
-          />
-          <Image
-            src="/icon/page_icon/mainUpperIcon2.png"
-            alt="게임 아이콘 2"
-            width={48}
-            height={48}
-            className="absolute top-[10%] left-[30%] rotate-[15deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
-          />
-          <Image
-            src="/icon/page_icon/mainUpperIcon3.png"
-            alt="게임 아이콘 3"
-            width={48}
-            height={48}
-            className="absolute top-[25%] right-[10%] rotate-[15deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
-          />
-          <Image
-            src="/icon/page_icon/mainUpperIcon4.png"
-            alt="게임 아이콘 4"
-            width={100}
-            height={48}
-            className="absolute top-[-1%] right-[35%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
-          />
-          <Image
-            src="/icon/page_icon/mainUpperIcon5.png"
-            alt="게임 아이콘 5"
-            width={48}
-            height={48}
-            className="absolute top-[10%] right-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
-          />
-          <Image
-            src="/icon/page_icon/mainUpperIcon6.png"
-            alt="게임 아이콘 6"
-            width={48}
-            height={48}
-            className="absolute top-[40%] left-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
-          />
-        </div>
-        <div className="relative z-10 text-center text-white">
-          <h2 className="text-2xl font-bold mb-2">
-            흩어져 있는 순위, 이제 한곳에서 모아보자
-          </h2>
-          <h3 className="text-1xl font-semibold font-bangers">[GAME RANK]</h3>
-        </div>
-      </section>
+      <HeaderBarHero/>
 
       {/* 메인 슬라이더 */}
       <section className="py-10 bg-slate-900">
@@ -249,30 +200,33 @@ export default function Home() {
 
               <div className="flex-1 mx-16">
                 <div className="grid grid-cols-4 gap-4">
-                  {smallSlides
-                    .slice(currentSmallSlide, currentSmallSlide + 4)
-                    .map((slide) => (
-                      <div
-                        key={slide.id}
-                        className="bg-slate-600 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                      >
-                        <div className="h-70 flex flex-col justify-end items-start p-4">
-                          <h3
-                            className={`font-semibold ${
-                              slide.title === "game-bti"
-                                ? "font-bangers text-xl"
-                                : ""
-                            }`}
-                          >
-                            {slide.title}
-                          </h3>
-                          <p className="text-sm text-gray-300 mt-1">
-                            {/* 작은 내용 넣기, 필요하면 slide에 추가 */}
-                            {slide.smallSlides_text}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+                {smallSlides
+  .slice(currentSmallSlide, currentSmallSlide + 4)
+  .map((slide) => (
+    <Link
+      key={slide.id}
+      href={slide.title === "game-bti" ? "/small_contents/game_mbti" : "#"}
+    >
+      <div
+        className="bg-slate-600 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+      >
+        <div className="h-70 flex flex-col justify-end items-start p-4">
+          <h3
+            className={`font-semibold ${
+              slide.title === "game-bti"
+                ? "font-bangers text-xl"
+                : ""
+            }`}
+          >
+            {slide.title}
+          </h3>
+          <p className="text-sm text-gray-300 mt-1">
+            {slide.smallSlides_text}
+          </p>
+        </div>
+      </div>
+    </Link>
+  ))}
                 </div>
               </div>
               {/* 좌우 페이지 버튼이동 구현 안함 */}
@@ -387,7 +341,7 @@ export default function Home() {
                       fontWeight: "bold",
                       fontSize: "1.2rem",
                       borderRight: "2px solid #475569",
-                      backgroundColor: "#1e40af", // blue-800 (순위 열 강조)
+                      backgroundColor: "#475569", // (순위 열 강조)
                       color: "white",
                       width: "10%", // 순위 열 너비 고정
                     }}
@@ -513,7 +467,7 @@ export default function Home() {
                       fontWeight: "bold",
                       fontSize: "1.2rem",
                       borderRight: "2px solid #475569",
-                      backgroundColor: "#1e40af", // blue-800
+                      backgroundColor: "#475569", 
                       color: "white",
                       width: "10%", // 순위 열 너비 고정
                     }}
@@ -639,7 +593,7 @@ export default function Home() {
                       fontWeight: "bold",
                       fontSize: "1.2rem",
                       borderRight: "2px solid #475569",
-                      backgroundColor: "#1e40af", // blue-800
+                      backgroundColor: "#475569", // 색상
                       color: "white",
                       width: "10%", // 순위 열 너비 고정
                     }}
@@ -842,7 +796,7 @@ export default function Home() {
                       fontWeight: "bold",
                       fontSize: "1.2rem",
                       borderRight: "2px solid #475569",
-                      backgroundColor: "#1e40af", // blue-800 (순위 열 강조)
+                      backgroundColor: "#475569", // (순위 열 강조)
                       color: "white",
                       width: "10%", // 순위 열 너비 고정
                     }}
@@ -968,7 +922,7 @@ export default function Home() {
                       fontWeight: "bold",
                       fontSize: "1.2rem",
                       borderRight: "2px solid #475569",
-                      backgroundColor: "#1e40af", // blue-800
+                      backgroundColor: "#475569", 
                       color: "white",
                       width: "10%", // 순위 열 너비 고정
                     }}
@@ -1094,7 +1048,7 @@ export default function Home() {
                       fontWeight: "bold",
                       fontSize: "1.2rem",
                       borderRight: "2px solid #475569",
-                      backgroundColor: "#1e40af", // blue-800
+                      backgroundColor: "#475569", // 색상
                       color: "white",
                       width: "10%", // 순위 열 너비 고정
                     }}
@@ -1221,47 +1175,143 @@ export default function Home() {
       <section className="py-12 bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-8 text-white font-bangers">
-            GAME RANK : HOT ISSUE
+            🔥🔥🔥GAME RANK : HOT ISSUE 🔥🔥🔥
           </h2>
-          <div className="grid grid-cols-3 gap-6">
-            {/* 2행 3열의 글 페이지들 */}
-            {[1, 2, 3, 4, 5, 6].map((item) => (
+
+          {/* 상단 4개 컨텐츠 (170x120) */}
+          <div className="flex justify-between mb-10">
+            {[
+              {
+                id: 1,
+                image: "/icon/page_icon/mainSlides1.png",
+                title: "새로운 게임 출시",
+                description: "최신 게임 소식",
+              },
+              {
+                id: 2,
+                image: "/icon/page_icon/mainSlides2.png",
+                title: "업데이트 소식",
+                description: "게임 패치 정보",
+              },
+              {
+                id: 3,
+                image: "/icon/page_icon/mainSlides3.png",
+                title: "이벤트 정보",
+                description: "특별 이벤트",
+              },
+              {
+                id: 4,
+                image: "/icon/page_icon/mainSlides4.png",
+                title: "커뮤니티 소식",
+                description: "게이머 소통",
+              },
+            ].map((item) => (
               <div
-                key={item}
-                className="bg-slate-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                key={item.id}
+                className="bg-slate-800  shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                style={{
+                  width: "290px",
+                  height: "200px",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
               >
-                <div className="h-24 bg-gradient-to-br from-emerald-500 to-indigo-500 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <svg
-                      className="w-8 h-8 mx-auto mb-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
-                    <p className="text-xs">이슈 {item}</p>
-                  </div>
+                <div
+                  className="flex-1 bg-gradient-to-br from-emerald-500 to-indigo-500 flex items-center justify-center"
+                  style={{ height: "70px" }}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-80 h-37 object-cover rounded"
+                  />
                 </div>
-                <div className="p-6">
-                  <h4 className="font-semibold mb-3 text-white text-lg">
-                    게임 이슈 제목 {item}
+                <div className="p-2 text-center">
+                  <h4 className="font-semibold text-white text-xs mb-1">
+                    {item.title}
                   </h4>
-                  <p className="text-slate-300 text-sm leading-relaxed">
-                    게임 관련 최신 소식과 이슈를 확인해보세요. 다양한 게임
-                    커뮤니티에서 화제가 되고 있는 내용들을 한눈에 볼 수
-                    있습니다. 업데이트 소식부터 새로운 게임 출시 정보까지 모든
-                    것을 확인하세요.
-                  </p>
-                  <div className="mt-4 flex items-center text-emerald-400 text-xs">
-                    <span>조회수 1.2K</span>
-                    <span className="mx-2">•</span>
-                    <span>2시간 전</span>
+                  <p className="text-slate-300 text-xs">{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 하단 세로 나열 컨텐츠들 (728x40) */}
+          <div className="space-y-3">
+            {[
+              {
+                id: 1,
+                image: "/icon/page_icon/mainUpperIcon1.png",
+                title: "League of Legends 월드 챔피언십 2024 개최 확정",
+                subtitle: "올해도 전 세계 게이머들의 축제가 열립니다",
+                topic: "e 스포츠",
+                time: "14:20",
+              },
+              {
+                id: 2,
+                image: "/icon/page_icon/mainUpperIcon2.png",
+                title: "Valorant 새로운 요원 'Neon' 공개",
+                subtitle: "한국 출신 요원으로 게임 메타 변화 예상",
+                topic: "e 스포츠",
+                time: "14:20",
+              },
+              {
+                id: 3,
+                image: "/icon/page_icon/mainUpperIcon3.png",
+                title: "PUBG Mobile 글로벌 챔피언십 2024",
+                subtitle: "모바일 배틀로얄의 최고 권위 대회",
+                topic: "e 스포츠",
+                time: "14:20",
+              },
+              {
+                id: 4,
+                image: "/icon/page_icon/mainUpperIcon4.png",
+                title: "Genshin Impact 4.0 업데이트 소식",
+                subtitle: "새로운 지역과 캐릭터 추가 예정",
+                topic: "업데이트",
+                time: "19:11",
+              },
+              {
+                id: 5,
+                image: "/icon/page_icon/mainUpperIcon5.png",
+                title: "FIFA 24 e스포츠 리그 개막",
+                subtitle: "전 세계 최고의 FIFA 플레이어들이 모입니다",
+                topic: "기타",
+                time: "209:20",
+              },
+            ].map((item) => (
+              <div
+                key={item.id}
+                className="bg-slate-800  shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer flex items-center border-t border-b border-gray-700"
+                style={{
+                  width: "900px",
+                  height: "70px",
+                  margin: "0 auto",
+                }}
+              >
+                <div className="flex items-center w-full px-3">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-[75px] h-[75px] object-cover rounded mr-3"
+                    style={{
+                      width: "80px",
+                      height: "60px",
+                    }}
+                  />
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-white text-sm mb-1 truncate">
+                      {item.title}
+                    </h4>
+                    <p className="text-slate-300 text-xs truncate">
+                      {item.subtitle}
+                    </p>
+                  </div>
+                 {/* 주제와 시간이 표시되는 부분 */}
+                 <div className="flex items-center text-xs text-slate-400 flex-shrink-0 ml-4">
+                    <span>{item.topic}</span>
+                    <span className="mx-2">|</span>
+                    <span>{item.time}</span>
                   </div>
                 </div>
               </div>
