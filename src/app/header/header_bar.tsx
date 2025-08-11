@@ -64,7 +64,10 @@ const GameRankHeader = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center h-16 gap-6">
                     {/* 좌측: 로고 & 브랜드 */}
-                    <div className="flex items-center space-x-4 flex-shrink-0">
+                    <Link
+                        href="/"
+                        className="flex items-center space-x-4 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity duration-200"
+                    >
                         <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
                             <Trophy className="text-white" size={20} />
                         </div>
@@ -72,7 +75,7 @@ const GameRankHeader = () => {
                             GAME RAN
                             <span style={{ marginRight: "0.25rem" }}>K</span>
                         </span>
-                    </div>
+                    </Link>
 
                     {/* 검색바 */}
                     <div className="flex items-center relative">
@@ -145,9 +148,10 @@ const GameRankHeader = () => {
                                         <div className="bg-white/95 backdrop-blur-sm border border-slate-200 rounded-lg shadow-xl">
                                             <div className="p-3">
                                                 {pcOptions.map((option) => (
-                                                    <Link 
-                                                    key={option.name}
-                                                    href={option.path}>
+                                                    <Link
+                                                        key={option.name}
+                                                        href={option.path}
+                                                    >
                                                         <button
                                                             className="
                                                                 w-full flex items-center space-x-3 px-4 py-3 rounded-lg
@@ -250,7 +254,7 @@ const GameRankHeader = () => {
                     {/* 우측: 로그인 */}
                     <div className="flex items-center flex-shrink-0">
                         <button
-                            onClick={() => router.push("/login")}
+                            onClick={() => router.push("/auth/login")}
                             className="
                             flex items-center space-x-2 px-4 py-2 
                             bg-gradient-to-r from-indigo-500 to-purple-600 
@@ -258,6 +262,7 @@ const GameRankHeader = () => {
                             hover:from-indigo-600 hover:to-purple-700
                             transform hover:scale-105 transition-all duration-200
                             shadow-lg hover:shadow-indigo-500/25
+                            cursor-pointer
             "
                         >
                             <User size={16} />

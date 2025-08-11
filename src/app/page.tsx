@@ -4,68 +4,76 @@ import { useState } from "react";
 import Image from "next/image";
 import GameRankHeader from "./header/header_bar";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  Avatar,
-  Typography,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Chip,
+    Avatar,
+    Typography,
 } from "@mui/material";
 import Link from "next/link";
 import HeaderBarHero from "./header/header_barHero";
 
 
 export default function Home() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [currentSmallSlide] = useState(0);
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const [currentSmallSlide] = useState(0);
 
-  const mainSlides = [
-    { id: 1, title: "ICE-BREAKING", image: "/icon/page_icon/mainSlides1.png" },
-    { id: 2, title: "콘솔 게임", image: "/icon/page_icon/mainSlides2.png" },
-    { id: 3, title: "모바일 게임", image: "/icon/page_icon/mainSlides3.png" },
-    { id: 4, title: "인디 게임", image: "/icon/page_icon/mainSlides4.png" },
-  ];
+    const mainSlides = [
+        {
+            id: 1,
+            title: "ICE-BREAKING",
+            image: "/icon/page_icon/mainSlides1.png",
+        },
+        { id: 2, title: "콘솔 게임", image: "/icon/page_icon/mainSlides2.png" },
+        {
+            id: 3,
+            title: "모바일 게임",
+            image: "/icon/page_icon/mainSlides3.png",
+        },
+        { id: 4, title: "인디 게임", image: "/icon/page_icon/mainSlides4.png" },
+    ];
 
-  const smallSlides = [
-    {
-      id: 1,
-      title: "디지털 heal 판매중!",
-      smallSlides_text: "지금이 제일 저렴할때!",
-      image: "/action.jpg",
-    },
-    {
-      id: 2,
-      title: "게임특전",
-      smallSlides_text: "지금이 제일 할인률이 높은거 아시죠?",
-      image: "/rpg.jpg",
-    },
-    {
-      id: 3,
-      title: "ads",
-      smallSlides_text: "S&P 500은 언제가 제일 싸다?",
-      image: "/strategy.jpg",
-    },
-    {
-      id: 4,
-      title: "game-bti",
-      smallSlides_text: "게임도 적성검사가 있는거 아세요?",
-      image: "/sports.jpg",
-    },
-  ];
+    const smallSlides = [
+        {
+            id: 1,
+            title: "디지털 heal 판매중!",
+            smallSlides_text: "지금이 제일 저렴할때!",
+            image: "/action.jpg",
+        },
+        {
+            id: 2,
+            title: "게임특전",
+            smallSlides_text: "지금이 제일 할인률이 높은거 아시죠?",
+            image: "/rpg.jpg",
+        },
+        {
+            id: 3,
+            title: "ads",
+            smallSlides_text: "S&P 500은 언제가 제일 싸다?",
+            image: "/strategy.jpg",
+        },
+        {
+            id: 4,
+            title: "game-bti",
+            smallSlides_text: "게임도 적성검사가 있는거 아세요?",
+            image: "/sports.jpg",
+        },
+    ];
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % mainSlides.length);
-  };
+    const nextSlide = () => {
+        setCurrentSlide((prev) => (prev + 1) % mainSlides.length);
+    };
 
-  const prevSlide = () => {
-    setCurrentSlide(
-      (prev) => (prev - 1 + mainSlides.length) % mainSlides.length
-    );
-  };
+    const prevSlide = () => {
+        setCurrentSlide(
+            (prev) => (prev - 1 + mainSlides.length) % mainSlides.length
+        );
+    };
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -74,112 +82,129 @@ export default function Home() {
       {/* 히어로 섹션 */}
       <HeaderBarHero/>
 
-      {/* 메인 슬라이더 */}
-      <section className="py-10 bg-slate-900">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ]">
-          <div className="relative overflow-hidden">
-            <div
-              className="flex transition-transform duration-500"
-              style={{
-                width: `${mainSlides.length * 100}%`,
-                transform: `translateX(-${
-                  currentSlide * (100 / mainSlides.length)
-                }%)`,
-                gap: "1rem",
-              }}
-            >
-              {mainSlides.map((slide, index) => (
-                <div
-                  key={index}
-                  className="flex-shrink-0"
-                  style={{ width: `${100 / mainSlides.length}%` }}
-                >
-                  <div
-                    className="rounded-lg overflow-hidden relative cursor-pointer h-110"
-                    onClick={() => setCurrentSlide(index)}
-                  >
-                    <Image
-                      src={slide.image}
-                      alt={slide.title}
-                      width={800}
-                      height={320}
-                      className="object-cover w-full h-full"
-                    />
-                    <div className="absolute inset-0  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
-                      <h3 className="text-2xl font-bold">{slide.title}</h3>
-                      <p>8월은 너무 더우니 시원한 Cool-GAME!!! </p>
+            {/* 메인 슬라이더 */}
+            <section className="py-10 bg-slate-900">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ]">
+                    <div className="relative overflow-hidden">
+                        <div
+                            className="flex transition-transform duration-500"
+                            style={{
+                                width: `${mainSlides.length * 100}%`,
+                                transform: `translateX(-${
+                                    currentSlide * (100 / mainSlides.length)
+                                }%)`,
+                                gap: "1rem",
+                            }}
+                        >
+                            {mainSlides.map((slide, index) => (
+                                <div
+                                    key={index}
+                                    className="flex-shrink-0"
+                                    style={{
+                                        width: `${100 / mainSlides.length}%`,
+                                    }}
+                                >
+                                    <div
+                                        className="rounded-lg overflow-hidden relative cursor-pointer h-110"
+                                        onClick={() => setCurrentSlide(index)}
+                                    >
+                                        <Image
+                                            src={slide.image}
+                                            alt={slide.title}
+                                            width={800}
+                                            height={320}
+                                            className="object-cover w-full h-full"
+                                        />
+                                        <div className="absolute inset-0  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
+                                            <h3 className="text-2xl font-bold">
+                                                {slide.title}
+                                            </h3>
+                                            <p>
+                                                8월은 너무 더우니 시원한
+                                                Cool-GAME!!!{" "}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* 좌우 버튼 */}
+                        <button
+                            onClick={prevSlide}
+                            className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 text-white hover:text-indigo-400"
+                            style={{
+                                background: "transparent",
+                                border: "none",
+                                padding: 0,
+                            }}
+                            aria-label="이전 슬라이드"
+                        >
+                            <svg
+                                className="w-6 h-6"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 19l-7-7 7-7"
+                                />
+                            </svg>
+                        </button>
+
+                        <button
+                            onClick={nextSlide}
+                            className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 text-white hover:text-indigo-400"
+                            style={{
+                                background: "transparent",
+                                border: "none",
+                                padding: 0,
+                            }}
+                            aria-label="다음 슬라이드"
+                        >
+                            <svg
+                                className="w-6 h-6"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5l7 7-7 7"
+                                />
+                            </svg>
+                        </button>
+                        {/* 인디케이터 - 사진 내부 하단 중앙 */}
+                        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                            {mainSlides.map((_, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => setCurrentSlide(idx)}
+                                    className={`w-3 h-3 rounded-full ${
+                                        idx === currentSlide
+                                            ? "bg-indigo-500"
+                                            : "bg-slate-600"
+                                    }`}
+                                    aria-label={`Slide ${idx + 1}`}
+                                />
+                            ))}
+                        </div>
                     </div>
-                  </div>
                 </div>
-              ))}
-            </div>
+            </section>
 
-            {/* 좌우 버튼 */}
-            <button
-              onClick={prevSlide}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 text-white hover:text-indigo-400"
-              style={{ background: "transparent", border: "none", padding: 0 }}
-              aria-label="이전 슬라이드"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-
-            <button
-              onClick={nextSlide}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 text-white hover:text-indigo-400"
-              style={{ background: "transparent", border: "none", padding: 0 }}
-              aria-label="다음 슬라이드"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-            {/* 인디케이터 - 사진 내부 하단 중앙 */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              {mainSlides.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentSlide(idx)}
-                  className={`w-3 h-3 rounded-full ${
-                    idx === currentSlide ? "bg-indigo-500" : "bg-slate-600"
-                  }`}
-                  aria-label={`Slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 작은 슬라이더 (4개) */}
-      <section className="py-7 bg-slate-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative">
-            <div className="flex items-center justify-between">
-              {/* 좌우 페이지 버튼이동 구현 안함 */}
-              {/* <button
+            {/* 작은 슬라이더 (4개) */}
+            <section className="py-7 bg-slate-900">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="relative">
+                        <div className="flex items-center justify-between">
+                            {/* 좌우 페이지 버튼이동 구현 안함 */}
+                            {/* <button
                 onClick={prevSmallSlide}
                 className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-slate-700 rounded-full p-2 shadow-lg hover:bg-slate-600 text-white"
               >
@@ -248,17 +273,17 @@ export default function Home() {
                   />
                 </svg>
               </button> */}
-            </div>
-          </div>
-        </div>
-      </section>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-      {/* 순위 차트 */}
-      <section className="py-12 bg-slate-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold font-mono text-center mb-8 text-white">
-            플랫폼 별 TOP 3 : 이번 달의 POWER RANKER
-          </h2>
+            {/* 순위 차트 */}
+            <section className="py-12 bg-slate-900">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-3xl font-bold font-mono text-center mb-8 text-white">
+                        플랫폼 별 TOP 3 : 이번 달의 POWER RANKER
+                    </h2>
 
           {/* 새로운 플랫폼별 순위 차트 */}
           <TableContainer
