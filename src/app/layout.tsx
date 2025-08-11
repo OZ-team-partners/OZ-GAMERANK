@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+// import GameRankHeader from "./header/header_bar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* 헤더 */}
+        {/* <GameRankHeader /> */}
+        {/* 메인 컨테이너 */}
         {children}
       </body>
     </html>

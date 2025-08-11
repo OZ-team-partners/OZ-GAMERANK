@@ -31,13 +31,14 @@ export default function NewsletterPage() {
 
           {/* 메인 이미지 */}
           <div className="relative h-64 md:h-80 overflow-hidden">
-            <Image
+            {/* <Image
               src="https://images.unsplash.com/photo-1532012197267-da84d127e765"
               alt="도서관 이미지"
               fill
               className="object-cover"
               priority
-            />
+            /> */}
+            <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765" alt="도서관 이미지" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
           </div>
 
