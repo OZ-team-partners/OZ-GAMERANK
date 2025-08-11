@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import GameRankHeader from "./header/header_bar";
 import {
     Table,
     TableBody,
@@ -16,7 +15,6 @@ import {
     Typography,
 } from "@mui/material";
 import Link from "next/link";
-import HeaderBarHero from "./header/header_barHero";
 
 
 export default function Home() {
@@ -77,10 +75,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-900">
-      {/* 헤더 */}
-      <GameRankHeader />
-      {/* 히어로 섹션 */}
-      <HeaderBarHero/>
 
             {/* 메인 슬라이더 */}
             <section className="py-10 bg-slate-900">
