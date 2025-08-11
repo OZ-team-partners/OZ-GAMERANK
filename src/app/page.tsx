@@ -3,6 +3,18 @@
 import { useState } from "react";
 import Image from "next/image";
 import GameRankHeader from "./header/header_bar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Chip,
+  Avatar,
+  Typography,
+} from "@mui/material";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -288,75 +300,920 @@ export default function Home() {
       </section>
 
       {/* 순위 차트 */}
-      <section className="py-12 bg-slate-500">
+      <section className="py-12 bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-8 text-white">
-            게임 순위
+          <h2 className="text-3xl font-bold font-mono text-center mb-8 text-white">
+            플랫폼 별 TOP 3 : 이번 달의 POWER RANKER
           </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-slate-600">
-              <thead>
-                <tr className="bg-slate-700">
-                  <th className="border border-slate-600 px-6 py-3 text-left font-semibold text-amber-500">
+
+          {/* 새로운 플랫폼별 순위 차트 */}
+          <TableContainer
+            component={Paper}
+            sx={{
+              maxWidth: 1100,
+              mx: "auto",
+              backgroundColor: "#1e293b", // slate-800에 해당하는 어두운 배경
+              border: "1px solidrgb(71, 105, 93)", // slate-600 테두리
+              borderRadius: 10,
+              boxShadow: "0 10px 25px rgba(137, 23, 23, 0.3)",
+            }}
+          >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#334155", // slate-700
+                      color: "white",
+                      borderBottom: "2px solid #475569",
+                      width: "10%", // 순위 열 너비 고정
+                    }}
+                  >
                     순위
-                  </th>
-                  <th className="border border-slate-600 px-6 py-3 text-left font-semibold text-indigo-400">
-                    PC
-                  </th>
-                  <th className="border border-slate-600 px-6 py-3 text-left font-semibold text-indigo-400">
-                    Console
-                  </th>
-                  <th className="border border-slate-600 px-6 py-3 text-left font-semibold text-indigo-400">
-                    Mobile
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="bg-slate-900">
-                  <td className="border border-slate-600 px-6 py-3 font-semibold text-amber-500">
-                    1
-                  </td>
-                  <td className="border border-slate-600 px-6 py-3 text-white">
-                    League of Legends
-                  </td>
-                  <td className="border border-slate-600 px-6 py-3 text-white">
-                    FIFA 24
-                  </td>
-                  <td className="border border-slate-600 px-6 py-3 text-white">
-                    PUBG Mobile
-                  </td>
-                </tr>
-                <tr className="bg-slate-800">
-                  <td className="border border-slate-600 px-6 py-3 font-semibold text-amber-500">
-                    2
-                  </td>
-                  <td className="border border-slate-600 px-6 py-3 text-white">
-                    Valorant
-                  </td>
-                  <td className="border border-slate-600 px-6 py-3 text-white">
-                    Call of Duty
-                  </td>
-                  <td className="border border-slate-600 px-6 py-3 text-white">
-                    Genshin Impact
-                  </td>
-                </tr>
-                <tr className="bg-slate-900">
-                  <td className="border border-slate-600 px-6 py-3 font-semibold text-amber-500">
-                    3
-                  </td>
-                  <td className="border border-slate-600 px-6 py-3 text-white">
-                    Overwatch 2
-                  </td>
-                  <td className="border border-slate-600 px-6 py-3 text-white">
-                    God of War
-                  </td>
-                  <td className="border border-slate-600 px-6 py-3 text-white">
-                    Clash Royale
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      backgroundColor: "#334155", // slate-700
+                      borderRight: "2px solid #475569",
+                      color: "white",
+                      borderBottom: "2px solid #475569",
+                      width: "30%", // 각 플랫폼 열 너비 동일하게
+                    }}
+                  >
+                    STEAM
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      backgroundColor: "#334155", // slate-700
+                      borderRight: "2px solid #475569",
+                      color: "white",
+                      borderBottom: "2px solid #475569",
+                      width: "30%", // 각 플랫폼 열 너비 동일하게
+                    }}
+                  >
+                    X BOX
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      backgroundColor: "#334155", // slate-700
+                      color: "white",
+                      borderBottom: "2px solid #475569",
+                      width: "30%", // 각 플랫폼 열 너비 동일하게
+                    }}
+                  >
+                    NINTENDO
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {/* 1위 */}
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.2rem",
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e40af", // blue-800 (순위 열 강조)
+                      color: "white",
+                      width: "10%", // 순위 열 너비 고정
+                    }}
+                  >
+                    <Chip
+                      label="1"
+                      sx={{
+                        bgcolor: "#FFD700",
+                        color: "black",
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        width: 40,
+                        height: 40,
+                        boxShadow: "0 2px 8px rgba(255, 215, 0, 0.3)",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b", // slate-800
+                      color: "white",
+                      width: "30%", // 각 플랫폼 열 너비 동일하게
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainSlides1.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          League of Legends
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          MOBA
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b", // slate-800
+                      color: "white",
+                      width: "28.33%", // 각 플랫폼 열 너비 동일하게
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainSlides2.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          FIFA 24
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Sports
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainSlides3.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          PUBG Mobile
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Battle Royale
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+
+                {/* 2위 */}
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.2rem",
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e40af", // blue-800
+                      color: "white",
+                      width: "10%", // 순위 열 너비 고정
+                    }}
+                  >
+                    <Chip
+                      label="2"
+                      sx={{
+                        bgcolor: "#C0C0C0",
+                        color: "black",
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        width: 40,
+                        height: 40,
+                        boxShadow: "0 2px 8px rgba(192, 192, 192, 0.3)",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainSlides4.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Valorant
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          FPS
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainUpperIcon1.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          God of War
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Action-Adventure
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainUpperIcon2.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Genshin Impact
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          RPG
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+
+                {/* 3위 */}
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.2rem",
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e40af", // blue-800
+                      color: "white",
+                      width: "10%", // 순위 열 너비 고정
+                    }}
+                  >
+                    <Chip
+                      label="3"
+                      sx={{
+                        bgcolor: "#CD7F32",
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        width: 40,
+                        height: 40,
+                        boxShadow: "0 2px 8px rgba(205, 127, 50, 0.3)",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainUpperIcon3.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Minecraft
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Sandbox
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainUpperIcon4.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          The Last of Us
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Survival Horror
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainUpperIcon5.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Clash of Clans
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Strategy
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* 두 번째 순위 차트 (기존 테이블과 간격 추가) */}
+          <TableContainer
+            component={Paper}
+            sx={{
+              maxWidth: 1100,
+              mx: "auto",
+              mt: 4, // 위쪽 간격 32px
+              backgroundColor: "#1e293b", // slate-800에 해당하는 어두운 배경
+              border: "1px solidrgb(71, 105, 93)", // slate-600 테두리
+              borderRadius: 10,
+              boxShadow: "0 10px 25px rgba(36, 195, 46, 0.5)",
+            }}
+          >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#334155", // slate-700
+                      color: "white",
+                      borderBottom: "2px solid #475569",
+                      width: "10%", // 순위 열 너비 고정
+                    }}
+                  >
+                    순위
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      backgroundColor: "#334155", // slate-700
+                      borderRight: "2px solid #475569",
+                      color: "white",
+                      borderBottom: "2px solid #475569",
+                      width: "30%", // 각 플랫폼 열 너비 동일하게
+                    }}
+                  >
+                    Android
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      backgroundColor: "#334155", // slate-700
+                      borderRight: "2px solid #475569",
+                      color: "white",
+                      borderBottom: "2px solid #475569",
+                      width: "30%", // 각 플랫폼 열 너비 동일하게
+                    }}
+                  >
+                    App Store
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      backgroundColor: "#334155", // slate-700
+                      color: "white",
+                      borderBottom: "2px solid #475569",
+                      width: "30%", // 각 플랫폼 열 너비 동일하게
+                    }}
+                  >
+                    나하 뭐하지
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {/* 1위 */}
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.2rem",
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e40af", // blue-800 (순위 열 강조)
+                      color: "white",
+                      width: "10%", // 순위 열 너비 고정
+                    }}
+                  >
+                    <Chip
+                      label="1"
+                      sx={{
+                        bgcolor: "#FFD700",
+                        color: "black",
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        width: 40,
+                        height: 40,
+                        boxShadow: "0 2px 8px rgba(255, 215, 0, 0.3)",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b", // slate-800
+                      color: "white",
+                      width: "30%", // 각 플랫폼 열 너비 동일하게
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainUpperIcon6.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Counter-Strike 2
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          FPS
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b", // slate-800
+                      color: "white",
+                      width: "30%", // 각 플랫폼 열 너비 동일하게
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainUpperIcon7.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Spider-Man 2
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Action-Adventure
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainUpperIcon8.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Call of Duty Mobile
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          FPS
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+
+                {/* 2위 */}
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.2rem",
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e40af", // blue-800
+                      color: "white",
+                      width: "10%", // 순위 열 너비 고정
+                    }}
+                  >
+                    <Chip
+                      label="2"
+                      sx={{
+                        bgcolor: "#C0C0C0",
+                        color: "black",
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        width: 40,
+                        height: 40,
+                        boxShadow: "0 2px 8px rgba(192, 192, 192, 0.3)",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainSlides1.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Overwatch 2
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Hero Shooter
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainSlides2.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Elden Ring
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Action RPG
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainSlides3.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Among Us
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Social Deduction
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+
+                {/* 3위 */}
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1.2rem",
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e40af", // blue-800
+                      color: "white",
+                      width: "10%", // 순위 열 너비 고정
+                    }}
+                  >
+                    <Chip
+                      label="3"
+                      sx={{
+                        bgcolor: "#CD7F32",
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "1rem",
+                        width: 40,
+                        height: 40,
+                        boxShadow: "0 2px 8px rgba(205, 127, 50, 0.3)",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainSlides4.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Fortnite
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Battle Royale
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "2px solid #475569",
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainUpperIcon1.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Red Dead Redemption 2
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Western
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#1e293b",
+                      color: "white",
+                      width: "30%", // 30%로 변경
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Avatar
+                        src="/icon/page_icon/mainUpperIcon2.png"
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: "2px solid #475569",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                        }}
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: "bold", color: "white" }}
+                        >
+                          Candy Crush Saga
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Puzzle
+                        </Typography>
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
       </section>
 
