@@ -38,7 +38,10 @@ export default function NewsletterPage() {
               className="object-cover"
               priority
             /> */}
-            <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765" alt="도서관 이미지" />
+            <img
+              src="https://images.unsplash.com/photo-1532012197267-da84d127e765"
+              alt="도서관 이미지"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
           </div>
 
@@ -123,7 +126,7 @@ export default function NewsletterPage() {
                     <ul className="text-sm text-teal-700 space-y-1">
                       <li>• 레벨 업 가이드</li>
                       <li>• 아이템 위치 안내</li>
-                      <li>• 보스 공략법법</li>
+                      <li>• 보스 공략법</li>
                     </ul>
                   </div>
 
