@@ -6,8 +6,6 @@ import HeaderBarHero from "@/app/header/header_barHero";
 export default function GameMbtiPage() {
   return (
     <div className="min-h-screen bg-slate-900">
-      <GameRankHeader />
-      <HeaderBarHero/>
     </div>
   );
 }
