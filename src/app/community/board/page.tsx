@@ -303,139 +303,38 @@ export default function BoardPage() {
   return (
     <div className="m-0 font-sans bg-slate-900 text-white min-h-screen">
       <div className="max-w-[1100px] mx-auto my-7 px-4 grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-        {/* Top filters (zig-zag dropdowns with icons) */}
+        {/* Top filters (카테고리 버튼들) */}
         <div className="col-span-1 lg:col-span-4 flex gap-3 py-3 pb-5 flex-wrap items-start">
-          <div className="w-19 flex flex-col items-center gap-1.5 text-xs text-center">
-            <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-              🎮
-            </div>
-            <select
-              className="w-full p-1.5 border border-gray-300 rounded bg-white text-sm text-black cursor-pointer hover:border-gray-400 focus:outline-none focus:border-blue-500"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value as Category)}
-              style={{ color: "black", backgroundColor: "white" }}
+          {[
+            { name: "온라인게임", icon: "🎮" },
+            { name: "steam", icon: "🕹️" },
+            { name: "PS", icon: "🎮" },
+            { name: "닌텐도", icon: "📱" },
+            { name: "모바일", icon: "🔍" },
+            { name: "유머/정보", icon: "⭐" },
+            { name: "디지털/컴퓨터/폰", icon: "🗂️" },
+            { name: "게임공략", icon: "🗂️" },
+            { name: "핫딜", icon: "🗂️" },
+          ].map((category, index) => (
+            <div
+              key={category.name}
+              className="w-19 flex flex-col items-center gap-1.5 text-xs text-center"
             >
-              <option
-                value="온라인게임"
-                style={{ color: "black", backgroundColor: "white" }}
+              <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
+                {category.icon}
+              </div>
+              <button
+                className={`w-full p-1.5 border rounded text-sm cursor-pointer transition-colors ${
+                  selectedCategory === category.name
+                    ? "bg-indigo-500 text-white border-indigo-500"
+                    : "bg-white text-black border-gray-300 hover:border-gray-400"
+                }`}
+                onClick={() => setSelectedCategory(category.name as Category)}
               >
-                온라인게임
-              </option>
-              <option
-                value="steam"
-                style={{ color: "black", backgroundColor: "white" }}
-              >
-                steam
-              </option>
-              <option
-                value="PS"
-                style={{ color: "black", backgroundColor: "white" }}
-              >
-                PS
-              </option>
-              <option
-                value="닌텐도"
-                style={{ color: "black", backgroundColor: "white" }}
-              >
-                닌텐도
-              </option>
-              <option
-                value="모바일"
-                style={{ color: "black", backgroundColor: "white" }}
-              >
-                모바일
-              </option>
-              <option
-                value="유머/정보"
-                style={{ color: "black", backgroundColor: "white" }}
-              >
-                유머/정보
-              </option>
-              <option
-                value="디지털/컴퓨터/폰"
-                style={{ color: "black", backgroundColor: "white" }}
-              >
-                디지털/컴퓨터/폰
-              </option>
-              <option
-                value="게임공략"
-                style={{ color: "black", backgroundColor: "white" }}
-              >
-                게임공략
-              </option>
-              <option
-                value="핫딜"
-                style={{ color: "black", backgroundColor: "white" }}
-              >
-                핫딜
-              </option>
-            </select>
-          </div>
-          {/* 나머지 필터들은 동일하게 유지 */}
-          <div className="w-19 flex flex-col items-center gap-1.5 text-xs text-center translate-y-2">
-            <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-              🕹️
+                {category.name}
+              </button>
             </div>
-            <select className="w-full p-1.5 border border-gray-300 rounded bg-white text-sm">
-              <option>steam</option>
-            </select>
-          </div>
-          <div className="w-19 flex flex-col items-center gap-1.5 text-xs text-center">
-            <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-              🎮
-            </div>
-            <select className="w-full p-1.5 border border-gray-300 rounded bg-white text-sm">
-              <option>PS</option>
-            </select>
-          </div>
-          <div className="w-19 flex flex-col items-center gap-1.5 text-xs text-center translate-y-2">
-            <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-              📱
-            </div>
-            <select className="w-full p-1.5 border border-gray-300 rounded bg-white text-sm">
-              <option>닌텐도</option>
-            </select>
-          </div>
-          <div className="w-19 flex flex-col items-center gap-1.5 text-xs text-center">
-            <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-              🔍
-            </div>
-            <select className="w-full p-1.5 border border-gray-300 rounded bg-white text-sm">
-              <option>모바일</option>
-            </select>
-          </div>
-          <div className="w-19 flex flex-col items-center gap-1.5 text-xs text-center translate-y-2">
-            <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-              ⭐
-            </div>
-            <select className="w-full p-1.5 border border-gray-300 rounded bg-white text-sm">
-              <option>유머/정보</option>
-            </select>
-          </div>
-          <div className="w-19 flex flex-col items-center gap-1.5 text-xs text-center">
-            <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-              🗂️
-            </div>
-            <select className="w-full p-1.5 border border-gray-300 rounded bg-white text-sm">
-              <option>디지털/컴퓨터/폰</option>
-            </select>
-          </div>
-          <div className="w-19 flex flex-col items-center gap-1.5 text-xs text-center translate-y-2">
-            <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-              🗂️
-            </div>
-            <select className="w-full p-1.5 border border-gray-300 rounded bg-white text-sm">
-              <option>게임공략</option>
-            </select>
-          </div>
-          <div className="w-19 flex flex-col items-center gap-1.5 text-xs text-center">
-            <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-              🗂️
-            </div>
-            <select className="w-full p-1.5 border border-gray-300 rounded bg-white text-sm">
-              <option>핫딜</option>
-            </select>
-          </div>
+          ))}
         </div>
 
         {/* LEFT: small card + big vertical ad */}
