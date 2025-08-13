@@ -4,7 +4,7 @@ export default function HeaderBarHero() {
   return (
     <>
       {/* 히어로 섹션 */}
-      <section className="relative h-20 bg-gradient-to-r from-purple to-purple flex items-center justify-center">
+      <section className="relative h-20 bg-gradient-to-t from-purple-800 to-gray-900 flex items-center justify-center">
         <div className="absolute inset-0 bg-black opacity-40">
           <Image
             src="/icon/page_icon/mainUpperIcon1.png"
