@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function NewsletterPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-1000 to-indigo-1100 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* 메인 컨테이너 */}
         <div className="bg-gray-100 rounded-xl shadow-2xl overflow-hidden">
