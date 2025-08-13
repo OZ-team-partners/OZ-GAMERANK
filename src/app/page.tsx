@@ -22,20 +22,10 @@ export default function Home() {
   const [currentSmallSlide] = useState(0);
 
   const mainSlides = [
-    {
-      id: 1,
-      title: "ICE-BREAKING",
-      render: () => (
-        <NewsletterPage />
-      ),
-    //  잠깐 사용 중지 image: "/icon/page_icon/mainSlides1.png",
-    },
+    { id: 1, title: "8월 게임 뉘우스", render: () => <NewsletterPage /> },
+    //  이미지 대신 newsletter를 사용 하고 싶음 image: "/icon/page_icon/mainSlides1.png",},
     { id: 2, title: "콘솔 게임", image: "/icon/page_icon/mainSlides2.png" },
-    {
-      id: 3,
-      title: "모바일 게임",
-      image: "/icon/page_icon/mainSlides3.png",
-    },
+    { id: 3, title: "모바일 게임", image: "/icon/page_icon/mainSlides3.png" },
     { id: 4, title: "인디 게임", image: "/icon/page_icon/mainSlides4.png" },
   ];
 
@@ -89,7 +79,6 @@ export default function Home() {
                 transform: `translateX(-${
                   currentSlide * (100 / mainSlides.length)
                 }%)`,
-                gap: "1rem",
               }}
             >
               {mainSlides.map((slide, index) => (
@@ -102,24 +91,28 @@ export default function Home() {
                 >
                   <div
                     className="rounded-lg overflow-hidden relative cursor-pointer h-110"
-                    onClick={() => setCurrentSlide(index)}
+                    onClick={() => {
+                      if (slide.id === 1) {
+                        window.location.href = "/blog/newsletter";
+                      } else {
+                        setCurrentSlide(index);
+                      }
+                    }}
                   >
                     {typeof slide.image === "string" ? (
-                    <Image
-                      src={slide.image}
-                      alt={slide.title}
-                      width={800}
-                      height={320}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full">
-                      {slide.render()}
-                    </div>
-                  )}
+                      <Image
+                        src={slide.image}
+                        alt={slide.title}
+                        width={800}
+                        height={320}
+                        className="flex-shrink-0 object-cover w-full h-full"
+                      />
+                    ) : (
+                      <div className="w-full h-full">{slide.render()}</div>
+                    )}
                     <div className="absolute inset-0  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
                       <h3 className="text-2xl font-bold">{slide.title}</h3>
-                      <p>8월은 너무 더우니 시원한 Cool-GAME!!! </p>
+                      <p>8월의 다양한 소식들을 받아보세요!! </p>
                     </div>
                   </div>
                 </div>
