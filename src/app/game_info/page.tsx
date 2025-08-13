@@ -1,151 +1,362 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import {
+    ChevronLeft,
+    ChevronRight,
+    Home,
+    ChevronRight as BreadcrumbArrow,
+    Star,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function GameInfoPage() {
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    const gameImages = [
+        "/icon/page_icon/zelda1.jpg",
+        "/icon/page_icon/zelda2.jpg",
+        "/icon/page_icon/zelda3.jpg",
+        "/icon/page_icon/zelda4.jpg",
+        "/icon/page_icon/zelda5.jpg",
+    ];
+
+    const nextImage = () => {
+        setCurrentImageIndex((prev) => (prev + 1) % gameImages.length);
+    };
+
+    const prevImage = () => {
+        setCurrentImageIndex(
+            (prev) => (prev - 1 + gameImages.length) % gameImages.length
+        );
+    };
+
+    const similarGames = [
+        {
+            name: "사랑스럽다",
+            description: "세계 최초의 AI 플스택 엔지니어",
+            rating: 4.7,
+            reviews: 304,
+            tags: ["AI 코딩 어시스턴트", "바이브 코딩 도구"],
+            icon: "💜",
+        },
+        {
+            name: "OpenAI의 Codex",
+            description: "당신을 대신해 코드를 작성하는 AI",
+            rating: 5.0,
+            reviews: 1,
+            tags: ["AI 코딩 어시스턴트", "AI 코딩 에이전트"],
+            icon: "🔷",
+        },
+    ];
+
     return (
         <div className="min-h-screen bg-slate-900 text-white">
             <div className="max-w-7xl mx-auto px-4 py-8">
-                <div className="text-center mb-12">
-                    <h1 className="text-6xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent mb-4">
-                        업청난 게임 정보!
-                    </h1>
-                    <p className="text-xl text-slate-300">
-                        게임에 대한 모든 것을 알아보세요
-                    </p>
-                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* 중앙: 메인 이미지 영역 */}
+                    <div className="lg:col-span-2">
+                        {/* 브레드크럼 */}
+                        <nav className="flex items-center space-x-2 mb-6 text-sm">
+                            <Link
+                                href="/"
+                                className="flex items-center text-slate-400 hover:text-white transition-colors"
+                            >
+                                <Home size={16} className="mr-1" />홈
+                            </Link>
+                            <BreadcrumbArrow
+                                size={14}
+                                className="text-slate-500"
+                            />
+                            <Link
+                                href="/rank/nintendo"
+                                className="text-slate-400 hover:text-white transition-colors"
+                            >
+                                Nintendo
+                            </Link>
+                            <BreadcrumbArrow
+                                size={14}
+                                className="text-slate-500"
+                            />
+                            <span className="text-white font-medium">
+                                젤다의 전설: 브레스 오브 더 와일드
+                            </span>
+                        </nav>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                    {/* 왼쪽: 게임 이미지 */}
-                    <div className="bg-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-                        <div className="h-64 bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center">
-                            <div className="text-center">
-                                <h2 className="text-3xl font-bold mb-4">게임 스크린샷</h2>
-                                <p className="text-lg opacity-80">게임 이미지 영역</p>
+                        {/* 메인 게임 이미지 */}
+                        <div className="relative mb-6">
+                            <div className="aspect-video bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl overflow-hidden shadow-2xl relative">
+                                <img
+                                    src="/icon/page_icon/zelda-main.jpg"
+                                    alt="젤다의 전설 브레스 오브 더 와일드"
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        e.currentTarget.src =
+                                            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgdmlld0JveD0iMCAwIDgwMCA0NTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMF8xKSIvPgo8dGV4dCB4PSI0MDAiIHk9IjIyNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+WmVsZGE6IEJyZWF0aCBvZiB0aGUgV2lsZDwvdGV4dD4KPGJ1dHRvbiB4PSIzNzAiIHk9IjI3MCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjMwIiBmaWxsPSIjRkY2NjAwIiByeD0iNSI+UGxheTwvYnV0dG9uPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzBfMSIgeDE9IjAiIHkxPSIwIiB4Mj0iODAwIiB5Mj0iNDUwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMyNTYzRUIiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjN0MzQUVEIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+";
+                                    }}
+                                />
+
+                                {/* 이동 버튼 */}
+                                <button
+                                    onClick={prevImage}
+                                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-2 rounded-full transition-all"
+                                >
+                                    <ChevronLeft size={20} />
+                                </button>
+
+                                <button
+                                    onClick={nextImage}
+                                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-2 rounded-full transition-all"
+                                >
+                                    <ChevronRight size={20} />
+                                </button>
                             </div>
                         </div>
-                        <div className="p-6">
-                            <h3 className="text-2xl font-bold mb-4 text-yellow-400">게임 아이디</h3>
-                            <div className="space-y-3 text-slate-300">
-                                <p>• 장르: RPG, 액션 어드벤처</p>
-                                <p>• 개발자: 게릴라 게임즈</p>
-                                <p>• 출시일: 2025년 상반기</p>
-                                <p>• 플랫폼: PS5, PC</p>
+
+                        {/* 썸네일 이미지들 */}
+                        <div className="grid grid-cols-5 gap-4 mb-6">
+                            {gameImages.map((image, index) => (
+                                <div
+                                    key={index}
+                                    className={`aspect-video rounded-lg overflow-hidden cursor-pointer transition-all ${
+                                        index === currentImageIndex
+                                            ? "ring-4 ring-yellow-400"
+                                            : "ring-2 ring-transparent hover:ring-slate-400"
+                                    }`}
+                                    onClick={() => setCurrentImageIndex(index)}
+                                >
+                                    <img
+                                        src={image}
+                                        alt={`게임 스크린샷 ${index + 1}`}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjExMiIgdmlld0JveD0iMCAwIDIwMCAxMTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTEyIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMF8xKSIvPgo8dGV4dCB4PSIxMDAiIHk9IjU2IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7rr7zrr7/sp4A8L3RleHQ+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMF8xIiB4MT0iMCIgeTE9IjAiIHgyPSIyMDAiIHkyPSIxMTIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzI1NjNFQiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM3QzNBRUQiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K`;
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* 레벨업 소식통 뉴스레터 */}
+                        <div className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 shadow-xl">
+                            <div className="text-sm font-semibold text-purple-200 mb-2">
+                                NEWSLETTER
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-4">
+                                Stay up to date on our latest news and events
+                            </h3>
+                            <div className="flex space-x-2">
+                                <input
+                                    type="email"
+                                    placeholder="Your email address"
+                                    className="flex-1 px-4 py-2 rounded-lg bg-white text-black text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                                />
+                                <button className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold text-sm transition-colors">
+                                    Subscribe
+                                </button>
                             </div>
                         </div>
                     </div>
 
                     {/* 오른쪽: 게임 정보 */}
-                    <div className="space-y-8">
-                        {/* 시스템 요구사항 */}
-                        <div className="bg-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 className="text-2xl font-bold mb-6 text-yellow-400">시스템 요구 사항</h3>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* 최소 요구사항 */}
-                                <div className="bg-slate-700/50 rounded-lg p-4">
-                                    <h4 className="text-lg font-semibold mb-4 text-green-400">최소</h4>
-                                    <div className="space-y-2 text-sm text-slate-300">
-                                        <p><span className="font-medium text-white">운영체제:</span> Windows10 64bit</p>
-                                        <p><span className="font-medium text-white">프로세서:</span> Intel Core i5-2400/AMD Ryzen 5 1600</p>
-                                        <p><span className="font-medium text-white">메모리:</span> 16 GB RAM</p>
-                                        <p><span className="font-medium text-white">그래픽:</span> NVIDIA GeForce GTX 1060 6GB/AMD Radeon RX 580 8GB</p>
-                                        <p><span className="font-medium text-white">DirectX:</span> 버전 12</p>
-                                        <p><span className="font-medium text-white">네트워크:</span> 광대역 인터넷 연결</p>
-                                        <p><span className="font-medium text-white">저장공간:</span> 60 GB 사용 가능 공간</p>
+                    <div className="space-y-6" style={{ marginTop: "44px" }}>
+                        <div className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700">
+                            <div className="space-y-6">
+                                {/* 게임 아이콘 */}
+                                <div>
+                                    <h3 className="text-xl font-bold mb-3 text-white">
+                                        게임 아이콘
+                                    </h3>
+                                    <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-green-500 rounded-2xl flex items-center justify-center">
+                                        <img
+                                            src="/icon/page_icon/zelda-icon.png"
+                                            alt="젤다 아이콘"
+                                            className="w-20 h-20 rounded-xl object-cover"
+                                            onError={(e) => {
+                                                e.currentTarget.src =
+                                                    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMF8xKSIgcng9IjEyIi8+Cjx0ZXh0IHg9IjQwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+WmVsZGE8L3RleHQ+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMF8xIiB4MT0iMCIgeTE9IjAiIHgyPSI4MCIgeTI9IjgwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMzQjgyRjYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTBCOTgxIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+";
+                                            }}
+                                        />
                                     </div>
                                 </div>
 
-                                {/* 권장 요구사항 */}
-                                <div className="bg-slate-700/50 rounded-lg p-4">
-                                    <h4 className="text-lg font-semibold mb-4 text-blue-400">권장</h4>
-                                    <div className="space-y-2 text-sm text-slate-300">
-                                        <p><span className="font-medium text-white">운영체제:</span> Windows11 64bit</p>
-                                        <p><span className="font-medium text-white">프로세서:</span> Intel Core i7-4770/AMD Ryzen 5 3600</p>
-                                        <p><span className="font-medium text-white">메모리:</span> 16 GB RAM</p>
-                                        <p><span className="font-medium text-white">그래픽:</span> NVIDIA GeForce RTX 2070/AMD Radeon RX 3700 XT/Intel Arc A750</p>
-                                        <p><span className="font-medium text-white">DirectX:</span> 버전 12</p>
-                                        <p><span className="font-medium text-white">네트워크:</span> 광대역 인터넷 연결</p>
-                                        <p><span className="font-medium text-white">저장공간:</span> 80 GB 사용 가능 공간. SSD Recommended. The above specifications were based on DLSS/FSR enabled.</p>
+                                {/* 게임명 */}
+                                <div>
+                                    <h3 className="text-xl font-bold mb-3 text-white">
+                                        게임명
+                                    </h3>
+                                    <p className="text-slate-300 text-lg">
+                                        젤다의 전설: 브레스 오브 더 와일드
+                                    </p>
+                                </div>
+
+                                {/* 게임 한줄 문구 */}
+                                <div>
+                                    <h3 className="text-xl font-bold mb-3 text-white">
+                                        게임 한줄 문구
+                                    </h3>
+                                    <p className="text-slate-300">
+                                        모험의 새로운 차원을 경험하세요
+                                    </p>
+                                </div>
+
+                                {/* 상세 설명 */}
+                                <div>
+                                    <p className="text-slate-300 text-sm leading-relaxed mb-4">
+                                        어떤 콘솔이고 어떤 장르인지 설명 또는
+                                        아이콘으로
+                                    </p>
+                                    <p className="text-slate-300 text-sm leading-relaxed">
+                                        해당 페이지 색상으로 이동하는 아이콘
+                                    </p>
+                                </div>
+
+                                {/* 유저 평점 */}
+                                <div>
+                                    <h3 className="text-xl font-bold mb-3 text-white">
+                                        유저 평점
+                                    </h3>
+                                    <div className="flex items-center space-x-3">
+                                        <div className="text-3xl font-bold text-yellow-400">
+                                            9.3
+                                        </div>
+                                        <div>
+                                            <div className="flex text-yellow-400 text-lg">
+                                                ★★★★★
+                                            </div>
+                                            <p className="text-slate-400 text-xs">
+                                                1,245개 리뷰
+                                            </p>
+                                        </div>
                                     </div>
+                                </div>
+
+                                {/* 기본 게임 정보 */}
+                                <div className="border-t border-slate-700 pt-4">
+                                    <div className="space-y-3 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-400">
+                                                장르:
+                                            </span>
+                                            <span className="text-white">
+                                                액션 어드벤처
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-400">
+                                                개발사:
+                                            </span>
+                                            <span className="text-white">
+                                                Nintendo EPD
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-400">
+                                                출시일:
+                                            </span>
+                                            <span className="text-white">
+                                                2017년 3월 3일
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-400">
+                                                플랫폼:
+                                            </span>
+                                            <span className="text-white">
+                                                Nintendo Switch
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-400">
+                                                언어:
+                                            </span>
+                                            <span className="text-white">
+                                                한국어 지원
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 구매/다운로드 버튼 */}
+                                <div className="space-y-3 pt-4">
+                                    <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
+                                        Nintendo eShop에서 구매
+                                    </button>
+                                    <button className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
+                                        위시리스트에 추가
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
-                        {/* 광고 영역 */}
-                        <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 text-center shadow-xl">
-                            <h3 className="text-2xl font-bold mb-2">광고</h3>
-                            <p className="text-lg opacity-90">게임 관련 광고 영역</p>
+                        {/* 광고 배너 */}
+                        <div className="bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center">
+                            <div className="text-4xl font-bold text-black mb-2">
+                                광고
+                            </div>
+                            <div className="text-slate-600 text-sm">
+                                Advertisement Banner
+                            </div>
+                        </div>
+
+                        {/* 비슷한 게임 섹션 */}
+                        <div className="space-y-4">
+                            <div className="bg-yellow-400 text-black px-3 py-1 rounded-lg inline-block font-bold text-sm">
+                                비슷한 게임
+                            </div>
+                            <div className="space-y-4">
+                                {similarGames.map((game, index) => (
+                                    <div
+                                        key={index}
+                                        className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700 hover:bg-slate-750 transition-colors cursor-pointer"
+                                    >
+                                        <div className="flex items-center space-x-4">
+                                            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl">
+                                                {game.icon}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="text-xl font-bold text-white mb-2">
+                                                    {game.name}
+                                                </h4>
+                                                <p className="text-slate-300 text-sm mb-3">
+                                                    {game.description}
+                                                </p>
+                                                <div className="flex items-center space-x-4">
+                                                    <div className="flex items-center space-x-2">
+                                                        <Star
+                                                            size={16}
+                                                            className="text-yellow-400 fill-current"
+                                                        />
+                                                        <span className="text-yellow-400 font-bold">
+                                                            {game.rating}
+                                                        </span>
+                                                        <span className="text-slate-400 text-sm">
+                                                            ({game.reviews}개
+                                                            리뷰)
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex space-x-2">
+                                                        {game.tags.map(
+                                                            (tag, tagIndex) => (
+                                                                <span
+                                                                    key={
+                                                                        tagIndex
+                                                                    }
+                                                                    className="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+                                                                >
+                                                                    {tag}
+                                                                </span>
+                                                            )
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                {/* 게임 정보 링크들 */}
-                <div className="bg-slate-800 rounded-2xl p-6 shadow-xl">
-                    <h3 className="text-2xl font-bold mb-6 text-yellow-400">게임에 대한 자세한 정보로 공유</h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <a href="#" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 p-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                            <div className="text-center">
-                                <p className="text-sm font-medium">🎮 스팀리뷰 | 나 좋음 혼합갓게임 호평덕슌</p>
-                            </div>
-                        </a>
-
-                        <a href="#" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 p-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                            <div className="text-center">
-                                <p className="text-sm font-medium">🎯 메타345+ 좋맨 명작 못한 게임들 중 최고작</p>
-                            </div>
-                        </a>
-
-                        <a href="#" className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 p-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                            <div className="text-center">
-                                <p className="text-sm font-medium">📱 안드로이드 | 아슈 최고의 모바일 게임</p>
-                            </div>
-                        </a>
-
-                        <a href="#" className="bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 p-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                            <div className="text-center">
-                                <p className="text-sm font-medium">🏆 뛰긋100 | 시대 초심전 공식 번갈 많천단 선인</p>
-                            </div>
-                        </a>
-
-                        <a href="#" className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 p-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                            <div className="text-center">
-                                <p className="text-sm font-medium">📺 방송인 | 쀼루 방송</p>
-                            </div>
-                        </a>
-
-                        <a href="#" className="bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 p-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                            <div className="text-center">
-                                <p className="text-sm font-medium">🎬 유튜브 | 스룡 유튜버</p>
-                            </div>
-                        </a>
-
-                        <a href="#" className="bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 p-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                            <div className="text-center">
-                                <p className="text-sm font-medium">📰 언보이 | 초네픈 출시</p>
-                            </div>
-                        </a>
-
-                        <a href="#" className="bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 p-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                            <div className="text-center">
-                                <p className="text-sm font-medium">🎯 뛰로렷 | 순천 최신 업식</p>
-                            </div>
-                        </a>
-
-                        <a href="#" className="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 p-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                            <div className="text-center">
-                                <p className="text-sm font-medium">💝 터뷰가 | 느울 응사</p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                {/* 하단 공간 */}
-                <div className="mt-12 text-center">
-                    <p className="text-slate-400">
-                        게임에 대한 더 많은 정보를 원하시면 위의 링크들을 확인해보세요!
-                    </p>
                 </div>
             </div>
         </div>
