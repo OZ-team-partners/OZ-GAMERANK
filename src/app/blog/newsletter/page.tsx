@@ -21,7 +21,7 @@ export default function NewsletterPage() {
           {/* 타이틀 섹션 */}
           <div className="text-center py-8 px-6 bg-gradient-to-b from-gray-50 to-gray-100">
             <h1 className="text-6xl font-bold bg-gradient-to-r from-gray-800 to-black bg-clip-text text-transparent mb-2">
-              레벨업 소식통
+              렙업 소식통
             </h1>
             <p className="text-gray-700 text-lg font-medium">
               게임랭킹 사이트 공식 뉴스레터
