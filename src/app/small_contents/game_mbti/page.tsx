@@ -153,6 +153,7 @@ const gameRecommendations: Record<Genre, IGame[]> = {
 };
 
 export default function GameQuiz() {
+  const [isStarted, setIsStarted] = useState(false); // 게임 시작 여부 상태
   const [step, setStep] = useState(0);
   const [scores, setScores] = useState<Record<Genre, number>>({
     "액션 & 어드벤처": 0,
@@ -178,15 +179,73 @@ export default function GameQuiz() {
       "힐링 & 퍼즐": 0
     });
   };
+    // 공통 배경 컴포넌트
+    const Background = () => (
+      <div
+        className="absolute inset-0 bg-center bg-cover filter blur-sm brightness-75"
+        style={{ backgroundImage: "url('/icon/page_icon/small_contents_game_mbti_bg.jpg')" }}
+      />
+    );
+   // 폰트 로드를 위한 스타일 태그
+   const FontStyles = () => (
+    <style>
+      {`@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');`}
+    </style>
+  );
+   // 전체 앱 레이아웃
+   const AppLayout = ({ children }: { children: React.ReactNode }) => (
+    <>
+      <FontStyles />
+      <div className="relative min-h-screen font-['Press_Start_2P'] text-white">
+        <Background />
+        <div className="absolute inset-0 bg-black bg-opacity-50" />
+        <div className="relative z-10 flex items-center justify-center min-h-screen p-4 sm:p-8">
+            {children}
+        </div>
+      </div>
+    </>
+  );
+
+  // 시작 화면 렌더링
+  
+  if (!isStarted) {
+    return (
+      <AppLayout>
+        <div className="relative min-h-screen mx-auto max-w-6xl font-['Press_Start_2P'] p-8 text-white">
+        {/* 배경 이미지 */}
+        <div
+          className="absolute inset-0 bg-center bg-cover filter blur-sm brightness-75 -z-10"
+          style={{ backgroundImage: "url('/icon/page_icon/small_contents_game_mbti_bg.jpg')" }}
+        />
+  
+        {/* 콘텐츠 */}
+        <div className="relative text-center bg-opacity-60 rounded-lg p-8 sm:p-10 border-4 border-gray-500 max-w-2xl w-full mx-auto mt-0">
+          <h1 className="bg-cyan-600 border-2 text-lg sm:text-xl mb-8 p-3">
+            당신의 게임성향을 TEST 해 보세요!
+          </h1>
+          <button
+            onClick={() => setIsStarted(true)}
+            className="bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg border-4 border-pink-300 transition transform hover:scale-105"
+          >
+            START
+          </button>
+        </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
   if (step >= questions.length) {
     const result = getResult();
     return (
+      <AppLayout>
       <div className="relative min-h-screen mx-auto max-w-6xl font-['Press_Start_2P'] p-8 text-white">
         {/* 배경 이미지 + blur */}
         <div
           className="absolute inset-0 bg-center bg-cover filter blur-sm brightness-75"
           style={{ backgroundImage: "url('/icon/page_icon/small_contents_game_mbti_bg.jpg')" }}
         />
+        
         <div className="relative bg-opacity-70 rounded-lg p-8">
         {/* 콘텐츠 */}
           <h1 className="text-2xl mb-6">당신의 게임 성향은 🎮</h1>
@@ -210,6 +269,7 @@ export default function GameQuiz() {
           </button>
         </div>
       </div>
+      </AppLayout>
     );
   }
 

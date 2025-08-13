@@ -70,7 +70,7 @@ export default function Home() {
     <div className="min-h-screen bg-slate-900">
       {/* 메인 슬라이더 */}
       <section className="py-10 bg-slate-900">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ">
           <div className="relative overflow-hidden">
             <div
               className="flex transition-transform duration-500"
@@ -89,11 +89,13 @@ export default function Home() {
                     width: `${100 / mainSlides.length}%`,
                   }}
                 >
-                  <div
+                 <div
                     className="rounded-lg overflow-hidden relative cursor-pointer h-110"
                     onClick={() => {
                       if (slide.id === 1) {
                         window.location.href = "/blog/newsletter";
+                      } else if (slide.id === 2) {
+                        window.location.href = "/game_info";
                       } else {
                         setCurrentSlide(index);
                       }
