@@ -15,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import NewsletterPage from "./blog/newsletter/page";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -24,7 +25,10 @@ export default function Home() {
     {
       id: 1,
       title: "ICE-BREAKING",
-      image: "/icon/page_icon/mainSlides1.png",
+      render: () => (
+        <NewsletterPage />
+      ),
+    //  잠깐 사용 중지 image: "/icon/page_icon/mainSlides1.png",
     },
     { id: 2, title: "콘솔 게임", image: "/icon/page_icon/mainSlides2.png" },
     {
@@ -100,6 +104,7 @@ export default function Home() {
                     className="rounded-lg overflow-hidden relative cursor-pointer h-110"
                     onClick={() => setCurrentSlide(index)}
                   >
+                    {typeof slide.image === "string" ? (
                     <Image
                       src={slide.image}
                       alt={slide.title}
@@ -107,6 +112,11 @@ export default function Home() {
                       height={320}
                       className="object-cover w-full h-full"
                     />
+                  ) : (
+                    <div className="w-full h-full">
+                      {slide.render()}
+                    </div>
+                  )}
                     <div className="absolute inset-0  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
                       <h3 className="text-2xl font-bold">{slide.title}</h3>
                       <p>8월은 너무 더우니 시원한 Cool-GAME!!! </p>
