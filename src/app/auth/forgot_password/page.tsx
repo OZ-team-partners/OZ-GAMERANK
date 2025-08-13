@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, TextField, Alert, Fade, Slide, Grow } from "@mui/material";
-import { Mail, Trophy, Gamepad2, Star } from "lucide-react";
+import { Button, TextField, Alert, Slide, Grow } from "@mui/material";
+import { Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const ForgotPasswordPage = () => {
     const router = useRouter();
@@ -37,52 +38,66 @@ const ForgotPasswordPage = () => {
 
                 {/* 떠다니는 게임 아이콘들 */}
                 <div className="absolute top-32 left-1/4 animate-float">
-                    <img
+                    <Image
                         src="/icon/page_icon/mainUpperIcon1.png"
                         alt="Nintendo"
-                        className="w-6 h-6 opacity-30"
+                        width={24}
+                        height={24}
+                        className="opacity-30"
                     />
                 </div>
                 <div className="absolute bottom-40 right-1/4 animate-float-delayed">
-                    <img
+                    <Image
                         src="/icon/page_icon/mainUpperIcon2.png"
                         alt="Steam"
-                        className="w-7 h-7 opacity-30"
+                        width={28}
+                        height={28}
+                        className="opacity-30"
                     />
                 </div>
                 <div className="absolute top-1/3 right-1/5 animate-float-slow">
-                    <img
+                    <Image
                         src="/icon/page_icon/mainUpperIcon3.png"
                         alt="Xbox"
-                        className="w-5 h-5 opacity-30"
+                        width={20}
+                        height={20}
+                        className="opacity-30"
                     />
                 </div>
                 <div className="absolute top-20 right-32 animate-float">
-                    <img
+                    <Image
                         src="/icon/page_icon/mainUpperIcon4.png"
                         alt="PS4"
-                        className="w-6 h-6 opacity-25"
+                        width={24}
+                        height={24}
+                        className="opacity-25"
                     />
                 </div>
                 <div className="absolute bottom-28 left-32 animate-float-delayed">
-                    <img
+                    <Image
                         src="/icon/page_icon/mainUpperIcon6.png"
                         alt="Epic"
-                        className="w-5 h-5 opacity-30"
+                        width={20}
+                        height={20}
+                        className="opacity-30"
                     />
                 </div>
                 <div className="absolute top-2/3 left-1/5 animate-float-slow">
-                    <img
+                    <Image
                         src="/icon/page_icon/mainUpperIcon7.png"
                         alt="Discord"
-                        className="w-6 h-6 opacity-25"
+                        width={24}
+                        height={24}
+                        className="opacity-25"
                     />
                 </div>
                 <div className="absolute bottom-72 right-1/3 animate-float-delayed">
-                    <img
+                    <Image
                         src="/icon/page_icon/mainUpperIcon8.png"
                         alt="App Store"
-                        className="w-6 h-6 opacity-30 filter brightness-75"
+                        width={24}
+                        height={24}
+                        className="opacity-30 filter brightness-75"
                     />
                 </div>
             </div>
