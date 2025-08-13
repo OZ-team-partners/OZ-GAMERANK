@@ -94,6 +94,8 @@ export default function Home() {
                     onClick={() => {
                       if (slide.id === 1) {
                         window.location.href = "/blog/newsletter";
+                      } else if (slide.id === 2) {
+                        window.location.href = "/game_info";
                       } else {
                         setCurrentSlide(index);
                       }
