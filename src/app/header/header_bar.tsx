@@ -19,18 +19,20 @@ const DropdownItem = ({
     description,
     path,
     onClick,
+    isLast = false,
 }: {
     title: string;
     description: string;
     path: string;
     onClick?: () => void;
+    isLast?: boolean;
 }) => (
-    <Link href={path}>
+    <Link href={path} style={{ display: 'block', marginBottom: isLast ? '0' : '8px' }}>
         <div
             onClick={onClick}
-            className="group p-4 rounded-xl hover:bg-slate-100 transition-all duration-200 
-                       border border-transparent hover:border-slate-200 cursor-pointer
-                       hover:shadow-sm"
+            className="group p-4 rounded-xl hover:bg-slate-50/80 transition-all duration-150 
+                       border border-transparent hover:border-slate-200/60 cursor-pointer
+                       hover:shadow-md backdrop-blur-sm"
         >
             <div className="flex-1">
                 <h4 className="font-black text-slate-900 group-hover:text-indigo-600 transition-colors text-base">
@@ -69,7 +71,11 @@ const GameRankHeader = () => {
     }, []);
 
     const categories = [
-        { name: "Community", icon: <Gamepad2 size={16} /> },
+        {
+            name: "Community",
+            icon: <Gamepad2 size={16} />,
+            path: "/community/board",
+        },
         { name: "PC", icon: <Zap size={16} /> },
         { name: "Console", icon: <Trophy size={16} /> },
         { name: "Mobile", icon: <Award size={16} /> },
@@ -78,15 +84,13 @@ const GameRankHeader = () => {
     // PC 카테고리 옵션들
     const pcOptions = [
         {
-            name: "온라인 게임",
+            name: "🌐 온라인 게임",
             path: "/rank/online",
-            icon: "🌐",
             description: "실시간 멀티플레이어 게임 순위",
         },
         {
-            name: "Steam",
+            name: "⚡ Steam",
             path: "/rank/steam",
-            icon: "🎮",
             description: "스팀 플랫폼 인기 게임 랭킹",
         },
     ];
@@ -94,15 +98,13 @@ const GameRankHeader = () => {
     // Console 카테고리 옵션들
     const consoleOptions = [
         {
-            name: "PS",
+            name: "🟦 PlayStation",
             path: "/rank/ps",
-            icon: "🎮",
             description: "플레이스테이션 독점 게임들",
         },
         {
-            name: "Nintendo",
+            name: "🔴 Nintendo",
             path: "/rank/nintendo",
-            icon: "🎯",
             description: "닌텐도 스위치 인기 타이틀",
         },
     ];
@@ -110,20 +112,23 @@ const GameRankHeader = () => {
     // Mobile 카테고리 옵션들
     const mobileOptions = [
         {
-            name: "iOS",
+            name: "🍎 iOS",
             path: "/rank/ios",
-            icon: "📱",
             description: "아이폰 앱스토어 순위",
         },
         {
-            name: "Android",
+            name: "🤖 Android",
             path: "/rank/android",
-            icon: "🤖",
             description: "구글 플레이스토어 순위",
         },
     ];
 
     const handleCategoryClick = (categoryName: string) => {
+        if (categoryName === "Community") {
+            router.push("/community/board");
+            return;
+        }
+
         if (categoryName === "PC") {
             if (showPCDropdown) {
                 setShowPCDropdown(false);
@@ -183,25 +188,28 @@ const GameRankHeader = () => {
                     <div className="flex items-center relative">
                         <div className="relative">
                             <Search
-                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"
+                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-300 z-10"
                                 size={16}
                             />
                             <input
                                 type="text"
-                                placeholder="Search games, rankings..."
+                                placeholder="게임, 랭킹 검색"
+                                aria-label="게임 및 랭킹 검색"
                                 className="
                                         w-70 pl-9 pr-4 py-2 
-                                        bg-slate-800 border border-slate-700 rounded-lg
+                                        bg-slate-800/80 border border-slate-700/60 rounded-lg
                                         text-slate-300 placeholder-slate-500 text-sm
-                                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-                                        transition-all duration-200
+                                        focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400/50
+                                        focus:shadow-sm focus:shadow-indigo-500/10 focus:bg-slate-800
+                                        transition-all duration-150 ease-out
+                                        backdrop-blur-sm
                                         "
                             />
                         </div>
                     </div>
                     {/* 중앙: 네비게이션 */}
                     <nav className="flex items-center flex-1 relative">
-                        {categories.map((category, index) => (
+                        {categories.map((category) => (
                             <div
                                 key={category.name}
                                 className="relative"
@@ -212,6 +220,11 @@ const GameRankHeader = () => {
                                         handleCategoryClick(category.name)
                                     }
                                     variant="text"
+                                    aria-label={`${category.name} 카테고리${
+                                        category.name !== "Community"
+                                            ? " 메뉴 열기"
+                                            : "로 이동"
+                                    }`}
                                     startIcon={category.icon}
                                     endIcon={
                                         category.name === "PC" ||
@@ -219,7 +232,7 @@ const GameRankHeader = () => {
                                         category.name === "Mobile" ? (
                                             <ChevronDown
                                                 size={14}
-                                                className={`transition-transform duration-200 ${
+                                                className={`transition-transform duration-150 ${
                                                     (category.name === "PC" &&
                                                         showPCDropdown) ||
                                                     (category.name ===
@@ -240,12 +253,9 @@ const GameRankHeader = () => {
                                         borderRadius: 2,
                                         textTransform: "none",
                                         fontSize: "14px",
-                                        fontWeight: 500,
+                                        fontWeight: 600,
                                         paddingX: 3,
-                                        marginRight:
-                                            index < categories.length - 1
-                                                ? 2
-                                                : 0,
+                                        marginRight: 1,
                                         color:
                                             activeCategory === category.name
                                                 ? "#FFFFFF"
@@ -256,12 +266,14 @@ const GameRankHeader = () => {
                                                 : "transparent",
                                         "&:hover": {
                                             backgroundColor:
-                                                "rgba(148, 163, 184, 0.1)",
+                                                "rgba(148, 163, 184, 0.12)",
                                             color: "#FFFFFF",
                                         },
                                         "& .MuiTouchRipple-root": {
-                                            color: "rgba(99, 102, 241, 0.5)",
+                                            color: "rgba(99, 102, 241, 0.4)",
                                         },
+                                        transition:
+                                            "all 0.15s cubic-bezier(0.4, 0, 0.2, 1)",
                                     }}
                                 >
                                     {category.name}
@@ -270,12 +282,12 @@ const GameRankHeader = () => {
                                 {/* PC 드롭다운 */}
                                 {category.name === "PC" && showPCDropdown && (
                                     <div
-                                        className="absolute top-full left-0 mt-2 w-80 z-50"
+                                        className="absolute top-full left-0 mt-3 w-80 z-50 animate-in fade-in-0 zoom-in-95 duration-150"
                                         data-dropdown
                                     >
-                                        <div className="bg-white/95 backdrop-blur-md border border-slate-200/50 rounded-2xl shadow-2xl overflow-hidden">
+                                        <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
                                             <div className="p-2">
-                                                {pcOptions.map((option) => (
+                                                {pcOptions.map((option, index) => (
                                                     <DropdownItem
                                                         key={option.name}
                                                         title={option.name}
@@ -283,6 +295,7 @@ const GameRankHeader = () => {
                                                             option.description
                                                         }
                                                         path={option.path}
+                                                        isLast={index === pcOptions.length - 1}
                                                         onClick={() =>
                                                             setShowPCDropdown(
                                                                 false
@@ -299,17 +312,15 @@ const GameRankHeader = () => {
                                 {category.name === "Console" &&
                                     showConsoleDropdown && (
                                         <div
-                                            className="absolute top-full left-0 mt-2 w-80 z-50"
+                                            className="absolute top-full left-0 mt-3 w-80 z-50 animate-in fade-in-0 zoom-in-95 duration-150"
                                             data-dropdown
                                         >
-                                            <div className="bg-white/95 backdrop-blur-md border border-slate-200/50 rounded-2xl shadow-2xl overflow-hidden">
+                                            <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
                                                 <div className="p-2">
                                                     {consoleOptions.map(
-                                                        (option) => (
+                                                        (option, index) => (
                                                             <DropdownItem
-                                                                key={
-                                                                    option.name
-                                                                }
+                                                                key={option.name}
                                                                 title={
                                                                     option.name
                                                                 }
@@ -319,6 +330,7 @@ const GameRankHeader = () => {
                                                                 path={
                                                                     option.path
                                                                 }
+                                                                isLast={index === consoleOptions.length - 1}
                                                                 onClick={() =>
                                                                     setShowConsoleDropdown(
                                                                         false
@@ -336,17 +348,15 @@ const GameRankHeader = () => {
                                 {category.name === "Mobile" &&
                                     showMobileDropdown && (
                                         <div
-                                            className="absolute top-full left-0 mt-2 w-80 z-50"
+                                            className="absolute top-full left-0 mt-3 w-80 z-50 animate-in fade-in-0 zoom-in-95 duration-150"
                                             data-dropdown
                                         >
-                                            <div className="bg-white/95 backdrop-blur-md border border-slate-200/50 rounded-2xl shadow-2xl overflow-hidden">
+                                            <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
                                                 <div className="p-2">
                                                     {mobileOptions.map(
-                                                        (option) => (
+                                                        (option, index) => (
                                                             <DropdownItem
-                                                                key={
-                                                                    option.name
-                                                                }
+                                                                key={option.name}
                                                                 title={
                                                                     option.name
                                                                 }
@@ -356,6 +366,7 @@ const GameRankHeader = () => {
                                                                 path={
                                                                     option.path
                                                                 }
+                                                                isLast={index === mobileOptions.length - 1}
                                                                 onClick={() =>
                                                                     setShowMobileDropdown(
                                                                         false
@@ -371,18 +382,19 @@ const GameRankHeader = () => {
                             </div>
                         ))}
                     </nav>
-                    ㄴ{/* 우측: 로그인 */}
+                    {/* 우측: 로그인 */}
                     <div className="flex items-center flex-shrink-0">
                         <button
                             onClick={() => router.push("/auth/login")}
+                            aria-label="로그인 페이지로 이동"
                             className="
                             flex items-center space-x-2 px-4 py-2 
-                            bg-gradient-to-r from-indigo-500 to-purple-600 
-                            text-white rounded-lg font-medium text-sm
-                            hover:from-indigo-600 hover:to-purple-700
-                            transform hover:scale-105 transition-all duration-200
-                            shadow-lg hover:shadow-indigo-500/25
-                            cursor-pointer
+                            bg-gradient-to-r from-indigo-600 to-blue-600 
+                            text-white rounded-lg font-semibold text-sm
+                            hover:from-indigo-700 hover:to-blue-700
+                            transition-all duration-150 ease-out
+                            shadow-md hover:shadow-lg hover:shadow-indigo-500/15
+                            cursor-pointer backdrop-blur-sm
             "
                         >
                             <User size={16} />
