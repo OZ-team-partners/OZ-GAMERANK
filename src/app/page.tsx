@@ -22,11 +22,11 @@ export default function Home() {
   const [currentSmallSlide] = useState(0);
 
   const mainSlides = [
-    { id: 1, title: "8월 게임 뉘우스", render: () => <NewsletterPage /> },
+    { id: 1, title: "8월 게임 뉘우스",desc: "8월 의 새로운 소식 from  Jung-Sik", render: () => <NewsletterPage /> },
     //  이미지 대신 newsletter를 사용 하고 싶음 image: "/icon/page_icon/mainSlides1.png",},
-    { id: 2, title: "콘솔 게임", image: "/icon/page_icon/mainSlides2.png" },
-    { id: 3, title: "모바일 게임", image: "/icon/page_icon/mainSlides3.png" },
-    { id: 4, title: "인디 게임", image: "/icon/page_icon/mainSlides4.png" },
+    { id: 2, title: "2024 GOTY",desc: "24년을 휩쓴 GOTY작", image: "/icon/game_info_icon/zelda/zelda.png" },
+    { id: 3, title: "모바일 게임",desc: "빈칸", image: "/icon/page_icon/mainSlides3.png" },
+    { id: 4, title: "인디 게임",desc: "빈칸", image: "/icon/page_icon/mainSlides4.png" },
   ];
 
   const smallSlides = [
@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-900">
       {/* 메인 슬라이더 */}
-      <section className="bg-slate-900">
+      <section className="py-10 bg-slate-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ">
           <div className="relative overflow-hidden">
             <div
@@ -112,9 +112,10 @@ export default function Home() {
                     ) : (
                       <div className="w-full h-full">{slide.render()}</div>
                     )}
-                    <div className="absolute inset-5  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
-                      <h3 className="text-3xl font-bold">{slide.title}</h3>
-                      <p className="text-xl">8월의 다양한 소식들을 받아보세요!! </p>
+                    <div className="absolute inset-0  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
+                      <h3 className="text-2xl font-bold">{slide.title}</h3>
+                      <p className="font-serif text-xl">{slide.desc}</p>  
+                      {/* P태그 나중에 글씨체 바꿔야 합니다 너무 구려요 */}
                     </div>
                   </div>
                 </div>
