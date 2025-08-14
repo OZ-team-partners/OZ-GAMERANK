@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-900">
       {/* 메인 슬라이더 */}
-      <section className="py-10 bg-slate-900">
+      <section className="bg-slate-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ">
           <div className="relative overflow-hidden">
             <div
@@ -112,9 +112,9 @@ export default function Home() {
                     ) : (
                       <div className="w-full h-full">{slide.render()}</div>
                     )}
-                    <div className="absolute inset-0  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
-                      <h3 className="text-2xl font-bold">{slide.title}</h3>
-                      <p>8월의 다양한 소식들을 받아보세요!! </p>
+                    <div className="absolute inset-5  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
+                      <h3 className="text-3xl font-bold">{slide.title}</h3>
+                      <p className="text-xl">8월의 다양한 소식들을 받아보세요!! </p>
                     </div>
                   </div>
                 </div>

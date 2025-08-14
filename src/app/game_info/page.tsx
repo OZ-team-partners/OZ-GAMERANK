@@ -14,7 +14,7 @@ export default function GameInfoPage() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const gameImages = [
-        "/icon/page_icon/zelda1.jpg",
+        "/icon/game_info_icon/zelda/zelda.png",
         "/icon/page_icon/zelda2.jpg",
         "/icon/page_icon/zelda3.jpg",
         "/icon/page_icon/zelda4.jpg",
@@ -87,7 +87,7 @@ export default function GameInfoPage() {
                         <div className="relative mb-6">
                             <div className="aspect-video bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl overflow-hidden shadow-2xl relative">
                                 <img
-                                    src="/icon/page_icon/zelda-main.jpg"
+                                    src="/icon/game_info_icon/zelda/zelda.png"
                                     alt="젤다의 전설 브레스 오브 더 와일드"
                                     className="w-full h-full object-cover"
                                     onError={(e) => {
