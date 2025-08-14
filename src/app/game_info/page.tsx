@@ -302,7 +302,7 @@ export default function GameInfoPage() {
                             <div className="mb-6">
                                 <div className="bg-slate-700 rounded-lg p-4">
                                     <textarea
-                                        placeholder="게임에 대한 리뷰를 남겨주세요..."
+                                        placeholder="게임에 대한 리뷰를 남겨주세요!"
                                         className="w-full bg-slate-600 text-white placeholder-slate-400 p-3 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         rows={3}
                                     />
@@ -501,11 +501,11 @@ export default function GameInfoPage() {
                             <div className="space-y-6">
                                 {/* 게임 아이콘 */}
                                 <div>
-                                    <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-green-500 rounded-2xl flex items-center justify-center">
+                                    <div className="w-32 h-20 rounded-2xl flex items-center justify-center">
                                         <img
-                                            src="/icon/page_icon/zelda-icon.png"
+                                            src="/icon/game_info_icon/zelda/Logo_The Legend of Zelda-Breath of the Wild.webp"
                                             alt="젤다 아이콘"
-                                            className="w-20 h-20 rounded-xl object-cover"
+                                            className="max-w-full max-h-full rounded-xl object-contain"
                                             onError={(e) => {
                                                 e.currentTarget.src =
                                                     "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMF8xKSIgcng9IjEyIi8+Cjx0ZXh0IHg9IjQwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+WmVsZGE8L3RleHQ+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMF8xIiB4MT0iMCIgeTE9IjAiIHgyPSI4MCIgeTI9IjgwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMzQjgyRjYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTBCOTgxIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+";
@@ -644,22 +644,24 @@ export default function GameInfoPage() {
                             </div>
                         </div>
 
-                        {/* 광고 배너 */}
-                        <div className="bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center">
-                            <div className="text-4xl font-bold text-black mb-2">
-                                광고
+                        {/* Sticky 컨테이너 */}
+                        <div className="sticky top-20 space-y-4 max-h-screen overflow-y-auto">
+                            {/* 광고 배너 */}
+                            <div className="bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center">
+                                <div className="text-4xl font-bold text-black mb-2">
+                                    광고
+                                </div>
+                                <div className="text-slate-600 text-sm">
+                                    Advertisement Banner
+                                </div>
                             </div>
-                            <div className="text-slate-600 text-sm">
-                                Advertisement Banner
-                            </div>
-                        </div>
 
-                        {/* 비슷한 게임 섹션 */}
-                        <div className="space-y-4">
-                            <div className="bg-yellow-400 text-black px-3 py-1 rounded-lg inline-block font-bold text-sm">
-                                비슷한 게임
-                            </div>
+                            {/* 비슷한 게임 섹션 */}
                             <div className="space-y-4">
+                                <div className="bg-yellow-400 text-black px-3 py-1 rounded-lg inline-block font-bold text-sm">
+                                    비슷한 게임
+                                </div>
+                                <div className="space-y-4">
                                 {similarGames.map((game, index) => (
                                     <div
                                         key={index}
@@ -710,6 +712,7 @@ export default function GameInfoPage() {
                                     </div>
                                 ))}
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>
