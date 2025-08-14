@@ -12,7 +12,7 @@ import Link from "next/link";
 
 export default function GameInfoPage() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [userVote, setUserVote] = useState(null); // null, 1-5 중 하나
+    const [userVote, setUserVote] = useState<number | null>(null); // null, 1-5 중 하나
 
     const gameImages = [
         "/icon/page_icon/zelda1.jpg",
@@ -32,7 +32,7 @@ export default function GameInfoPage() {
         );
     };
 
-    const handleVote = (rating) => {
+    const handleVote = (rating: number) => {
         if (userVote === rating) {
             // 같은 별점을 다시 클릭하면 투표 취소
             setUserVote(null);
@@ -170,36 +170,53 @@ export default function GameInfoPage() {
 
                         {/* 게임 정보 섹션 */}
                         <div className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700 mt-6">
-                            <h2 className="text-2xl font-bold text-white mb-6">게임 정보</h2>
-                            
+                            <h2 className="text-2xl font-bold text-white mb-6">
+                                게임 정보
+                            </h2>
+
                             {/* 게임 소개 */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-white mb-3">게임 소개</h3>
+                                <h3 className="text-lg font-semibold text-white mb-3">
+                                    게임 소개
+                                </h3>
                                 <p className="text-slate-300 leading-relaxed">
-                                    젤다의 전설: 브레스 오브 더 와일드는 닌텐도가 개발한 오픈 월드 액션 어드벤처 게임입니다. 
-                                    하이랄 왕국을 무대로 링크가 되어 광활한 세계를 자유롭게 탐험하며, 
-                                    100년 전 멸망한 왕국을 되살리기 위한 모험을 떠나게 됩니다.
+                                    젤다의 전설: 브레스 오브 더 와일드는
+                                    닌텐도가 개발한 오픈 월드 액션 어드벤처
+                                    게임입니다. 하이랄 왕국을 무대로 링크가 되어
+                                    광활한 세계를 자유롭게 탐험하며, 100년 전
+                                    멸망한 왕국을 되살리기 위한 모험을 떠나게
+                                    됩니다.
                                 </p>
                             </div>
 
                             {/* 주요 특징 */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-white mb-3">주요 특징</h3>
+                                <h3 className="text-lg font-semibold text-white mb-3">
+                                    주요 특징
+                                </h3>
                                 <ul className="space-y-2 text-slate-300">
                                     <li className="flex items-start">
-                                        <span className="text-yellow-400 mr-2">▶</span>
+                                        <span className="text-yellow-400 mr-2">
+                                            ▶
+                                        </span>
                                         완전한 자유도를 제공하는 오픈 월드 탐험
                                     </li>
                                     <li className="flex items-start">
-                                        <span className="text-yellow-400 mr-2">▶</span>
+                                        <span className="text-yellow-400 mr-2">
+                                            ▶
+                                        </span>
                                         물리 엔진을 활용한 창의적인 퍼즐 해결
                                     </li>
                                     <li className="flex items-start">
-                                        <span className="text-yellow-400 mr-2">▶</span>
+                                        <span className="text-yellow-400 mr-2">
+                                            ▶
+                                        </span>
                                         다양한 무기와 도구를 활용한 전략적 전투
                                     </li>
                                     <li className="flex items-start">
-                                        <span className="text-yellow-400 mr-2">▶</span>
+                                        <span className="text-yellow-400 mr-2">
+                                            ▶
+                                        </span>
                                         아름다운 그래픽과 몰입감 있는 사운드
                                     </li>
                                 </ul>
@@ -207,24 +224,42 @@ export default function GameInfoPage() {
 
                             {/* 시스템 요구사항 */}
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-white mb-3">시스템 요구사항</h3>
+                                <h3 className="text-lg font-semibold text-white mb-3">
+                                    시스템 요구사항
+                                </h3>
                                 <div className="bg-slate-700 rounded-lg p-4">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                                         <div>
-                                            <span className="text-slate-400">플랫폼:</span>
-                                            <span className="text-white ml-2">Nintendo Switch</span>
+                                            <span className="text-slate-400">
+                                                플랫폼:
+                                            </span>
+                                            <span className="text-white ml-2">
+                                                Nintendo Switch
+                                            </span>
                                         </div>
                                         <div>
-                                            <span className="text-slate-400">용량:</span>
-                                            <span className="text-white ml-2">13.4GB</span>
+                                            <span className="text-slate-400">
+                                                용량:
+                                            </span>
+                                            <span className="text-white ml-2">
+                                                13.4GB
+                                            </span>
                                         </div>
                                         <div>
-                                            <span className="text-slate-400">플레이어:</span>
-                                            <span className="text-white ml-2">1명</span>
+                                            <span className="text-slate-400">
+                                                플레이어:
+                                            </span>
+                                            <span className="text-white ml-2">
+                                                1명
+                                            </span>
                                         </div>
                                         <div>
-                                            <span className="text-slate-400">연령등급:</span>
-                                            <span className="text-white ml-2">12세 이용가</span>
+                                            <span className="text-slate-400">
+                                                연령등급:
+                                            </span>
+                                            <span className="text-white ml-2">
+                                                12세 이용가
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -232,15 +267,22 @@ export default function GameInfoPage() {
 
                             {/* DLC 정보 */}
                             <div>
-                                <h3 className="text-lg font-semibold text-white mb-3">DLC 확장팩</h3>
+                                <h3 className="text-lg font-semibold text-white mb-3">
+                                    DLC 확장팩
+                                </h3>
                                 <div className="space-y-3">
                                     <div className="bg-slate-700 rounded-lg p-4">
-                                        <h4 className="text-white font-medium mb-2">확장 패스</h4>
+                                        <h4 className="text-white font-medium mb-2">
+                                            확장 패스
+                                        </h4>
                                         <p className="text-slate-300 text-sm mb-2">
-                                            추가 스토리와 새로운 챌린지를 포함한 확장 콘텐츠
+                                            추가 스토리와 새로운 챌린지를 포함한
+                                            확장 콘텐츠
                                         </p>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-yellow-400 font-bold">₩22,000</span>
+                                            <span className="text-yellow-400 font-bold">
+                                                ₩22,000
+                                            </span>
                                             <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
                                                 구매하기
                                             </button>
@@ -252,8 +294,10 @@ export default function GameInfoPage() {
 
                         {/* 유저 댓글 섹션 */}
                         <div className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700 mt-6">
-                            <h2 className="text-2xl font-bold text-white mb-6">유저 리뷰 & 댓글</h2>
-                            
+                            <h2 className="text-2xl font-bold text-white mb-6">
+                                유저 리뷰 & 댓글
+                            </h2>
+
                             {/* 댓글 작성 */}
                             <div className="mb-6">
                                 <div className="bg-slate-700 rounded-lg p-4">
@@ -264,10 +308,15 @@ export default function GameInfoPage() {
                                     />
                                     <div className="flex justify-between items-center mt-3">
                                         <div className="flex items-center space-x-2">
-                                            <span className="text-slate-400 text-sm">평점:</span>
+                                            <span className="text-slate-400 text-sm">
+                                                평점:
+                                            </span>
                                             <div className="flex space-x-1">
                                                 {[1, 2, 3, 4, 5].map((star) => (
-                                                    <button key={star} className="text-yellow-400 hover:text-yellow-300 text-lg">
+                                                    <button
+                                                        key={star}
+                                                        className="text-yellow-400 hover:text-yellow-300 text-lg"
+                                                    >
                                                         ★
                                                     </button>
                                                 ))}
@@ -290,20 +339,32 @@ export default function GameInfoPage() {
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-2 mb-2">
-                                                <span className="text-white font-semibold">김하이랄</span>
-                                                <div className="flex text-yellow-400 text-sm">★★★★★</div>
-                                                <span className="text-slate-400 text-xs">2024.01.15</span>
+                                                <span className="text-white font-semibold">
+                                                    김하이랄
+                                                </span>
+                                                <div className="flex text-yellow-400 text-sm">
+                                                    ★★★★★
+                                                </div>
+                                                <span className="text-slate-400 text-xs">
+                                                    2024.01.15
+                                                </span>
                                             </div>
                                             <p className="text-slate-300 leading-relaxed">
-                                                정말 최고의 게임입니다! 오픈월드의 자유도가 엄청나고, 어디로 가야 할지 모르는 재미가 있어요. 
-                                                처음에는 어려웠지만 점점 익숙해지면서 더욱 재밌어졌습니다. 강력 추천!
+                                                정말 최고의 게임입니다!
+                                                오픈월드의 자유도가 엄청나고,
+                                                어디로 가야 할지 모르는 재미가
+                                                있어요. 처음에는 어려웠지만 점점
+                                                익숙해지면서 더욱
+                                                재밌어졌습니다. 강력 추천!
                                             </p>
                                             <div className="flex items-center space-x-4 mt-3">
                                                 <button className="text-slate-400 hover:text-white text-sm flex items-center space-x-1">
                                                     <span>👍</span>
                                                     <span>24</span>
                                                 </button>
-                                                <button className="text-slate-400 hover:text-white text-sm">답글</button>
+                                                <button className="text-slate-400 hover:text-white text-sm">
+                                                    답글
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -317,20 +378,32 @@ export default function GameInfoPage() {
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-2 mb-2">
-                                                <span className="text-white font-semibold">링크마스터</span>
-                                                <div className="flex text-yellow-400 text-sm">★★★★☆</div>
-                                                <span className="text-slate-400 text-xs">2024.01.12</span>
+                                                <span className="text-white font-semibold">
+                                                    링크마스터
+                                                </span>
+                                                <div className="flex text-yellow-400 text-sm">
+                                                    ★★★★☆
+                                                </div>
+                                                <span className="text-slate-400 text-xs">
+                                                    2024.01.12
+                                                </span>
                                             </div>
                                             <p className="text-slate-300 leading-relaxed">
-                                                그래픽이 정말 아름답고 음악도 환상적이에요. 다만 무기가 부서지는 시스템은 좀 아쉬웠습니다. 
-                                                그래도 전체적으로 훌륭한 게임이고 시간 가는 줄 모르고 플레이했어요!
+                                                그래픽이 정말 아름답고 음악도
+                                                환상적이에요. 다만 무기가
+                                                부서지는 시스템은 좀
+                                                아쉬웠습니다. 그래도 전체적으로
+                                                훌륭한 게임이고 시간 가는 줄
+                                                모르고 플레이했어요!
                                             </p>
                                             <div className="flex items-center space-x-4 mt-3">
                                                 <button className="text-slate-400 hover:text-white text-sm flex items-center space-x-1">
                                                     <span>👍</span>
                                                     <span>18</span>
                                                 </button>
-                                                <button className="text-slate-400 hover:text-white text-sm">답글</button>
+                                                <button className="text-slate-400 hover:text-white text-sm">
+                                                    답글
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -344,20 +417,31 @@ export default function GameInfoPage() {
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-2 mb-2">
-                                                <span className="text-white font-semibold">젤다공주</span>
-                                                <div className="flex text-yellow-400 text-sm">★★★★★</div>
-                                                <span className="text-slate-400 text-xs">2024.01.10</span>
+                                                <span className="text-white font-semibold">
+                                                    젤다공주
+                                                </span>
+                                                <div className="flex text-yellow-400 text-sm">
+                                                    ★★★★★
+                                                </div>
+                                                <span className="text-slate-400 text-xs">
+                                                    2024.01.10
+                                                </span>
                                             </div>
                                             <p className="text-slate-300 leading-relaxed">
-                                                100시간 넘게 플레이했는데도 아직 할 게 많아요. 탐험의 재미가 끝이 없고, 
-                                                퍼즐을 풀 때마다 성취감이 정말 크네요. 닌텐도 스위치 필수 게임!
+                                                100시간 넘게 플레이했는데도 아직
+                                                할 게 많아요. 탐험의 재미가 끝이
+                                                없고, 퍼즐을 풀 때마다 성취감이
+                                                정말 크네요. 닌텐도 스위치 필수
+                                                게임!
                                             </p>
                                             <div className="flex items-center space-x-4 mt-3">
                                                 <button className="text-slate-400 hover:text-white text-sm flex items-center space-x-1">
                                                     <span>👍</span>
                                                     <span>31</span>
                                                 </button>
-                                                <button className="text-slate-400 hover:text-white text-sm">답글</button>
+                                                <button className="text-slate-400 hover:text-white text-sm">
+                                                    답글
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -371,20 +455,31 @@ export default function GameInfoPage() {
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center space-x-2 mb-2">
-                                                <span className="text-white font-semibold">게임러버</span>
-                                                <div className="flex text-yellow-400 text-sm">★★★☆☆</div>
-                                                <span className="text-slate-400 text-xs">2024.01.08</span>
+                                                <span className="text-white font-semibold">
+                                                    게임러버
+                                                </span>
+                                                <div className="flex text-yellow-400 text-sm">
+                                                    ★★★☆☆
+                                                </div>
+                                                <span className="text-slate-400 text-xs">
+                                                    2024.01.08
+                                                </span>
                                             </div>
                                             <p className="text-slate-300 leading-relaxed">
-                                                기대했던 것보다는 아쉬웠어요. 스토리가 좀 단조로운 느낌이고, 
-                                                던전이 예전 젤다 시리즈보다 부족한 것 같아요. 그래도 오픈월드는 재밌습니다.
+                                                기대했던 것보다는 아쉬웠어요.
+                                                스토리가 좀 단조로운 느낌이고,
+                                                던전이 예전 젤다 시리즈보다
+                                                부족한 것 같아요. 그래도
+                                                오픈월드는 재밌습니다.
                                             </p>
                                             <div className="flex items-center space-x-4 mt-3">
                                                 <button className="text-slate-400 hover:text-white text-sm flex items-center space-x-1">
                                                     <span>👍</span>
                                                     <span>7</span>
                                                 </button>
-                                                <button className="text-slate-400 hover:text-white text-sm">답글</button>
+                                                <button className="text-slate-400 hover:text-white text-sm">
+                                                    답글
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -429,24 +524,14 @@ export default function GameInfoPage() {
                                 {/* 게임 한줄 문구 */}
                                 <div>
                                     <p className="text-slate-300">
-                                        모험의 새로운 차원을 경험하세요
-                                    </p>
-                                </div>
-
-                                {/* 상세 설명 */}
-                                <div>
-                                    <p className="text-slate-300 text-sm leading-relaxed mb-4">
-                                        어떤 콘솔이고 어떤 장르인지 설명 또는
-                                        아이콘으로
-                                    </p>
-                                    <p className="text-slate-300 text-sm leading-relaxed">
-                                        해당 페이지 색상으로 이동하는 아이콘
+                                        GOTY에서도 높은 점수를 받은 닌텐도의
+                                        오픈월드 게임을 경험해보세요!
                                     </p>
                                 </div>
 
                                 {/* 유저 평점 */}
                                 <div>
-                                    <h3 className="text-xl font-bold mb-3 text-white">
+                                    <h3 className="text-xl font-bold text-white">
                                         유저 평점
                                     </h3>
                                     <div className="flex items-center justify-between">
@@ -463,31 +548,40 @@ export default function GameInfoPage() {
                                                 </p>
                                             </div>
                                         </div>
-                                        
+
                                         {/* 투표 버튼 */}
                                         <div className="flex flex-col items-center space-y-2">
-                                            <p className="text-slate-300 text-sm font-medium">내 평점</p>
+                                            <p className="text-slate-300 text-sm font-medium">
+                                                내 평점
+                                            </p>
                                             <div className="flex space-x-1">
                                                 {[1, 2, 3, 4, 5].map((star) => (
                                                     <button
                                                         key={star}
-                                                        onClick={() => handleVote(star)}
+                                                        onClick={() =>
+                                                            handleVote(star)
+                                                        }
                                                         className={`text-2xl transition-all hover:scale-110 ${
-                                                            userVote && star <= userVote
+                                                            userVote &&
+                                                            star <= userVote
                                                                 ? "text-yellow-400"
                                                                 : "text-slate-500 hover:text-yellow-300"
                                                         }`}
-                                                        title={userVote === star ? "클릭하여 투표 취소" : `${star}점 투표`}
+                                                        title={
+                                                            userVote === star
+                                                                ? "클릭하여 투표 취소"
+                                                                : `${star}점 투표`
+                                                        }
                                                     >
                                                         ★
                                                     </button>
                                                 ))}
                                             </div>
-                                            {userVote && (
-                                                <p className="text-blue-400 text-xs">
-                                                    {userVote}점 투표완료
-                                                </p>
-                                            )}
+                                            <p className="text-blue-400 text-xs h-4">
+                                                {userVote
+                                                    ? `${userVote}점 투표완료`
+                                                    : ""}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
