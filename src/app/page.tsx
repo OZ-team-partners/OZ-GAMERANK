@@ -22,11 +22,31 @@ export default function Home() {
   const [currentSmallSlide] = useState(0);
 
   const mainSlides = [
-    { id: 1, title: "8월 게임 뉘우스",desc: "8월 의 새로운 소식 from  Jung-Sik", render: () => <NewsletterPage /> },
+    {
+      id: 1,
+      title: "8월 게임 뉘우스",
+      desc: "8월 의 새로운 소식 from  Jung-Sik",
+      render: () => <NewsletterPage />,
+    },
     //  이미지 대신 newsletter를 사용 하고 싶음 image: "/icon/page_icon/mainSlides1.png",},
-    { id: 2, title: "2024 GOTY",desc: "24년을 휩쓴 GOTY작", image: "/icon/game_info_icon/zelda/zelda.png" },
-    { id: 3, title: "모바일 게임",desc: "빈칸", image: "/icon/page_icon/mainSlides3.png" },
-    { id: 4, title: "인디 게임",desc: "빈칸", image: "/icon/page_icon/mainSlides4.png" },
+    {
+      id: 2,
+      title: "2024 GOTY",
+      desc: "24년을 휩쓴 GOTY작",
+      image: "/icon/game_info_icon/zelda/zelda.png",
+    },
+    {
+      id: 3,
+      title: "모바일 게임",
+      desc: "빈칸",
+      image: "/icon/page_icon/mainSlides3.png",
+    },
+    {
+      id: 4,
+      title: "인디 게임",
+      desc: "빈칸",
+      image: "/icon/page_icon/mainSlides4.png",
+    },
   ];
 
   const smallSlides = [
@@ -89,7 +109,7 @@ export default function Home() {
                     width: `${100 / mainSlides.length}%`,
                   }}
                 >
-                 <div
+                  <div
                     className="rounded-lg overflow-hidden relative cursor-pointer h-110"
                     onClick={() => {
                       if (slide.id === 1) {
@@ -114,8 +134,7 @@ export default function Home() {
                     )}
                     <div className="absolute inset-0  from-indigo-500 to-purple-600 bg-opacity-50 flex flex-col justify-end p-4 text-white">
                       <h3 className="text-2xl font-bold">{slide.title}</h3>
-                      <p className="font-serif text-xl">{slide.desc}</p>  
-                      {/* P태그 나중에 글씨체 바꿔야 합니다 너무 구려요 */}
+                      <p className="font-sans text-xl">{slide.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -227,27 +246,27 @@ export default function Home() {
                             : "#"
                         }
                       >
-                        <div className="bg-slate-600 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-                          <img
-                            src={slide.image} // slide 객체의 image 경로를 src에 연결
-                            alt={slide.title} // 웹 접근성을 위한 alt 속성
-                            className="w-full h-45 object-cover" // 이미지 스타일링 (너비 100%, 높이 고정, 비율 유지)
-                          />
-                          <div className="h-20 flex flex-col justify-end items-start p-3">
-                            <h3
-                              className={`font-semibold ${
-                                slide.title === "game-bti"
-                                  ? "font-bangers text-xl"
-                                  : ""
-                              }`}
-                            >
-                              {slide.title}
-                            </h3>
-                            <p className="text-sm text-gray-300 mt-1">
-                              {slide.smallSlides_text}
-                            </p>
-                          </div>
-                        </div>
+<div className="bg-slate-600 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+  <Image
+    src={slide.image}       // slide 객체의 image 경로
+    alt={slide.title}       // 웹 접근성을 위한 alt 속성
+    width={768}             // w-full을 고정값으로 변환 (컨테이너 너비에 맞춰 조절)
+    height={600}            // h-45 → 45*4 = 180px
+    className="object-cover"
+  />
+  <div className="h-20 flex flex-col justify-end items-start p-3">
+    <h3
+      className={`font-semibold ${
+        slide.title === "game-bti" ? "font-bangers text-xl" : ""
+      }`}
+    >
+      {slide.title}
+    </h3>
+    <p className="text-sm text-gray-300 mt-1">
+      {slide.smallSlides_text}
+    </p>
+  </div>
+</div>
                       </Link>
                     ))}
                 </div>
@@ -1243,10 +1262,12 @@ export default function Home() {
                   className="flex-1 bg-gradient-to-br from-emerald-500 to-indigo-500 flex items-center justify-center"
                   style={{ height: "70px" }}
                 >
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.title}
-                    className="w-80 h-37 object-cover rounded"
+                    width={320} // w-80 → 80*4 = 320px
+                    height={148} // h-37 → 37*4 = 148px
+                    className="object-cover rounded"
                   />
                 </div>
                 <div className="p-2 text-center">
@@ -1313,14 +1334,12 @@ export default function Home() {
                 }}
               >
                 <div className="flex items-center w-full px-3">
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.title}
-                    className="w-[75px] h-[75px] object-cover rounded mr-3"
-                    style={{
-                      width: "80px",
-                      height: "60px",
-                    }}
+                    width={80} // style width 적용
+                    height={60} // style height 적용
+                    className="object-cover rounded mr-3"
                   />
                   <div className="flex-1">
                     <h4 className="font-semibold text-white text-sm mb-1 truncate">
