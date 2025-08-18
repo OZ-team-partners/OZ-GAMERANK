@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
 import {
     Search,
     User,
@@ -14,6 +14,7 @@ import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+// DropdownItem 컴포넌트 그대로 유지
 const DropdownItem = ({
     title,
     description,
@@ -27,7 +28,10 @@ const DropdownItem = ({
     onClick?: () => void;
     isLast?: boolean;
 }) => (
-    <Link href={path} style={{ display: 'block', marginBottom: isLast ? '0' : '8px' }}>
+    <Link
+        href={path}
+        style={{ display: "block", marginBottom: isLast ? "0" : "8px" }}
+    >
         <div
             onClick={onClick}
             className="group p-4 rounded-xl hover:bg-slate-50/80 transition-all duration-150 
@@ -54,6 +58,9 @@ const GameRankHeader = () => {
     const [showMobileDropdown, setShowMobileDropdown] = useState(false);
     const [showNewsletterDropdown, setShowNewsletterDropdown] = useState(false);
 
+    // 🔎 검색 상태 추가
+    const [searchTerm, setSearchTerm] = useState("");
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as Element;
@@ -72,6 +79,14 @@ const GameRankHeader = () => {
         };
     }, []);
 
+    // 🔎 구글 검색 핸들러
+    const handleSearch = (e: FormEvent) => {
+        e.preventDefault();
+        if (!searchTerm.trim()) return;
+        const query = encodeURIComponent(searchTerm.trim());
+        window.open(`https://www.google.com/search?q=${query}`, "_blank");
+    };
+
     const categories = [
         {
             name: "Community",
@@ -83,6 +98,7 @@ const GameRankHeader = () => {
         { name: "Mobile", icon: <Award size={16} /> },
     ];
 
+    
     // PC 카테고리 옵션들
     const pcOptions = [
         {
@@ -192,7 +208,7 @@ const GameRankHeader = () => {
         <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center h-16 gap-6">
-                    {/* 좌측: 로고 & 브랜드 */}
+                    {/* 좌측: 로고 */}
                     <Link
                         href="/"
                         className="flex items-center space-x-4 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity duration-200"
@@ -205,29 +221,46 @@ const GameRankHeader = () => {
                             <span style={{ marginRight: "0.25rem" }}>K</span>
                         </span>
                     </Link>
-                    {/* 검색바 */}
-                    <div className="flex items-center relative">
-                        <div className="relative">
+
+                    {/* 🔎 검색바 */}
+                    <form
+                        onSubmit={handleSearch}
+                        className="flex items-center relative"
+                    >
+                        <div className="relative flex items-center">
                             <Search
                                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-300 z-10"
                                 size={16}
                             />
                             <input
                                 type="text"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                                 placeholder="게임, 랭킹 검색"
                                 aria-label="게임 및 랭킹 검색"
                                 className="
-                                        w-70 pl-9 pr-4 py-2 
-                                        bg-slate-800/80 border border-slate-700/60 rounded-lg
-                                        text-slate-300 placeholder-slate-500 text-sm
-                                        focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400/50
-                                        focus:shadow-sm focus:shadow-indigo-500/10 focus:bg-slate-800
-                                        transition-all duration-150 ease-out
-                                        backdrop-blur-sm
-                                        "
+                                    w-70 pl-9 pr-10 py-2 
+                                    bg-slate-800/80 border border-slate-700/60 rounded-lg
+                                    text-slate-300 placeholder-slate-500 text-sm
+                                    focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400/50
+                                    focus:shadow-sm focus:shadow-indigo-500/10 focus:bg-slate-800
+                                    transition-all duration-150 ease-out
+                                    backdrop-blur-sm
+                                "
                             />
+                            {/* 검색 버튼 */}
+                            <button
+                                type="submit"
+                                aria-label="구글 검색 실행"
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 
+                                           bg-indigo-700 hover:bg-indigo-700 
+                                           text-white px-3 py-1 rounded-md text-xs font-semibold
+                                           transition-all duration-150 shadow-sm cursor-pointer backdrop-blur-sm"
+                            >
+                                검색
+                            </button>
                         </div>
-                    </div>
+                    </form>
                     {/* 중앙: 네비게이션 */}
                     <nav className="flex items-center flex-1 relative">
                         {categories.map((category) => (
