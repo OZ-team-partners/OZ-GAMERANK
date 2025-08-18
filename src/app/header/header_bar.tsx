@@ -149,13 +149,13 @@ const GameRankHeader = () => {
             description: "이달의 핫한 게임 소식과 업데이트",
         },
         {
-            name: "🎮 신작 게임 정보", 
+            name: "🎮 신작 게임 정보",
             path: "/blog/newsletter",
             description: "출시 예정 게임과 트레일러 모음",
         },
         {
             name: "🏆 랭킹 분석",
-            path: "/blog/newsletter", 
+            path: "/blog/newsletter",
             description: "게임 순위 변동과 트렌드 분석",
         },
     ];
@@ -206,63 +206,49 @@ const GameRankHeader = () => {
 
     return (
         <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center h-16 gap-6">
-                    {/* 좌측: 로고 */}
-                    <Link
-                        href="/"
-                        className="flex items-center space-x-4 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity duration-200"
-                    >
-                        <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-                            <Trophy className="text-white" size={20} />
+            <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+                <div className="flex items-center h-16 justify-between">
+                    {/* 그룹 1: 로고 & 검색바 */}
+                    <div className="flex items-center gap-3">
+                        <Link
+                            href="/"
+                            className="flex items-center space-x-3 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity duration-200 -ml-2"
+                        >
+                            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <Trophy className="text-white" size={20} />
+                            </div>
+                            <span className="text-2xl font-bangers bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+                                GAME RAN
+                                <span style={{ marginRight: "0.25rem" }}>
+                                    K
+                                </span>
+                            </span>
+                        </Link>
+                        <div className="flex items-center relative">
+                            <div className="relative">
+                                <Search
+                                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-300 z-10"
+                                    size={16}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="게임 검색"
+                                    aria-label="게임 및 랭킹 검색"
+                                    className="
+                                            w-48 pl-9 pr-4 py-2 
+                                            bg-slate-800/80 border border-slate-700/60 rounded-lg
+                                            text-slate-300 placeholder-slate-500 text-sm
+                                            focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400/50
+                                            focus:shadow-sm focus:shadow-indigo-500/10 focus:bg-slate-800
+                                            transition-all duration-150 ease-out
+                                            backdrop-blur-sm
+                                            "
+                                />
+                            </div>
                         </div>
-                        <span className="text-3xl font-bangers bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
-                            GAME RAN
-                            <span style={{ marginRight: "0.25rem" }}>K</span>
-                        </span>
-                    </Link>
-
-                    {/* 🔎 검색바 */}
-                    <form
-                        onSubmit={handleSearch}
-                        className="flex items-center relative"
-                    >
-                        <div className="relative flex items-center">
-                            <Search
-                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-300 z-10"
-                                size={16}
-                            />
-                            <input
-                                type="text"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                placeholder="게임, 랭킹 검색"
-                                aria-label="게임 및 랭킹 검색"
-                                className="
-                                    w-70 pl-9 pr-10 py-2 
-                                    bg-slate-800/80 border border-slate-700/60 rounded-lg
-                                    text-slate-300 placeholder-slate-500 text-sm
-                                    focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400/50
-                                    focus:shadow-sm focus:shadow-indigo-500/10 focus:bg-slate-800
-                                    transition-all duration-150 ease-out
-                                    backdrop-blur-sm
-                                "
-                            />
-                            {/* 검색 버튼 */}
-                            <button
-                                type="submit"
-                                aria-label="구글 검색 실행"
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2 
-                                           bg-indigo-700 hover:bg-indigo-700 
-                                           text-white px-3 py-1 rounded-md text-xs font-semibold
-                                           transition-all duration-150 shadow-sm cursor-pointer backdrop-blur-sm"
-                            >
-                                검색
-                            </button>
-                        </div>
-                    </form>
-                    {/* 중앙: 네비게이션 */}
-                    <nav className="flex items-center flex-1 relative">
+                    </div>
+                    {/* 그룹 2: 네비게이션 메뉴 (커뮤니티, PC, 콘솔, 모바일) */}
+                    <nav className="flex items-center justify-center flex-1 relative ">
                         {categories.map((category) => (
                             <div
                                 key={category.name}
@@ -341,22 +327,28 @@ const GameRankHeader = () => {
                                     >
                                         <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
                                             <div className="p-2">
-                                                {pcOptions.map((option, index) => (
-                                                    <DropdownItem
-                                                        key={option.name}
-                                                        title={option.name}
-                                                        description={
-                                                            option.description
-                                                        }
-                                                        path={option.path}
-                                                        isLast={index === pcOptions.length - 1}
-                                                        onClick={() =>
-                                                            setShowPCDropdown(
-                                                                false
-                                                            )
-                                                        }
-                                                    />
-                                                ))}
+                                                {pcOptions.map(
+                                                    (option, index) => (
+                                                        <DropdownItem
+                                                            key={option.name}
+                                                            title={option.name}
+                                                            description={
+                                                                option.description
+                                                            }
+                                                            path={option.path}
+                                                            isLast={
+                                                                index ===
+                                                                pcOptions.length -
+                                                                    1
+                                                            }
+                                                            onClick={() =>
+                                                                setShowPCDropdown(
+                                                                    false
+                                                                )
+                                                            }
+                                                        />
+                                                    )
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -374,7 +366,9 @@ const GameRankHeader = () => {
                                                     {consoleOptions.map(
                                                         (option, index) => (
                                                             <DropdownItem
-                                                                key={option.name}
+                                                                key={
+                                                                    option.name
+                                                                }
                                                                 title={
                                                                     option.name
                                                                 }
@@ -384,7 +378,11 @@ const GameRankHeader = () => {
                                                                 path={
                                                                     option.path
                                                                 }
-                                                                isLast={index === consoleOptions.length - 1}
+                                                                isLast={
+                                                                    index ===
+                                                                    consoleOptions.length -
+                                                                        1
+                                                                }
                                                                 onClick={() =>
                                                                     setShowConsoleDropdown(
                                                                         false
@@ -410,7 +408,9 @@ const GameRankHeader = () => {
                                                     {mobileOptions.map(
                                                         (option, index) => (
                                                             <DropdownItem
-                                                                key={option.name}
+                                                                key={
+                                                                    option.name
+                                                                }
                                                                 title={
                                                                     option.name
                                                                 }
@@ -420,7 +420,11 @@ const GameRankHeader = () => {
                                                                 path={
                                                                     option.path
                                                                 }
-                                                                isLast={index === mobileOptions.length - 1}
+                                                                isLast={
+                                                                    index ===
+                                                                    mobileOptions.length -
+                                                                        1
+                                                                }
                                                                 onClick={() =>
                                                                     setShowMobileDropdown(
                                                                         false
@@ -436,12 +440,16 @@ const GameRankHeader = () => {
                             </div>
                         ))}
                     </nav>
-                    {/* 우측: 소식통 & 로그인 */}
-                    <div className="flex items-center flex-shrink-0 gap-4">
+                    {/* 그룹 3: 소식통 & 로그인 */}
+                    <div className="flex items-center gap-4">
                         {/* Level Up! 소식통 드롭다운 */}
                         <div className="relative" data-dropdown>
                             <button
-                                onClick={() => setShowNewsletterDropdown(!showNewsletterDropdown)}
+                                onClick={() =>
+                                    setShowNewsletterDropdown(
+                                        !showNewsletterDropdown
+                                    )
+                                }
                                 aria-label="Level Up! 소식통 메뉴 열기"
                                 className="
                                     flex items-center space-x-2 px-4 py-2 
@@ -458,7 +466,9 @@ const GameRankHeader = () => {
                                 <ChevronDown
                                     size={14}
                                     className={`transition-transform duration-150 ${
-                                        showNewsletterDropdown ? "rotate-180" : "rotate-0"
+                                        showNewsletterDropdown
+                                            ? "rotate-180"
+                                            : "rotate-0"
                                     }`}
                                 />
                             </button>
@@ -471,16 +481,28 @@ const GameRankHeader = () => {
                                 >
                                     <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
                                         <div className="p-2">
-                                            {newsletterOptions.map((option, index) => (
-                                                <DropdownItem
-                                                    key={option.name}
-                                                    title={option.name}
-                                                    description={option.description}
-                                                    path={option.path}
-                                                    isLast={index === newsletterOptions.length - 1}
-                                                    onClick={() => setShowNewsletterDropdown(false)}
-                                                />
-                                            ))}
+                                            {newsletterOptions.map(
+                                                (option, index) => (
+                                                    <DropdownItem
+                                                        key={option.name}
+                                                        title={option.name}
+                                                        description={
+                                                            option.description
+                                                        }
+                                                        path={option.path}
+                                                        isLast={
+                                                            index ===
+                                                            newsletterOptions.length -
+                                                                1
+                                                        }
+                                                        onClick={() =>
+                                                            setShowNewsletterDropdown(
+                                                                false
+                                                            )
+                                                        }
+                                                    />
+                                                )
+                                            )}
                                         </div>
                                     </div>
                                 </div>
