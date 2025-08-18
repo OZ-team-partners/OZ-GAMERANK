@@ -16,6 +16,8 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import NewsletterPage from "./blog/newsletter/page";
+import { dummyPosts } from "./community/board/page";
+import { useRouter } from "next/navigation"
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -33,7 +35,7 @@ export default function Home() {
       id: 2,
       title: "2024 GOTY",
       desc: "24년을 휩쓴 GOTY작",
-      image: "/icon/game_info_icon/zelda/zelda.png",
+      image: "/images/console/nintendo/nintendo_The Legend of Zelda- Breath of the Wild_01.jpg",
     },
     {
       id: 3,
@@ -75,6 +77,7 @@ export default function Home() {
       image: "/icon/page_icon/small_contents_game_mbti.png",
     },
   ];
+  const router = useRouter();
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % mainSlides.length);
@@ -1225,27 +1228,35 @@ export default function Home() {
             {[
               {
                 id: 1,
-                image: "/icon/page_icon/mainSlides1.png",
-                title: "새로운 게임 출시",
-                description: "최신 게임 소식",
+                image: dummyPosts[0].imageUrl,
+                title: dummyPosts[0].title,
+                description: dummyPosts[0].content.length > 28
+                ? dummyPosts[0].content.slice(0,28) + "..."
+                : dummyPosts[0].content,
               },
               {
                 id: 2,
-                image: "/icon/page_icon/mainSlides2.png",
-                title: "업데이트 소식",
-                description: "게임 패치 정보",
+                image: dummyPosts[1].imageUrl,
+                title: dummyPosts[1].title,
+                description: dummyPosts[1].content.length > 28
+                ? dummyPosts[1].content.slice(0,28) + "..."
+                : dummyPosts[1].content,
               },
               {
                 id: 3,
-                image: "/icon/page_icon/mainSlides3.png",
-                title: "이벤트 정보",
-                description: "특별 이벤트",
+                image: dummyPosts[2].imageUrl,
+                title: dummyPosts[2].title,
+                description: dummyPosts[2].content.length > 28
+                ? dummyPosts[2].content.slice(0,28) + "..."
+                : dummyPosts[2].content,
               },
               {
                 id: 4,
-                image: "/icon/page_icon/mainSlides4.png",
-                title: "커뮤니티 소식",
-                description: "게이머 소통",
+                image: dummyPosts[3].imageUrl,
+                title: dummyPosts[3].title,
+                description: dummyPosts[3].content.length > 28
+                ? dummyPosts[3].content.slice(0,28) + "..."
+                : dummyPosts[3].content,
               },
             ].map((item) => (
               <div
@@ -1257,13 +1268,14 @@ export default function Home() {
                   display: "flex",
                   flexDirection: "column",
                 }}
+                onClick={() => router.push("/community/board")} // 클릭 시 이동
               >
                 <div
                   className="flex-1 bg-gradient-to-br from-emerald-500 to-indigo-500 flex items-center justify-center"
                   style={{ height: "70px" }}
                 >
                   <Image
-                    src={item.image}
+                    src={item.image ?? "/default.png"}
                     alt={item.title}
                     width={320} // w-80 → 80*4 = 320px
                     height={148} // h-37 → 37*4 = 148px
@@ -1332,6 +1344,7 @@ export default function Home() {
                   height: "70px",
                   margin: "0 auto",
                 }}
+                onClick={() => router.push("/community/board")} // 클릭 시 이동
               >
                 <div className="flex items-center w-full px-3">
                   <Image

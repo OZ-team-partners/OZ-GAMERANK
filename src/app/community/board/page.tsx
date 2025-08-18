@@ -27,6 +27,54 @@ type Category =
   | "디지털/컴퓨터/폰"
   | "게임공략"
   | "핫딜";
+  
+export const dummyPosts: Post[] = [
+  {
+    id: 1,
+    title: "스팀 신작 게임 추천해요!",
+    content:
+      "최근에 출시된 스팀 신작 게임들을 소개합니다. 그래픽도 좋고 게임성도 훌륭해요.",
+    author: "게임러버",
+    category: "steam",
+    imageUrl:
+      "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop",
+    viewCount: 123,
+    createdAt: "2025-01-15",
+  },
+  {
+    id: 2,
+    title: "PS5 독점 게임 리뷰",
+    content: "플레이스테이션 5 독점 게임들의 상세한 리뷰를 작성했습니다.",
+    author: "콘솔마스터",
+    category: "PS",
+    imageUrl:
+      "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=400&h=300&fit=crop",
+    viewCount: 87,
+    createdAt: "2025-01-14",
+  },
+  {
+    id: 3,
+    title: "닌텐도 스위치 추천 게임",
+    content: "가족과 함께 즐길 수 있는 닌텐도 스위치 게임들을 추천합니다.",
+    author: "패밀리게이머",
+    category: "닌텐도",
+    imageUrl:
+      "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=400&h=300&fit=crop",
+    viewCount: 54,
+    createdAt: "2025-01-13",
+  },
+  {
+    id: 4,
+    title: "모바일 게임 공략 가이드",
+    content: "인기 모바일 게임들의 공략과 팁을 정리했습니다.",
+    author: "모바일전문가",
+    category: "모바일",
+    imageUrl:
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop",
+    viewCount: 45,
+    createdAt: "2025-01-12",
+  },
+];
 
 export default function BoardPage() {
   // 상태 관리
@@ -38,7 +86,7 @@ export default function BoardPage() {
   const [selectedCategory, setSelectedCategory] =
     useState<Category>("온라인게임");
   const [currentPage, setCurrentPage] = useState(1);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -58,52 +106,6 @@ export default function BoardPage() {
   // 초기 더미 데이터
   useEffect(() => {
     try {
-      const dummyPosts: Post[] = [
-        {
-          id: 1,
-          title: "스팀 신작 게임 추천해요!",
-          content:
-            "최근에 출시된 스팀 신작 게임들을 소개합니다. 그래픽도 좋고 게임성도 훌륭해요.",
-          author: "게임러버",
-          category: "steam",
-          imageUrl:
-            "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop",
-          viewCount: 123,
-          createdAt: "2025-01-15",
-        },
-        {
-          id: 2,
-          title: "PS5 독점 게임 리뷰",
-          content: "플레이스테이션 5 독점 게임들의 상세한 리뷰를 작성했습니다.",
-          author: "콘솔마스터",
-          category: "PS",
-          imageUrl:
-            "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=400&h=300&fit=crop",
-          viewCount: 87,
-          createdAt: "2025-01-14",
-        },
-        {
-          id: 3,
-          title: "닌텐도 스위치 추천 게임",
-          content:
-            "가족과 함께 즐길 수 있는 닌텐도 스위치 게임들을 추천합니다.",
-          author: "패밀리게이머",
-          category: "닌텐도",
-          viewCount: 54,
-          createdAt: "2025-01-13",
-        },
-        {
-          id: 4,
-          title: "모바일 게임 공략 가이드",
-          content: "인기 모바일 게임들의 공략과 팁을 정리했습니다.",
-          author: "모바일전문가",
-          category: "모바일",
-          imageUrl:
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop",
-          viewCount: 45,
-          createdAt: "2025-01-12",
-        },
-      ];
       setPosts(dummyPosts);
     } catch (error) {
       console.error("게시글 데이터 로딩 중 오류:", error);
@@ -274,19 +276,6 @@ export default function BoardPage() {
   };
 
   // 조회수 증가
-  const handleViewPost = (post: Post) => {
-    try {
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === post.id ? { ...p, viewCount: p.viewCount + 1 } : p
-        )
-      );
-      // 여기서 상세 페이지로 이동하거나 상세 모달을 열 수 있습니다
-      alert(`게시글 "${post.title}"을(를) 조회합니다.`);
-    } catch (error) {
-      console.error("게시글 조회 중 오류:", error);
-    }
-  };
 
   // 로딩 중 표시
   if (isLoading) {
@@ -315,7 +304,7 @@ export default function BoardPage() {
             { name: "디지털/컴퓨터/폰", icon: "🗂️" },
             { name: "게임공략", icon: "🗂️" },
             { name: "핫딜", icon: "🗂️" },
-          ].map((category, index) => (
+          ].map((category) => (
             <div
               key={category.name}
               className="w-19 flex flex-col items-center gap-1.5 text-xs text-center"
@@ -405,9 +394,9 @@ export default function BoardPage() {
                       )}
                     </div>
                     <div
-  className="flex items-center gap-3 flex-1 cursor-pointer"
-  onClick={() => openModal(post)}
->
+                      className="flex items-center gap-3 flex-1 cursor-pointer"
+                      onClick={() => openModal(post)}
+                    >
                       <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[420px] text-sm">
                         {post.title}
                       </div>
