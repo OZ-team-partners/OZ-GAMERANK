@@ -405,13 +405,13 @@ export default function BoardPage() {
                       )}
                     </div>
                     <div
-                      className="flex items-center gap-3 flex-1"
-                      onClick={() => handleViewPost(post)}
-                    >
+  className="flex items-center gap-3 flex-1 cursor-pointer"
+  onClick={() => openModal(post)}
+>
                       <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[420px] text-sm">
                         {post.title}
                       </div>
-                      <div className="h-px bg-gray-300 flex-1 opacity-60"></div>
+                      <div className="flex-1 opacity-60 ">{post.content}</div>
                     </div>
                     <div className="w-40 text-right text-gray-500 text-xs">
                       {post.createdAt} &nbsp; · &nbsp; 조회수 {post.viewCount}
