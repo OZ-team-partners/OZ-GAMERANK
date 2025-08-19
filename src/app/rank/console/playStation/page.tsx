@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
-
+import Image from "next/image";
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -86,11 +86,14 @@ export default function SectionPage() {
               className="card bg-slate-800 border border-slate-700 flex items-center p-2.5 mb-2.5 gap-2.5"
             >
               <div className="card-img w-64 h-64 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
-                <img
-                  src={item.img}
-                  alt={item.title}
-                  className={`w-full h-full ${item.fit}`}
-                />
+              <Image
+                src={item.img || "/icon/rank_icon/placeholder.jpeg"} // undefined면 placeholder
+                alt={item.title}
+                width={256}   // Tailwind w-64
+                height={256}  // Tailwind h-64
+                className={`w-full h-full ${item.fit} rounded`}
+                placeholder="empty"
+              />
               </div>
               <div className="card-text">
                 <p className="card-title font-bold m-0 text-white text-2xl">

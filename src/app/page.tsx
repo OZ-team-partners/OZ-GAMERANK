@@ -57,24 +57,28 @@ export default function Home() {
       title: "디지털 50% sale 지금 바로!",
       smallSlides_text: "지금이 제일 저렴할때!",
       image: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=400&h=300&fit=crop",
+      href:"/community/board"
     },
     {
       id: 2,
       title: "게임특전",
       smallSlides_text: "지금이 제일 할인률이 높은거 아시죠?",
       image: "/rpg.jpg",
+      href:"/small_contents/game_mbti/"
     },
     {
       id: 3,
       title: "ads",
       smallSlides_text: "S&P 500은 언제가 제일 싸다?",
       image: "/rpg.jpg",
+      href:"/small_contents/game_mbti/"
     },
     {
       id: 4,
       title: "game-bti",
       smallSlides_text: "게임도 적성검사가 있는거 아세요?",
       image: "/icon/page_icon/small_contents_game_mbti.png",
+      href:"/small_contents/game_mbti/"
     },
   ];
   const router = useRouter();
@@ -243,33 +247,29 @@ export default function Home() {
                     .map((slide) => (
                       <Link
                         key={slide.id}
-                        href={
-                          slide.title === "game-bti"
-                            ? "/small_contents/game_mbti"
-                            : "#"
-                        }
+                        href={slide.href || "#"} // slide 객체에 href 속성 추가
                       >
-<div className="bg-slate-600 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-  <Image
-    src={slide.image}       // slide 객체의 image 경로
-    alt={slide.title}       // 웹 접근성을 위한 alt 속성
-    width={768}             // w-full을 고정값으로 변환 (컨테이너 너비에 맞춰 조절)
-    height={600}            // h-45 → 45*4 = 180px
-    className="object-cover"
-  />
-  <div className="h-20 flex flex-col justify-end items-start p-3">
-    <h3
-      className={`font-semibold ${
-        slide.title === "game-bti" ? "font-bangers text-xl" : ""
-      }`}
-    >
-      {slide.title}
-    </h3>
-    <p className="text-sm text-gray-300 mt-1">
-      {slide.smallSlides_text}
-    </p>
-  </div>
-</div>
+                        <div className="bg-slate-600 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+                          <Image
+                            src={slide.image}       // slide 객체의 image 경로
+                            alt={slide.title}       // 웹 접근성을 위한 alt 속성
+                            width={768}             // w-full을 고정값으로 변환 (컨테이너 너비에 맞춰 조절)
+                            height={600}            // h-45 → 45*4 = 180px
+                            className="object-cover"
+                          />
+                          <div className="h-20 flex flex-col justify-end items-start p-3">
+                            <h3
+                              className={`font-semibold ${
+                                slide.title === "game-bti" ? "font-bangers text-xl" : ""
+                              }`}
+                            >
+                              {slide.title}
+                            </h3>
+                            <p className="text-sm text-gray-300 mt-1">
+                              {slide.smallSlides_text}
+                            </p>
+                          </div>
+                        </div>
                       </Link>
                     ))}
                 </div>
