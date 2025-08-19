@@ -20,10 +20,12 @@ export default function GameInfoPage() {
     <div className="min-h-screen bg-slate-900 text-white">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <MainContent />
+          <div className="lg:col-span-2 space-y-8">
+            <MainContent />
+            <CommentsSection />
+          </div>
           <Sidebar userVote={userVote} onVote={handleVote} />
         </div>
-        <CommentsSection />
       </div>
     </div>
   );
