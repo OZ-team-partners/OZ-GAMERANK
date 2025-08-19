@@ -102,12 +102,12 @@ const GameRankHeader = () => {
   const pcOptions = [
     {
       name: "🌐 온라인 게임",
-      path: "/rank/online",
+      path: "/rank/pc/online",
       description: "실시간 멀티플레이어 게임 순위",
     },
     {
       name: "⚡ Steam",
-      path: "/rank/steam",
+      path: "/rank/pc/steam",
       description: "스팀 플랫폼 인기 게임 랭킹",
     },
   ];
@@ -116,12 +116,12 @@ const GameRankHeader = () => {
   const consoleOptions = [
     {
       name: "🟦 PlayStation",
-      path: "/rank/ps",
+      path: "/rank/console/playStation",
       description: "플레이스테이션 독점 게임들",
     },
     {
       name: "🔴 Nintendo",
-      path: "/rank/nintendo",
+      path: "/rank/console/nintendo",
       description: "닌텐도 스위치 인기 타이틀",
     },
   ];
@@ -130,12 +130,12 @@ const GameRankHeader = () => {
   const mobileOptions = [
     {
       name: "🍎 iOS",
-      path: "/rank/ios",
+      path: "/rank/mobile/ios",
       description: "아이폰 앱스토어 순위",
     },
     {
       name: "🤖 Android",
-      path: "/rank/android",
+      path: "/rank/mobile/android",
       description: "구글 플레이스토어 순위",
     },
   ];

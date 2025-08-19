@@ -9,7 +9,7 @@ export default function SectionPage() {
   const items = [
     {
       id: 1,
-      title: "호라이즌 제로 던",
+      title: "뉜퉨도-호라이즌 제로 던",
       subtitle: "미려한 그래픽과 풍부한 스토리의 수작!",
       img: "/icon/rank_icon/console game1.jpeg",
       fit: "object-contain",
