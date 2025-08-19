@@ -54,9 +54,9 @@ export default function Home() {
   const smallSlides = [
     {
       id: 1,
-      title: "디지털 heal 판매중!",
+      title: "디지털 50% sale 지금 바로!",
       smallSlides_text: "지금이 제일 저렴할때!",
-      image: "/action.jpg",
+      image: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=400&h=300&fit=crop",
     },
     {
       id: 2,

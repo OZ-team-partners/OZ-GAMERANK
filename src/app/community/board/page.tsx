@@ -54,14 +54,14 @@ export const dummyPosts: Post[] = [
   },
   {
     id: 3,
-    title: "닌텐도 스위치 추천 게임",
-    content: "가족과 함께 즐길 수 있는 닌텐도 스위치 게임들을 추천합니다.",
+    title: "떳다!!!닌텐도 특가",
+    content: "지금 빨리 사러 가셈!!",
     author: "패밀리게이머",
     category: "닌텐도",
     imageUrl:
       "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=400&h=300&fit=crop",
     viewCount: 54,
-    createdAt: "2025-01-13",
+    createdAt: "2025-04-13",
   },
   {
     id: 4,
@@ -293,7 +293,7 @@ export default function BoardPage() {
     <div className="m-0 font-sans bg-slate-900 text-white min-h-screen">
       <div className="max-w-[1100px] mx-auto my-7 px-4 grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         {/* Top filters (카테고리 버튼들) */}
-        <div className="col-span-1 lg:col-span-4 flex gap-3 py-3 pb-5 flex-wrap items-start">
+        <div className="col-span-1 lg:col-span-4 flex gap-3 py-3 pb-5 flex-wrap items-start flex items-center justify-center gap-9">
           {[
             { name: "온라인게임", icon: "🎮" },
             { name: "steam", icon: "🕹️" },
@@ -309,14 +309,14 @@ export default function BoardPage() {
               key={category.name}
               className="w-19 flex flex-col items-center gap-1.5 text-xs text-center"
             >
-              <div className="w-9 h-9 rounded-md bg-white border border-gray-200 flex items-center justify-center shadow-sm">
+              <div className="w-9 h-9 rounded-md bg-purple-800 border border-gray-200 flex items-center justify-center shadow-sm">
                 {category.icon}
               </div>
               <button
-                className={`w-full p-1.5 border rounded text-sm cursor-pointer transition-colors ${
+                className={`w-full p-1.5 border rounded text-sm cursor-pointer transition-colors  ${
                   selectedCategory === category.name
-                    ? "bg-indigo-500 text-white border-indigo-500"
-                    : "bg-white text-black border-gray-300 hover:border-gray-400"
+                    ? "bg-indigo-400 text-white border-indigo-500"
+                    : "bg-black-300 text-white border-gray-300 hover:border-gray-400"
                 }`}
                 onClick={() => setSelectedCategory(category.name as Category)}
               >
@@ -353,7 +353,7 @@ export default function BoardPage() {
               <input
                 type="text"
                 placeholder="제목/내용/작성자"
-                className="p-2 border border-gray-300 rounded-md text-black"
+                className="p-2 border border-gray-300 rounded-md text-gray-300"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
