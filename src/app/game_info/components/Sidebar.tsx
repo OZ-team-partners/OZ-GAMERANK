@@ -12,20 +12,20 @@ interface SidebarProps {
 export default function Sidebar({ userVote, onVote }: SidebarProps) {
   const similarGames = [
     {
-      name: "사랑스럽다",
-      description: "세계 최초의 AI 플스택 엔지니어",
-      rating: 4.7,
-      reviews: 304,
-      tags: ["AI 코딩 어시스턴트", "바이브 코딩 도구"],
-      icon: "💜",
+      name: "젤다의 전설: 티어스 오브 더 킹덤",
+      description: "브레스 오브 더 와일드의 후속작",
+      rating: 9.5,
+      reviews: 892,
+      tags: ["액션 어드벤처", "오픈월드"],
+      logoSrc: "/icon/game_info_icon/zelda/Logo_zelda tears of the kingdom.png",
     },
     {
-      name: "OpenAI의 Codex",
-      description: "당신을 대신해 코드를 작성하는 AI",
-      rating: 5.0,
-      reviews: 1,
-      tags: ["AI 코딩 어시스턴트", "AI 코딩 에이전트"],
-      icon: "🔷",
+      name: "슈퍼 마리오 오디세이",
+      description: "3D 마리오의 새로운 모험",
+      rating: 9.2,
+      reviews: 1547,
+      tags: ["플랫포머", "어드벤처"],
+      logoSrc: "/icon/game_info_icon/mario/Logo_supermario odyssey.png",
     },
   ];
 
@@ -161,11 +161,17 @@ export default function Sidebar({ userVote, onVote }: SidebarProps) {
             {similarGames.map((game, index) => (
               <div
                 key={index}
-                className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700 hover:bg-slate-750 transition-colors cursor-pointer"
+                className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700 hover:bg-slate-700 transition-colors cursor-pointer"
               >
                 <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl">
-                    {game.icon}
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden bg-slate-700">
+                    <Image
+                      src={game.logoSrc}
+                      alt={`${game.name} 로고`}
+                      fill
+                      className="object-contain p-1"
+                      sizes="64px"
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xl font-bold text-white mb-2">
@@ -174,20 +180,22 @@ export default function Sidebar({ userVote, onVote }: SidebarProps) {
                     <p className="text-slate-300 text-sm mb-3">
                       {game.description}
                     </p>
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
-                        <Star
-                          size={16}
-                          className="text-yellow-400 fill-current"
-                        />
-                        <span className="text-yellow-400 font-bold">
-                          {game.rating}
-                        </span>
-                        <span className="text-slate-400 text-sm">
+                    <div className="flex items-start">
+                      <div className="space-y-2 mr-8">
+                        <div className="flex items-center space-x-2">
+                          <Star
+                            size={16}
+                            className="text-yellow-400 fill-current"
+                          />
+                          <span className="text-yellow-400 font-bold">
+                            {game.rating}
+                          </span>
+                        </div>
+                        <div className="text-slate-400 text-sm">
                           ({game.reviews}개 리뷰)
-                        </span>
+                        </div>
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="flex flex-col space-y-1">
                         {game.tags.map((tag, tagIndex) => (
                           <span
                             key={tagIndex}

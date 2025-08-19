@@ -59,7 +59,7 @@ export default function MainContent() {
   };
 
   return (
-    <div className="lg:col-span-2">
+    <div>
       {/* 브레드크럼 */}
       <nav className="flex items-center space-x-2 mb-6 text-sm">
         <Link
