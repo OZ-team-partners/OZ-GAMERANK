@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 import {
   Table,
   TableBody,
@@ -22,6 +23,28 @@ import { useRouter } from "next/navigation"
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentSmallSlide] = useState(0);
+
+  // Supabase 연결 테스트
+  useEffect(() => {
+    const testConnection = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('test')
+          .select('*')
+          .limit(1);
+        
+        if (error) {
+          console.log('Supabase 연결 실패:', error);
+        } else {
+          console.log('Supabase 연결 성공!', data);
+        }
+      } catch (error) {
+        console.log('Supabase 테스트 중 오류:', error);
+      }
+    };
+
+    testConnection();
+  }, []);
 
   const mainSlides = [
     {
