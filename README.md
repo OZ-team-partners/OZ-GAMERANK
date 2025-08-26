@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OZ-GAMERANK 🎮
 
-## Getting Started
+게임 랭킹과 정보를 제공하는 웹 서비스입니다.
 
-First, run the development server:
+## 🚀 주요 기능
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **게임 랭킹**: PC/콘솔/모바일 플랫폼별 게임 순위
+- **게임 정보**: 상세한 게임 정보 및 리뷰
+- **커뮤니티**: 게이머들을 위한 커뮤니티 게시판
+- **게임 MBTI**: 게이밍 성향 테스트
+- **뉴스레터**: 게임 관련 최신 소식
+
+## 🛠️ 기술 스택
+
+### Frontend
+- **Framework**: Next.js 15.4.5 (App Router)
+- **Language**: TypeScript 5.x
+- **Styling**: TailwindCSS 4.x
+- **UI Components**: Material-UI (@mui/material)
+- **Icons**: Lucide React, MUI Icons
+- **Font**: Press Start 2P (게이밍 테마)
+
+### Backend
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **API**: Next.js API Routes
+
+## 🏗️ 프로젝트 구조
+
+```
+src/
+├── app/
+│   ├── auth/           # 인증 (로그인, 회원가입)
+│   ├── rank/           # 게임 랭킹 (PC, 콘솔, 모바일)
+│   ├── game_info/      # 게임 정보 페이지
+│   ├── community/      # 커뮤니티 게시판
+│   ├── small_contents/ # MBTI 테스트
+│   ├── blog/          # 뉴스레터
+│   └── header/        # 공통 헤더 컴포넌트
+└── lib/
+    └── supabase.ts    # Supabase 클라이언트 설정
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚦 시작하기
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. 의존성 설치
+```bash
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. 환경 변수 설정
+`.env.local` 파일을 생성하고 다음 내용을 추가하세요:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-## Learn More
+### 3. 개발 서버 실행
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+[http://localhost:3000](http://localhost:3000)에서 결과를 확인하세요.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📝 개발 명령어
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev      # 개발 서버 시작 (Turbopack)
+npm run build    # 프로덕션 빌드
+npm start        # 프로덕션 서버 시작
+npm run lint     # ESLint 실행
+```
 
-## Deploy on Vercel
+## 🗄️ 데이터베이스
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Supabase를 사용하여 PostgreSQL 데이터베이스를 관리합니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 마이그레이션 실행
+```bash
+npx supabase db push
+```
+
+### 로컬 개발 환경
+```bash
+npx supabase start  # 로컬 Supabase 시작
+npx supabase stop   # 로컬 Supabase 중지
+```
+
+## 🎨 디자인 시스템
+
+- **테마**: 다크 모드 (slate 색상 계열)
+- **반응형**: 모바일 퍼스트 디자인
+- **게이밍 스타일**: 그라데이션 배경, 호버 효과
+
+## 👥 팀
+
+오즈코딩스쿨 팀 프로젝트
+
+---
+
+*OZ-GAMERANK - 게이머를 위한, 게이머에 의한 랭킹 서비스* 🎮

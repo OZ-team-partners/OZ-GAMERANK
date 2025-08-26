@@ -26,6 +26,7 @@ import {
     Key,
 } from "lucide-react";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
 const GameRankLogin = () => {
     const router = useRouter();
@@ -34,23 +35,68 @@ const GameRankLogin = () => {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState("");
     const [showSuccess, setShowSuccess] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleSocialLogin = (provider: string) => {
+    const handleSocialLogin = async (provider: string) => {
+        setError("");
         setIsLoading(provider);
-        setTimeout(() => {
+        
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: provider as 'discord' | 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/`
+                }
+            });
+
+            if (error) {
+                setError(error.message);
+            }
+        } catch (err) {
+            setError("소셜 로그인 중 오류가 발생했습니다.");
+        } finally {
             setIsLoading("");
-            setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 3000);
-        }, 1500);
+        }
     };
 
-    const handleEmailLogin = () => {
+    const handleEmailLogin = async () => {
+        setError("");
+        
+        // 유효성 검사
+        if (!email.trim()) {
+            setError("이메일을 입력해주세요.");
+            return;
+        }
+        if (!password.trim()) {
+            setError("비밀번호를 입력해주세요.");
+            return;
+        }
+
         setIsLoading("email");
-        setTimeout(() => {
+        
+        try {
+            const { data, error: authError } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (authError) {
+                setError(authError.message);
+                return;
+            }
+
+            if (data.user) {
+                setShowSuccess(true);
+                setTimeout(() => {
+                    setShowSuccess(false);
+                    router.push('/');
+                }, 2000);
+            }
+        } catch (err: any) {
+            setError(err.message || "로그인 중 오류가 발생했습니다.");
+        } finally {
             setIsLoading("");
-            setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 3000);
-        }, 1500);
+        }
     };
 
     const socialButtons = [
@@ -116,6 +162,25 @@ const GameRankLogin = () => {
                         }}
                     >
                         로그인이 완료되었습니다! 🎮
+                    </Alert>
+                </div>
+            </Slide>
+
+            {/* 에러 알림 */}
+            <Slide direction="down" in={!!error} mountOnEnter unmountOnExit>
+                <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+                    <Alert
+                        severity="error"
+                        className="shadow-2xl backdrop-blur-sm"
+                        onClose={() => setError("")}
+                        sx={{
+                            bgcolor: "rgba(239, 68, 68, 0.1)",
+                            color: "#ef4444",
+                            border: "1px solid rgba(239, 68, 68, 0.3)",
+                            "& .MuiAlert-icon": { color: "#ef4444" },
+                        }}
+                    >
+                        {error}
                     </Alert>
                 </div>
             </Slide>
