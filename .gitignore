@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# MCP configuration (contains tokens)
+.mcp.json
+.claude/
+
+# Supabase
+supabase/.branches
+supabase/.temp
