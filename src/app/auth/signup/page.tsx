@@ -25,6 +25,7 @@ import {
     Key,
 } from "lucide-react";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
 const GameRankSignup = () => {
     const router = useRouter();
@@ -33,32 +34,107 @@ const GameRankSignup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [username, setUsername] = useState("");
     const [isLoading, setIsLoading] = useState("");
     const [showSuccess, setShowSuccess] = useState(false);
     const [error, setError] = useState("");
 
-    const handleSocialSignup = (provider: string) => {
+    const handleSocialSignup = async (provider: string) => {
         setError("");
         setIsLoading(provider);
-        setTimeout(() => {
+        
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: provider as 'discord' | 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/`
+                }
+            });
+
+            if (error) {
+                setError(error.message);
+            }
+        } catch (err) {
+            setError("소셜 로그인 중 오류가 발생했습니다.");
+        } finally {
             setIsLoading("");
-            setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 3000);
-        }, 1500);
+        }
     };
 
-    const handleEmailSignup = () => {
+    const handleEmailSignup = async () => {
         setError("");
+        
+        // 유효성 검사
+        if (!username.trim()) {
+            setError("사용자명을 입력해주세요.");
+            return;
+        }
+        if (!email.trim()) {
+            setError("이메일을 입력해주세요.");
+            return;
+        }
         if (password !== confirmPassword) {
             setError("비밀번호가 일치하지 않습니다.");
             return;
         }
+        if (password.length < 6) {
+            setError("비밀번호는 최소 6자 이상이어야 합니다.");
+            return;
+        }
+
         setIsLoading("email");
-        setTimeout(() => {
+        
+        try {
+            // Supabase Auth로 회원가입
+            const { data, error: authError } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        username: username,
+                    }
+                }
+            });
+
+            if (authError) {
+                setError(authError.message);
+                return;
+            }
+
+            if (data.user) {
+                // users 테이블에 사용자 정보 저장 (새로운 테이블 구조에 맞춰)
+                try {
+                    const { error: insertError } = await supabase
+                        .from('users')
+                        .insert([
+                            {
+                                username: username,
+                                email: email,
+                                password_hash: 'supabase_auth_managed', // Supabase Auth가 비밀번호 처리
+                                avatar_url: null,
+                                role: 'user'
+                            }
+                        ]);
+
+                    if (insertError) {
+                        console.error('사용자 정보 저장 오류:', insertError);
+                        // 사용자 정보 저장 실패해도 Auth는 성공했으므로 계속 진행
+                    }
+                } catch (profileError) {
+                    console.error('사용자 정보 저장 중 오류:', profileError);
+                }
+
+                setShowSuccess(true);
+                setTimeout(() => {
+                    setShowSuccess(false);
+                    router.push('/auth/login');
+                }, 2000);
+            }
+        } catch (err: any) {
+            setError(err.message || "회원가입 중 오류가 발생했습니다.");
+        } finally {
             setIsLoading("");
-            setShowSuccess(true);
-            setTimeout(() => setShowSuccess(false), 3000);
-        }, 1500);
+        }
     };
 
     const socialButtons = [
@@ -363,6 +439,51 @@ const GameRankSignup = () => {
                             {/* 이메일 회원가입 폼 */}
                             <Fade in timeout={1400}>
                                 <div className="space-y-0 mt-6">
+                                    <TextField
+                                        fullWidth
+                                        type="text"
+                                        label="사용자명"
+                                        value={username}
+                                        onChange={(e) =>
+                                            setUsername(e.target.value)
+                                        }
+                                        placeholder="사용자명을 입력하세요"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <User
+                                                        className="text-slate-400"
+                                                        size={20}
+                                                    />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                bgcolor:
+                                                    "rgba(51, 65, 85, 0.6)",
+                                                borderRadius: "12px",
+                                                "& fieldset": {
+                                                    borderColor:
+                                                        "rgba(148, 163, 184, 0.3)",
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor:
+                                                        "rgba(148, 163, 184, 0.5)",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "#6366f1",
+                                                },
+                                            },
+                                            "& .MuiInputLabel-root": {
+                                                color: "#94a3b8",
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                        }}
+                                    />
+
                                     <TextField
                                         fullWidth
                                         type="email"
