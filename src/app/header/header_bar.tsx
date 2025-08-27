@@ -15,7 +15,7 @@ import {
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 // DropdownItem 컴포넌트 그대로 유지
 const DropdownItem = ({
@@ -65,28 +65,8 @@ const GameRankHeader = () => {
   // 🔎 검색 상태 추가
   const [searchTerm, setSearchTerm] = useState("");
 
-  // 사용자 세션 관리
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  // 사용자 세션 확인
-  useEffect(() => {
-    // 초기 세션 확인
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    // 세션 변경 감지
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, []);
+  // AuthContext에서 사용자 상태 가져오기
+  const { user, loading, signOut } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -118,7 +98,7 @@ const GameRankHeader = () => {
   // 로그아웃 핸들러
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
+      await signOut();
       router.push('/');
       setShowProfileDropdown(false);
     } catch (error) {
