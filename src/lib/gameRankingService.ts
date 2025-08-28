@@ -38,25 +38,26 @@ export async function getGameRankingsWithJoin(
       .from(tableName)
       .select(
         `
-          rank_position,
+          ranking_date,
+          rank,
+          score,
           game_id,
-          games!inner (
+          game!inner (
             id,
-            name,
+            title,
             description,
-            image_url,
-            release_date,
+            main_image_url,
+            trailer_url,
+            age_rating,
             genre,
-            developer,
-            publisher,
-            rating,
-            review_count,
+            platform,
+            release_date,
             created_at,
             updated_at
           )
         `
       )
-      .order("rank_position", { ascending: true })
+      .order("rank", { ascending: true })
       .limit(limit);
 
     if (error) {
@@ -66,21 +67,23 @@ export async function getGameRankingsWithJoin(
 
     // 데이터 구조 변환 (타입 안전하게)
     const transformedData: GameRanking[] =
-      (data as GameRankJoinResult[])?.map((item) => ({
+      (data as unknown as GameRankJoinResult[])?.map((item) => ({
         id: item.game_id,
         platform: platform,
         rank_position: item.rank_position,
-        game_name: item.games.name,
-        game_image_url: item.games.image_url,
-        game_description: item.games.description,
-        release_date: item.games.release_date,
-        genre: item.games.genre,
-        developer: item.games.developer,
-        publisher: item.games.publisher,
-        rating: item.games.rating,
-        review_count: item.games.review_count,
-        created_at: item.games.created_at,
-        updated_at: item.games.updated_at,
+        game_name: Array.isArray(item.game)
+          ? item.game[0]?.title
+          : item.game.title,
+        game_image_url: item.game.main_image_url,
+        game_description: item.game.description,
+        release_date: item.game.release_date,
+        genre: item.game.genre,
+        developer: null, // game 테이블에 developer 컬럼이 없음
+        publisher: null, // game 테이블에 publisher 컬럼이 없음
+        rating: null, // game 테이블에 rating 컬럼이 없음
+        review_count: 0, // game 테이블에 review_count 컬럼이 없음
+        created_at: item.game.created_at,
+        updated_at: item.game.updated_at,
       })) || [];
 
     console.log("변환된 데이터:", transformedData);

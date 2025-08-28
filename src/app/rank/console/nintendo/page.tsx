@@ -19,7 +19,8 @@ export default function SectionPage() {
       try {
         setLoading(true);
         setDebugInfo("데이터 가져오기 시작...");
-
+        
+        console.log("안나와!")
         const data = await getNintendoGameRankings(100);
         setDebugInfo(`데이터 가져오기 완료: ${data.length}개 항목`);
         console.log("가져온 Nintendo 데이터:", data);

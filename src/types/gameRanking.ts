@@ -27,17 +27,16 @@ export type PlatformType =
 export interface GameRankJoinResult {
   rank_position: number;
   game_id: number;
-  games: {
+  game: {
     id: number;
-    name: string;
+    title: string;
     description: string | null;
-    image_url: string | null;
-    release_date: string | null;
+    main_image_url: string | null;
+    trailer_url: string | null;
+    age_rating: string | null;
     genre: string | null;
-    developer: string | null;
-    publisher: string | null;
-    rating: number | null;
-    review_count: number;
+    platform: string | null;
+    release_date: string | null;
     created_at: string;
     updated_at: string;
   };
