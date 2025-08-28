@@ -9,10 +9,13 @@ import {
   Zap,
   Award,
   ChevronDown,
+  LogOut,
+  Settings,
 } from "lucide-react";
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 // DropdownItem 컴포넌트 그대로 유지
 const DropdownItem = ({
@@ -57,9 +60,13 @@ const GameRankHeader = () => {
   const [showConsoleDropdown, setShowConsoleDropdown] = useState(false);
   const [showMobileDropdown, setShowMobileDropdown] = useState(false);
   const [showNewsletterDropdown, setShowNewsletterDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   // 🔎 검색 상태 추가
   const [searchTerm, setSearchTerm] = useState("");
+
+  // AuthContext에서 사용자 상태 가져오기
+  const { user, loading, signOut } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -69,6 +76,7 @@ const GameRankHeader = () => {
         setShowConsoleDropdown(false);
         setShowMobileDropdown(false);
         setShowNewsletterDropdown(false);
+        setShowProfileDropdown(false);
         setActiveCategory("");
       }
     };
@@ -85,6 +93,17 @@ const GameRankHeader = () => {
     if (!searchTerm.trim()) return;
     const query = encodeURIComponent(searchTerm.trim());
     window.open(`https://www.google.com/search?q=${query}`, "_blank");
+  };
+
+  // 로그아웃 핸들러
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      router.push('/');
+      setShowProfileDropdown(false);
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+    }
   };
 
   const categories = [
@@ -437,22 +456,97 @@ const GameRankHeader = () => {
               )}
             </div>
 
-            <button
-              onClick={() => router.push("/auth/login")}
-              aria-label="로그인 페이지로 이동"
-              className="
-                            flex items-center space-x-2 px-4 py-2 
-                            bg-gradient-to-r from-indigo-600 to-blue-600 
-                            text-white rounded-lg font-semibold text-sm
-                            hover:from-indigo-700 hover:to-blue-700
-                            transition-all duration-150 ease-out
-                            shadow-md hover:shadow-lg hover:shadow-indigo-500/15
-                            cursor-pointer backdrop-blur-sm
-            "
-            >
-              <User size={16} />
-              <span>로그인</span>
-            </button>
+            {/* 로그인/프로필 버튼 */}
+            {loading ? (
+              <div className="flex items-center space-x-2 px-4 py-2 bg-slate-700 text-slate-400 rounded-lg text-sm">
+                <User size={16} />
+                <span>로딩중...</span>
+              </div>
+            ) : user ? (
+              // 로그인된 사용자 - 프로필 드롭다운
+              <div className="relative" data-dropdown>
+                <button
+                  onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                  aria-label="프로필 메뉴 열기"
+                  className="
+                    flex items-center space-x-2 px-4 py-2 
+                    bg-gradient-to-r from-emerald-600 to-teal-600 
+                    text-white rounded-lg font-semibold text-sm
+                    hover:from-emerald-700 hover:to-teal-700
+                    transition-all duration-150 ease-out
+                    shadow-md hover:shadow-lg hover:shadow-emerald-500/15
+                    cursor-pointer backdrop-blur-sm
+                  "
+                >
+                  <User size={16} />
+                  <span>{user.user_metadata?.username || user.email?.split('@')[0] || '사용자'}</span>
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-150 ${
+                      showProfileDropdown ? "rotate-180" : "rotate-0"
+                    }`}
+                  />
+                </button>
+
+                {/* 프로필 드롭다운 메뉴 */}
+                {showProfileDropdown && (
+                  <div
+                    className="absolute top-full right-0 mt-3 w-56 z-50 animate-in fade-in-0 zoom-in-95 duration-150"
+                    data-dropdown
+                  >
+                    <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
+                      <div className="p-2">
+                        <div className="px-4 py-3 border-b border-slate-200/60">
+                          <p className="text-sm font-semibold text-slate-900">
+                            {user.user_metadata?.username || '사용자'}
+                          </p>
+                          <p className="text-xs text-slate-600 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+                        
+                        <button
+                          onClick={() => {
+                            router.push('/profile');
+                            setShowProfileDropdown(false);
+                          }}
+                          className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-slate-50 transition-colors rounded-xl"
+                        >
+                          <Settings size={16} className="text-slate-500" />
+                          <span className="text-sm font-medium text-slate-700">프로필 설정</span>
+                        </button>
+                        
+                        <button
+                          onClick={handleSignOut}
+                          className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-red-50 transition-colors rounded-xl"
+                        >
+                          <LogOut size={16} className="text-red-500" />
+                          <span className="text-sm font-medium text-red-700">로그아웃</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // 비로그인 사용자 - 로그인 버튼
+              <button
+                onClick={() => router.push("/auth/login")}
+                aria-label="로그인 페이지로 이동"
+                className="
+                  flex items-center space-x-2 px-4 py-2 
+                  bg-gradient-to-r from-indigo-600 to-blue-600 
+                  text-white rounded-lg font-semibold text-sm
+                  hover:from-indigo-700 hover:to-blue-700
+                  transition-all duration-150 ease-out
+                  shadow-md hover:shadow-lg hover:shadow-indigo-500/15
+                  cursor-pointer backdrop-blur-sm
+                "
+              >
+                <User size={16} />
+                <span>로그인</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

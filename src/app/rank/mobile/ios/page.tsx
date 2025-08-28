@@ -1,44 +1,118 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
+import { GameRanking } from "../../../../types/gameRanking";
+import { getGameRankings } from "../../../../lib/gameRankingService";
 
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [rankings, setRankings] = useState<GameRanking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const items = [
-    {
-      id: 1,
-      title: "세븐나이츠 키우기",
-      subtitle: "육성게임계의 부동의 1위!",
-      img: "/icon/rank_icon/mobile1.jpeg",
-      fit: "object-contain",
-    },
-    {
-      id: 2,
-      title: "몬스터 길들이기",
-      subtitle: "몬스터를 길들여서 미지의 세계를 탐험하자!",
-      img: "/icon/rank_icon/mobile2.jpeg",
-      fit: "object-contain",
-    },
-    {
-      id: 3,
-      title: "클래쉬 오브 클랜",
-      subtitle: "클랜을 만들어 경쟁하고 승리하자!",
-      img: "/icon/rank_icon/mobile3.jpeg",
-      fit: "object-contain",
-    },
-  ];
+  // Supabase에서 iOS 게임 순위 데이터 가져오기
+  useEffect(() => {
+    const fetchIOSRankings = async () => {
+      try {
+        setLoading(true);
+        const data = await getGameRankings("mobile_ios", 100);
+        setRankings(data);
+      } catch (err) {
+        setError("iOS 게임 순위 데이터를 불러오는 중 오류가 발생했습니다.");
+        console.error("iOS 순위 데이터 가져오기 실패:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchIOSRankings();
+  }, []);
+
+  // 검색 필터링
   const filteredItems = useMemo(() => {
+    if (!rankings.length) return [];
+
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return items;
-    return items.filter(
-      (i) =>
-        i.title.toLowerCase().includes(q) ||
-        i.subtitle.toLowerCase().includes(q)
+    if (!q) return rankings;
+
+    return rankings.filter(
+      (game) =>
+        game.game_name.toLowerCase().includes(q) ||
+        (game.game_description &&
+          game.game_description.toLowerCase().includes(q))
     );
-  }, [searchQuery]);
+  }, [rankings, searchQuery]);
+
+  // 로딩 상태
+  if (loading) {
+    return (
+      <div className="bg-slate-900 text-white min-h-screen">
+        <div className="m-0 font-sans flex flex-col md:flex-row min-h-screen">
+          <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
+            <div className="text-sm leading-relaxed">
+              <strong className="block mb-2">Lesson & Article</strong>
+              <div>2025</div>
+              <div>2024</div>
+              <div>2023</div>
+            </div>
+            <div className="h-48 border border-slate-700 flex items-center justify-center">
+              광고
+            </div>
+            <div className="flex-grow"></div>
+          </aside>
+
+          <main className="flex-1 p-5">
+            <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5">
+              광고
+            </div>
+
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-blue-400">iOS 게임 순위를 불러오는 중...</p>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error) {
+    return (
+      <div className="bg-slate-900 text-white min-h-screen">
+        <div className="m-0 font-sans flex flex-col md:flex-row min-h-screen">
+          <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
+            <div className="text-sm leading-relaxed">
+              <strong className="block mb-2">Lesson & Article</strong>
+              <div>2025</div>
+              <div>2024</div>
+              <div>2023</div>
+            </div>
+            <div className="h-48 border border-slate-700 flex items-center justify-center">
+              광고
+            </div>
+            <div className="flex-grow"></div>
+          </aside>
+
+          <main className="flex-1 p-5">
+            <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5">
+              광고
+            </div>
+
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <p className="text-red-400">{error}</p>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-slate-900 text-white min-h-screen">
       <div className="m-0 font-sans flex flex-col md:flex-row min-h-screen">
@@ -62,6 +136,19 @@ export default function SectionPage() {
             광고
           </div>
 
+          {/* 헤더 */}
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-white mb-2">
+              iOS 게임 순위
+            </h1>
+            <p className="text-slate-400">
+              App Store에서 가장 인기 있는 iOS 게임 순위입니다.
+            </p>
+            <p className="text-sm text-slate-500 mt-2">
+              총 {rankings.length}개의 게임이 등록되어 있습니다.
+            </p>
+          </div>
+
           <div className="flex gap-2.5 mb-5">
             <select className="bg-slate-800 border border-slate-700 text-white text-sm p-1.5">
               <option>언어</option>
@@ -78,31 +165,73 @@ export default function SectionPage() {
             />
           </div>
 
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className="card bg-slate-800 border border-slate-700 flex items-center p-2.5 mb-2.5 gap-2.5"
-            >
-              <div className="card-img w-64 h-64 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
-               <Image
-                src={item.img || "/icon/rank_icon/placeholder.jpeg"} // undefined면 placeholder
-                alt={item.title}
-                width={256}   // Tailwind w-64
-                height={256}  // Tailwind h-64
-                className={`w-full h-full ${item.fit} rounded`}
-                placeholder="empty"
-              />
-              </div>
-              <div className="card-text">
-                <p className="card-title font-bold m-0 text-white text-2xl">
-                  {item.title}
-                </p>
-                <p className="card-subtitle text-slate-400 text-sm">
-                  {item.subtitle}
-                </p>
-              </div>
+          {/* 검색 결과 통계 */}
+          {searchQuery && (
+            <div className="mb-4 text-sm text-slate-400">
+              &quot;{searchQuery}&quot; 검색 결과: {filteredItems.length}개
             </div>
-          ))}
+          )}
+
+          {/* 게임 목록 */}
+          {filteredItems.length > 0 ? (
+            filteredItems.map((game) => (
+              <div
+                key={game.id}
+                className="card bg-slate-800 border border-slate-700 flex items-center p-2.5 mb-2.5 gap-2.5"
+              >
+                {/* 순위 배지 */}
+                <div
+                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
+                    game.rank_position === 1
+                      ? "bg-yellow-500 text-white"
+                      : game.rank_position === 2
+                      ? "bg-gray-400 text-white"
+                      : game.rank_position === 3
+                      ? "bg-amber-600 text-white"
+                      : "bg-slate-600 text-white"
+                  }`}
+                >
+                  {game.rank_position}
+                </div>
+
+                <div className="card-img w-64 h-64 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
+                  <Image
+                    src={game.game_image_url || "/icon/rank_icon/mobile1.jpeg"}
+                    alt={game.game_name}
+                    width={256}
+                    height={256}
+                    className="w-full h-full object-cover rounded"
+                    placeholder="empty"
+                  />
+                </div>
+                <div className="card-text flex-1">
+                  <p className="card-title font-bold m-0 text-white text-2xl">
+                    {game.game_name}
+                  </p>
+                  <p className="card-subtitle text-slate-400 text-sm mb-2">
+                    {game.game_description || "설명 없음"}
+                  </p>
+
+                  {/* 추가 정보 */}
+                  <div className="flex gap-4 text-xs text-slate-500">
+                    {game.genre && <span>장르: {game.genre}</span>}
+                    {game.rating && <span>평점: {game.rating.toFixed(1)}</span>}
+                    {game.review_count > 0 && (
+                      <span>리뷰: {game.review_count.toLocaleString()}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-slate-400">
+                {searchQuery
+                  ? "검색 결과가 없습니다."
+                  : "게임 데이터가 없습니다."}
+              </p>
+            </div>
+          )}
 
           <div className="mt-5 flex gap-2.5">
             <button className="bg-indigo-500 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-indigo-600 transition-colors">
