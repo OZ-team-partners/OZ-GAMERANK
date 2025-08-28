@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Alert, Slide } from "@mui/material";
-import { Mail, UserPlus, Key, Gamepad2 } from "lucide-react";
+import { Mail, UserPlus, Key, Lock } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthLayout from "../components/AuthLayout";
 import AuthHeader from "../components/AuthHeader";
@@ -105,6 +105,7 @@ const GameRankLogin = () => {
                         onChange={setPassword}
                         showPassword={showPassword}
                         onTogglePassword={() => setShowPassword(!showPassword)}
+                        icon={<Lock className="text-slate-400" size={20} />}
                     />
 
                     <Button
@@ -112,7 +113,7 @@ const GameRankLogin = () => {
                         disabled={isLoading}
                         fullWidth
                         size="large"
-                        className="h-14 mt-6"
+                        className="h-14"
                         sx={{
                             background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)",
                             color: "white",
@@ -120,6 +121,7 @@ const GameRankLogin = () => {
                             textTransform: "none",
                             fontSize: "16px",
                             fontWeight: 600,
+                            mt: 4,
                             "&:hover": {
                                 background: "linear-gradient(135deg, #5b5cf1 0%, #7c3aed 50%, #c026d3 100%)",
                             },
@@ -131,49 +133,35 @@ const GameRankLogin = () => {
                         {isLoading ? "로그인 중..." : "로그인"}
                     </Button>
 
-                    <div className="mt-6 space-y-3">
-                        <div className="grid grid-cols-2 gap-3">
-                            <Button
-                                variant="outlined"
-                                size="small"
-                                startIcon={<Key size={16} />}
-                                onClick={() => router.push("/auth/forgot_password")}
-                                sx={{
-                                    borderColor: "rgba(148, 163, 184, 0.3)",
-                                    color: "#cbd5e1",
-                                    textTransform: "none",
-                                    "&:hover": {
-                                        borderColor: "rgba(148, 163, 184, 0.5)",
-                                        bgcolor: "rgba(148, 163, 184, 0.1)",
-                                    },
-                                }}
-                            >
-                                비밀번호 재설정
-                            </Button>
-                            <Button
-                                variant="outlined"
-                                size="small"
-                                startIcon={<UserPlus size={16} />}
-                                onClick={() => router.push("/auth/signup")}
-                                sx={{
-                                    borderColor: "rgba(148, 163, 184, 0.3)",
-                                    color: "#cbd5e1",
-                                    textTransform: "none",
-                                    "&:hover": {
-                                        borderColor: "rgba(148, 163, 184, 0.5)",
-                                        bgcolor: "rgba(148, 163, 184, 0.1)",
-                                    },
-                                }}
-                            >
-                                회원가입으로 이동
-                            </Button>
-                        </div>
+                    {/* 눈에 띄는 회원가입 버튼 */}
+                    <Button
+                        onClick={() => router.push("/auth/signup")}
+                        fullWidth
+                        size="large"
+                        startIcon={<UserPlus size={20} />}
+                        sx={{
+                            background: "linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)",
+                            color: "white",
+                            borderRadius: "12px",
+                            textTransform: "none",
+                            fontSize: "16px",
+                            fontWeight: 600,
+                            height: "56px",
+                            mt: 3,
+                            "&:hover": {
+                                background: "linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%)",
+                            },
+                        }}
+                    >
+                        회원가입하기
+                    </Button>
 
+                    <div className="mt-4 text-center">
                         <Button
-                            startIcon={<Gamepad2 size={18} />}
-                            fullWidth
                             variant="outlined"
-                            onClick={() => router.push('/')}
+                            size="small"
+                            startIcon={<Key size={16} />}
+                            onClick={() => router.push("/auth/forgot_password")}
                             sx={{
                                 borderColor: "rgba(148, 163, 184, 0.3)",
                                 color: "#cbd5e1",
@@ -184,7 +172,7 @@ const GameRankLogin = () => {
                                 },
                             }}
                         >
-                            게스트로 둘러보기
+                            비밀번호 재설정
                         </Button>
                     </div>
                 </div>

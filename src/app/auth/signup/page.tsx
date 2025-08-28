@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Alert, Slide } from "@mui/material";
-import { Mail, User, UserPlus } from "lucide-react";
+import { Mail, User, UserPlus, Lock, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthLayout from "../components/AuthLayout";
 import AuthHeader from "../components/AuthHeader";
@@ -91,8 +91,8 @@ const GameRankSignup = () => {
         <div className="space-y-4">
           <AuthInput
             type="text"
-            label="사용자명"
-            placeholder="사용자명을 입력하세요"
+            label="닉네임"
+            placeholder="닉네임을 입력하세요"
             value={username}
             onChange={setUsername}
             icon={<User className="text-slate-400" size={20} />}
@@ -115,6 +115,7 @@ const GameRankSignup = () => {
             onChange={setPassword}
             showPassword={showPassword}
             onTogglePassword={() => setShowPassword(!showPassword)}
+            icon={<Lock className="text-slate-400" size={20} />}
           />
 
           <AuthInput
@@ -125,6 +126,7 @@ const GameRankSignup = () => {
             onChange={setConfirmPassword}
             showPassword={showConfirmPassword}
             onTogglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
+            icon={<ShieldCheck className="text-slate-400" size={20} />}
           />
 
           <Button
@@ -132,7 +134,7 @@ const GameRankSignup = () => {
             disabled={isLoading}
             fullWidth
             size="large"
-            className="h-14 mt-6"
+            className="h-14"
             sx={{
               background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)",
               color: "white",
@@ -140,6 +142,7 @@ const GameRankSignup = () => {
               textTransform: "none",
               fontSize: "16px",
               fontWeight: 600,
+              mt: 4,
               "&:hover": {
                 background: "linear-gradient(135deg, #5b5cf1 0%, #7c3aed 50%, #c026d3 100%)",
               },

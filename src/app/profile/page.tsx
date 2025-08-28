@@ -13,6 +13,11 @@ import {
     Chip,
     Fade,
     CircularProgress,
+    InputAdornment,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from "@mui/material";
 import {
     User,
@@ -36,8 +41,9 @@ const ProfilePage = () => {
     
     // 폼 상태
     const [username, setUsername] = useState("");
-    const [fullName, setFullName] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
+    const [showAvatarDialog, setShowAvatarDialog] = useState(false);
+    const [tempAvatarUrl, setTempAvatarUrl] = useState("");
 
     // 사용자 정보 로드
     useEffect(() => {
@@ -67,12 +73,10 @@ const ProfilePage = () => {
                 if (profile) {
                     setUserProfile(profile);
                     setUsername(profile.username || '');
-                    setFullName(profile.full_name || '');
                     setAvatarUrl(profile.avatar_url || '');
                 } else {
                     // 메타데이터에서 초기값 설정
                     setUsername(session.user.user_metadata?.username || '');
-                    setFullName(session.user.user_metadata?.full_name || '');
                     setAvatarUrl(session.user.user_metadata?.avatar_url || '');
                 }
             } catch (err) {
@@ -94,18 +98,14 @@ const ProfilePage = () => {
         try {
             if (!user) return;
 
-            // users 테이블 업데이트
+            // users 테이블 업데이트 (password_hash 제외)
             const { error: updateError } = await supabase
                 .from('users')
-                .upsert([
-                    {
-                        email: user.email,
-                        username: username,
-                        full_name: fullName,
-                        avatar_url: avatarUrl,
-                        role: userProfile?.role || 'user'
-                    }
-                ]);
+                .update({
+                    username: username,
+                    avatar_url: avatarUrl,
+                })
+                .eq('email', user.email);
 
             if (updateError) {
                 setError(updateError.message);
@@ -119,6 +119,24 @@ const ProfilePage = () => {
         } finally {
             setSaving(false);
         }
+    };
+
+    // 아바타 변경 다이얼로그 열기
+    const handleAvatarClick = () => {
+        setTempAvatarUrl(avatarUrl);
+        setShowAvatarDialog(true);
+    };
+
+    // 아바타 URL 적용
+    const handleAvatarSave = () => {
+        setAvatarUrl(tempAvatarUrl);
+        setShowAvatarDialog(false);
+    };
+
+    // 아바타 다이얼로그 취소
+    const handleAvatarCancel = () => {
+        setTempAvatarUrl("");
+        setShowAvatarDialog(false);
     };
 
     if (loading) {
@@ -190,104 +208,127 @@ const ProfilePage = () => {
                             </p>
                         </div>
 
-                        {/* 프로필 이미지 섹션 */}
-                        <div className="flex justify-center mb-8">
-                            <div className="relative">
-                                <Avatar
-                                    src={avatarUrl}
-                                    sx={{ 
-                                        width: 120, 
-                                        height: 120,
-                                        bgcolor: 'indigo.500',
-                                        fontSize: '2rem'
-                                    }}
-                                >
-                                    {username ? username[0].toUpperCase() : user?.email?.[0].toUpperCase()}
-                                </Avatar>
-                                <Button
-                                    size="small"
-                                    sx={{
-                                        position: 'absolute',
-                                        bottom: 0,
-                                        right: 0,
-                                        minWidth: 40,
-                                        height: 40,
-                                        borderRadius: '50%',
-                                        bgcolor: 'indigo.600',
-                                        '&:hover': { bgcolor: 'indigo.700' }
-                                    }}
-                                >
-                                    <Camera size={16} />
-                                </Button>
-                            </div>
-                        </div>
-
-                        {/* 사용자 정보 */}
-                        <div className="grid md:grid-cols-2 gap-6 mb-8">
-                            {/* 기본 정보 */}
-                            <div>
-                                <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-                                    <User size={20} className="mr-2 text-indigo-600" />
-                                    기본 정보
-                                </h3>
-                                
-                                <div className="space-y-4">
-                                    <TextField
-                                        fullWidth
-                                        label="사용자명"
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        placeholder="사용자명을 입력하세요"
-                                    />
-                                    
-                                    <TextField
-                                        fullWidth
-                                        label="전체 이름"
-                                        value={fullName}
-                                        onChange={(e) => setFullName(e.target.value)}
-                                        placeholder="전체 이름을 입력하세요"
-                                    />
-
-                                    <TextField
-                                        fullWidth
-                                        label="프로필 이미지 URL"
-                                        value={avatarUrl}
-                                        onChange={(e) => setAvatarUrl(e.target.value)}
-                                        placeholder="프로필 이미지 URL을 입력하세요"
-                                    />
+                        {/* 메인 컨텐츠 레이아웃 */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                            {/* 프로필 이미지 섹션 */}
+                            <div className="flex flex-col items-center justify-center">
+                                <div className="relative">
+                                    <Avatar
+                                        src={avatarUrl}
+                                        sx={{ 
+                                            width: 180, 
+                                            height: 180,
+                                            bgcolor: 'indigo.500',
+                                            fontSize: '3rem'
+                                        }}
+                                    >
+                                        {username ? username[0].toUpperCase() : user?.email?.[0].toUpperCase()}
+                                    </Avatar>
+                                    <Button
+                                        size="small"
+                                        onClick={handleAvatarClick}
+                                        sx={{
+                                            position: 'absolute',
+                                            bottom: 8,
+                                            right: 8,
+                                            minWidth: 48,
+                                            height: 48,
+                                            borderRadius: '50%',
+                                            bgcolor: 'indigo.600',
+                                            '&:hover': { bgcolor: 'indigo.700' },
+                                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+                                        }}
+                                    >
+                                        <Camera size={20} />
+                                    </Button>
                                 </div>
                             </div>
 
-                            {/* 계정 정보 */}
-                            <div>
-                                <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-                                    <Mail size={20} className="mr-2 text-indigo-600" />
-                                    계정 정보
-                                </h3>
-                                
-                                <div className="space-y-4">
-                                    <TextField
-                                        fullWidth
-                                        label="이메일"
-                                        value={user?.email || ''}
-                                        disabled
-                                        helperText="이메일은 변경할 수 없습니다"
-                                    />
+                            {/* 정보 섹션 */}
+                            <div className="space-y-8">
+                                {/* 기본 정보 */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+                                        <User size={20} className="mr-2 text-indigo-600" />
+                                        기본 정보
+                                    </h3>
                                     
-                                    <div className="flex items-center space-x-2">
-                                        <Calendar size={16} className="text-slate-500" />
-                                        <span className="text-sm text-slate-600">
-                                            가입일: {new Date(user?.created_at).toLocaleDateString()}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center space-x-2">
-                                        <Shield size={16} className="text-slate-500" />
-                                        <Chip 
-                                            label={userProfile?.role || 'user'} 
-                                            size="small"
-                                            color={userProfile?.role === 'admin' ? 'error' : 'default'}
+                                    <div>
+                                        <TextField
+                                            fullWidth
+                                            label="닉네임"
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value)}
+                                            placeholder="닉네임을 입력하세요"
+                                            slotProps={{
+                                                input: {
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <User size={20} className="text-slate-500" />
+                                                        </InputAdornment>
+                                                    ),
+                                                },
+                                            }}
+                                            sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                    transition: "none",
+                                                },
+                                                "& .MuiInputLabel-root": {
+                                                    transition: "none",
+                                                },
+                                            }}
                                         />
+                                    </div>
+                                </div>
+
+                                {/* 계정 정보 */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+                                        <Mail size={20} className="mr-2 text-indigo-600" />
+                                        계정 정보
+                                    </h3>
+                                    
+                                    <div className="space-y-6">
+                                        <TextField
+                                            fullWidth
+                                            label="이메일"
+                                            value={user?.email || ''}
+                                            disabled
+                                            helperText="이메일은 변경할 수 없습니다"
+                                            slotProps={{
+                                                input: {
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <Mail size={20} className="text-slate-500" />
+                                                        </InputAdornment>
+                                                    ),
+                                                },
+                                            }}
+                                            sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                    transition: "none",
+                                                },
+                                                "& .MuiInputLabel-root": {
+                                                    transition: "none",
+                                                },
+                                            }}
+                                        />
+                                        
+                                        <div className="flex items-center space-x-2">
+                                            <Calendar size={16} className="text-slate-500" />
+                                            <span className="text-sm text-slate-600">
+                                                가입일: {new Date(user?.created_at).toLocaleDateString()}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center space-x-2">
+                                            <Shield size={16} className="text-slate-500" />
+                                            <Chip 
+                                                label={userProfile?.role || 'user'} 
+                                                size="small"
+                                                color={userProfile?.role === 'admin' ? 'error' : 'default'}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -315,6 +356,71 @@ const ProfilePage = () => {
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* 아바타 변경 다이얼로그 */}
+                <Dialog 
+                    open={showAvatarDialog} 
+                    onClose={handleAvatarCancel}
+                    maxWidth="sm"
+                    fullWidth
+                >
+                    <DialogTitle>프로필 이미지 변경</DialogTitle>
+                    <DialogContent>
+                        <div className="flex flex-col items-center space-y-4 pt-4">
+                            {/* 미리보기 */}
+                            <Avatar
+                                src={tempAvatarUrl}
+                                sx={{ 
+                                    width: 100, 
+                                    height: 100,
+                                    bgcolor: 'indigo.500',
+                                    fontSize: '2rem'
+                                }}
+                            >
+                                {username ? username[0].toUpperCase() : user?.email?.[0].toUpperCase()}
+                            </Avatar>
+                            
+                            {/* URL 입력 */}
+                            <TextField
+                                fullWidth
+                                label="이미지 URL"
+                                value={tempAvatarUrl}
+                                onChange={(e) => setTempAvatarUrl(e.target.value)}
+                                placeholder="프로필 이미지 URL을 입력하세요"
+                                slotProps={{
+                                    input: {
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Camera size={20} className="text-slate-500" />
+                                            </InputAdornment>
+                                        ),
+                                    },
+                                }}
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        transition: "none",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                        transition: "none",
+                                    },
+                                }}
+                            />
+                        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleAvatarCancel}>취소</Button>
+                        <Button 
+                            onClick={handleAvatarSave} 
+                            variant="contained"
+                            sx={{
+                                bgcolor: 'indigo.600',
+                                '&:hover': { bgcolor: 'indigo.700' }
+                            }}
+                        >
+                            적용
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </div>
     );
