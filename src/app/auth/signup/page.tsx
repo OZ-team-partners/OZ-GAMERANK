@@ -95,6 +95,7 @@ const GameRankSignup = () => {
                     }
                 }
             });
+            
 
             if (authError) {
                 setError(authError.message);
