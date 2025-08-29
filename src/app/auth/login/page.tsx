@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Alert, Slide } from "@mui/material";
 import { Mail, UserPlus, Key, Lock } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/shared/contexts/AuthContext";
 import AuthLayout from "../components/AuthLayout";
 import AuthHeader from "../components/AuthHeader";
 import AuthInput from "../components/AuthInput";

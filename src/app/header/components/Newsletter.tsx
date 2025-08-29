@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import DropdownItem from "./DropdownItem";
+import React from "react";
+import { DropdownOption } from "../types";
+import Dropdown from "./Dropdown";
 
 const Newsletter = () => {
-  const [showNewsletterDropdown, setShowNewsletterDropdown] = useState(false);
-
-  const newsletterOptions = [
+  const newsletterOptions: DropdownOption[] = [
     {
       name: "📰 8월 게임 뉴스",
       path: "/blog/newsletter",
@@ -26,52 +24,14 @@ const Newsletter = () => {
   ];
 
   return (
-    <div className="relative" data-dropdown>
-      <button
-        onClick={() => setShowNewsletterDropdown(!showNewsletterDropdown)}
-        aria-label="Level Up! 소식통 메뉴 열기"
-        className="
-          flex items-center space-x-2 px-4 py-2 
-          bg-gradient-to-r from-green-600 to-emerald-600 
-          text-white rounded-lg font-semibold text-sm
-          hover:from-green-700 hover:to-emerald-700
-          transition-all duration-150 ease-out
-          shadow-md hover:shadow-lg hover:shadow-green-500/15
-          cursor-pointer backdrop-blur-sm
-        "
-      >
-        <span>📧</span>
-        <span>Level Up! 소식통</span>
-        <ChevronDown
-          size={14}
-          className={`transition-transform duration-150 ${
-            showNewsletterDropdown ? "rotate-180" : "rotate-0"
-          }`}
-        />
-      </button>
-
-      {showNewsletterDropdown && (
-        <div
-          className="absolute top-full right-0 mt-3 w-80 z-50 animate-in fade-in-0 zoom-in-95 duration-150"
-          data-dropdown
-        >
-          <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
-            <div className="p-2">
-              {newsletterOptions.map((option, index) => (
-                <DropdownItem
-                  key={option.name}
-                  title={option.name}
-                  description={option.description}
-                  path={option.path}
-                  isLast={index === newsletterOptions.length - 1}
-                  onClick={() => setShowNewsletterDropdown(false)}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    <Dropdown
+      label="Level Up! 소식통"
+      icon={<span>📧</span>}
+      options={newsletterOptions}
+      variant="success"
+      ariaLabel="Level Up! 소식통 메뉴 열기"
+      position="right"
+    />
   );
 };
 

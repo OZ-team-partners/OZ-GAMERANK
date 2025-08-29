@@ -15,17 +15,25 @@ const DropdownItem = ({
   path,
   onClick,
   isLast = false,
-}: DropdownItemProps) => (
-  <Link
-    href={path}
-    style={{ display: "block", marginBottom: isLast ? "0" : "8px" }}
-  >
-    <div
-      onClick={onClick}
-      className="group p-4 rounded-xl hover:bg-slate-50/80 transition-all duration-150 
-                       border border-transparent hover:border-slate-200/60 cursor-pointer
-                       hover:shadow-md backdrop-blur-sm"
+}: DropdownItemProps) => {
+  const handleClick = () => {
+    // 드롭다운 닫기 함수 실행
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  return (
+    <Link
+      href={path}
+      style={{ display: "block", marginBottom: isLast ? "0" : "8px" }}
     >
+      <div
+        onClick={handleClick}
+        className="group p-4 rounded-xl hover:bg-slate-50/80 transition-all duration-150 
+                         border border-transparent hover:border-slate-200/60 cursor-pointer
+                         hover:shadow-md backdrop-blur-sm"
+      >
       <div className="flex-1">
         <h4 className="font-black text-slate-900 group-hover:text-indigo-600 transition-colors text-base">
           {title}
@@ -34,8 +42,9 @@ const DropdownItem = ({
           {description}
         </p>
       </div>
-    </div>
-  </Link>
-);
+      </div>
+    </Link>
+  );
+};
 
 export default DropdownItem;

@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
-import { GameRanking } from "../../../../types/gameRanking";
-import { getGameRankings } from "../../../../lib/gameRankingService";
+import { GameRanking } from "@/shared/types/gameRanking";
+import { getGameRankings } from "@/shared/services/gameRankingService";
 
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");

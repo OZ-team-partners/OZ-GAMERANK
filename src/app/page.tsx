@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/shared/lib/supabase";
 import {
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import NewsletterPage from "./blog/newsletter/page";
-import { dummyPosts } from "./community/board/page";
+import { dummyPosts } from "@/shared/data/dummyData";
 import { useRouter } from "next/navigation"
 
 export default function Home() {

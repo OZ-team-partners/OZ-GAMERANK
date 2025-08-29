@@ -1,9 +1,32 @@
-import { supabase } from "./supabase";
+import { supabase } from "../lib/supabase";
 import {
   GameRanking,
   PlatformType,
   GameRankJoinResult,
 } from "../types/gameRanking";
+
+// 디버깅을 위한 연결 테스트 함수
+export async function testSupabaseConnection() {
+  try {
+    console.log("Supabase 연결 테스트 시작...");
+    // 간단한 테이블 쿼리로 연결 확인
+    const { error } = await supabase
+      .from('game_rank_ios')
+      .select('id')
+      .limit(1);
+    
+    if (error) {
+      console.error("연결 테스트 실패:", error);
+      return false;
+    }
+    
+    console.log("연결 테스트 성공: iOS 테이블 접근 가능");
+    return true;
+  } catch (error) {
+    console.error("연결 테스트 중 예외 발생:", error);
+    return false;
+  }
+}
 
 // 테이블 이름 매핑
 const getTableName = (platform: PlatformType): string => {
@@ -15,7 +38,8 @@ const getTableName = (platform: PlatformType): string => {
     case "pc_steam":
       return "game_rank_steam";
     case "pc_online":
-      return "game_rank_online";
+      // game_rank_online 테이블이 존재하지 않으므로 steam 데이터로 대체
+      return "game_rank_steam";
     case "console_nintendo":
       return "game_rank_nintendo";
     case "console_playstation":
@@ -61,7 +85,14 @@ export async function getGameRankingsWithJoin(
       .limit(limit);
 
     if (error) {
-      console.error("게임 순위 데이터 가져오기 오류:", error);
+      console.error("JOIN 게임 순위 데이터 가져오기 오류:", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        tableName,
+        platform
+      });
       throw error;
     }
 
@@ -86,10 +117,14 @@ export async function getGameRankingsWithJoin(
         updated_at: item.game.updated_at,
       })) || [];
 
-    console.log("변환된 데이터:", transformedData);
+    console.log("변환된 데이터:", transformedData.length, "개");
     return transformedData;
   } catch (error) {
-    console.error("게임 순위 데이터 가져오기 실패:", error);
+    console.error("JOIN 게임 순위 데이터 가져오기 실패:", {
+      error: error instanceof Error ? error.message : error,
+      platform,
+      tableName: getTableName(platform)
+    });
     return [];
   }
 }
@@ -108,13 +143,23 @@ export async function getGameRankings(
       .limit(limit);
 
     if (error) {
-      console.error("게임 순위 데이터 가져오기 오류:", error);
+      console.error("게임 순위 데이터 가져오기 오류:", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        tableName
+      });
       throw error;
     }
 
     return data || [];
   } catch (error) {
-    console.error("게임 순위 데이터 가져오기 실패:", error);
+    console.error("게임 순위 데이터 가져오기 실패:", {
+      error: error instanceof Error ? error.message : error,
+      platform,
+      tableName: getTableName(platform)
+    });
     return [];
   }
 }

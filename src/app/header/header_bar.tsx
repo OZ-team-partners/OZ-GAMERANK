@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Logo from "./components/Logo";
 import SearchBar from "./components/SearchBar";
 import Navigation from "./components/Navigation";
