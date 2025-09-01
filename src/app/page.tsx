@@ -17,7 +17,6 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import NewsletterPage from "./blog/newsletter/page";
-import { dummyPosts } from "@/shared/data/dummyData";
 import { useRouter } from "next/navigation"
 
 export default function Home() {
@@ -1251,35 +1250,27 @@ export default function Home() {
             {[
               {
                 id: 1,
-                image: dummyPosts[0].imageUrl,
-                title: dummyPosts[0].title,
-                description: dummyPosts[0].content.length > 28
-                ? dummyPosts[0].content.slice(0,28) + "..."
-                : dummyPosts[0].content,
+                image: "/icon/page_icon/mainUpperIcon1.png",
+                title: "게임 랭킹 최신 업데이트",
+                description: "인기 게임들의 최신 랭킹 정보를 확인하세요",
               },
               {
                 id: 2,
-                image: dummyPosts[1].imageUrl,
-                title: dummyPosts[1].title,
-                description: dummyPosts[1].content.length > 28
-                ? dummyPosts[1].content.slice(0,28) + "..."
-                : dummyPosts[1].content,
+                image: "/icon/page_icon/mainUpperIcon2.png",
+                title: "커뮤니티 게시판",
+                description: "게이머들과 정보를 공유하고 소통하세요",
               },
               {
                 id: 3,
-                image: dummyPosts[2].imageUrl,
-                title: dummyPosts[2].title,
-                description: dummyPosts[2].content.length > 28
-                ? dummyPosts[2].content.slice(0,28) + "..."
-                : dummyPosts[2].content,
+                image: "/icon/page_icon/mainUpperIcon3.png",
+                title: "게임 MBTI 테스트",
+                description: "나만의 게임 성향을 알아보는 재미있는 테스트",
               },
               {
                 id: 4,
-                image: dummyPosts[3].imageUrl,
-                title: dummyPosts[3].title,
-                description: dummyPosts[3].content.length > 28
-                ? dummyPosts[3].content.slice(0,28) + "..."
-                : dummyPosts[3].content,
+                image: "/icon/page_icon/mainUpperIcon4.png",
+                title: "게임 뉴스레터",
+                description: "최신 게임 소식과 트렌드를 메일로 받아보세요",
               },
             ].map((item) => (
               <div
