@@ -2,15 +2,9 @@
 
 import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
-import onlineRequests08 from "./onlineRequests";
 import Image from "next/image";
-
-interface GameData {
-  rank: string;
-  name: string;
-  company: string;
-  img?: string;
-}
+import { getGameRankings } from "@/shared/services/gameRankingService";
+import { GameRanking } from "@/shared/types/gameRanking";
 
 interface Item {
   id: number;
@@ -26,15 +20,21 @@ export default function SectionPage() {
 
   useEffect(() => {
     async function fetchData() {
-      const data: GameData[] = await onlineRequests08(); // 온라인 랭킹 데이터 불러오기
-      const mapped: Item[] = data.map((game, index) => ({
-        id: index + 1,
-        title: game.name,
-        subtitle: game.company,
-        img: game.img, // 👈 placeholder 이미지
-        fit: "object-cover",
-      }));
-      setItems(mapped);
+      try {
+        const data: GameRanking[] = await getGameRankings("pc_online", 50);
+        const mapped: Item[] = data.map((game) => ({
+          id: game.rank_position,
+          title: game.game_name,
+          subtitle: game.developer || game.genre || "개발사 정보 없음",
+          img: game.game_image_url || undefined,
+          fit: "object-cover",
+        }));
+        setItems(mapped);
+      } catch (error) {
+        console.error("온라인 게임 데이터 로딩 실패:", error);
+        // 오류 발생 시 빈 배열로 설정
+        setItems([]);
+      }
     }
     fetchData();
   }, []);

@@ -28,12 +28,13 @@ import {
     Save,
     ArrowLeft,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/shared/lib/supabase";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 
 const ProfilePage = () => {
     const router = useRouter();
-    const [user, setUser] = useState<any>(null);
-    const [userProfile, setUserProfile] = useState<any>(null);
+    const [user, setUser] = useState<SupabaseUser | null>(null);
+    const [userProfile, setUserProfile] = useState<{id: string, username?: string, avatar_url?: string, email: string, role?: string} | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
@@ -114,8 +115,8 @@ const ProfilePage = () => {
 
             setSuccess('프로필이 성공적으로 업데이트되었습니다!');
             setTimeout(() => setSuccess(''), 3000);
-        } catch (err: any) {
-            setError(err.message || '프로필 업데이트 중 오류가 발생했습니다.');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : '프로필 업데이트 중 오류가 발생했습니다.');
         } finally {
             setSaving(false);
         }
@@ -317,7 +318,7 @@ const ProfilePage = () => {
                                         <div className="flex items-center space-x-2">
                                             <Calendar size={16} className="text-slate-500" />
                                             <span className="text-sm text-slate-600">
-                                                가입일: {new Date(user?.created_at).toLocaleDateString()}
+                                                가입일: {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
                                             </span>
                                         </div>
 

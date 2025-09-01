@@ -1,30 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { Gamepad2, Zap, Trophy, Award, ChevronDown } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import DropdownItem from "./DropdownItem";
+import { useDropdown } from "../hooks/useDropdown";
+import { Category, DropdownOption } from "../types";
+import { dropdownStyles } from "../styles/dropdownStyles";
 
 const Navigation = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const [activeCategory, setActiveCategory] = useState("");
-  const [showPCDropdown, setShowPCDropdown] = useState(false);
-  const [showConsoleDropdown, setShowConsoleDropdown] = useState(false);
-  const [showMobileDropdown, setShowMobileDropdown] = useState(false);
+  const pcDropdown = useDropdown();
+  const consoleDropdown = useDropdown();
+  const mobileDropdown = useDropdown();
 
-  const categories = [
+  const categories: Category[] = [
     {
       name: "Community",
       icon: <Gamepad2 size={16} />,
-      path: "/community/board",
+      path: "/community",
     },
     { name: "PC", icon: <Zap size={16} /> },
     { name: "Console", icon: <Trophy size={16} /> },
     { name: "Mobile", icon: <Award size={16} /> },
   ];
 
-  const pcOptions = [
+  const pcOptions: DropdownOption[] = [
     {
       name: "🌐 온라인 게임",
       path: "/rank/pc/online",
@@ -37,7 +41,7 @@ const Navigation = () => {
     },
   ];
 
-  const consoleOptions = [
+  const consoleOptions: DropdownOption[] = [
     {
       name: "🟦 PlayStation",
       path: "/rank/console/playStation",
@@ -50,7 +54,7 @@ const Navigation = () => {
     },
   ];
 
-  const mobileOptions = [
+  const mobileOptions: DropdownOption[] = [
     {
       name: "🍎 iOS",
       path: "/rank/mobile/ios",
@@ -63,47 +67,69 @@ const Navigation = () => {
     },
   ];
 
+  const closeAllDropdowns = () => {
+    pcDropdown.close();
+    consoleDropdown.close();
+    mobileDropdown.close();
+    setActiveCategory(""); // 모든 드롭다운 닫을 때 activeCategory도 초기화
+  };
+
+  // 경로 변경 시 모든 드롭다운 닫기
+  useEffect(() => {
+    closeAllDropdowns();
+  }, [pathname]);
+
+  // 각 카테고리별 드롭다운 닫기 핸들러
+  const closePCDropdown = () => {
+    pcDropdown.close();
+    setActiveCategory("");
+  };
+
+  const closeConsoleDropdown = () => {
+    consoleDropdown.close();
+    setActiveCategory("");
+  };
+
+  const closeMobileDropdown = () => {
+    mobileDropdown.close();
+    setActiveCategory("");
+  };
+
   const handleCategoryClick = (categoryName: string) => {
     if (categoryName === "Community") {
-      router.push("/community/board");
+      router.push("/community");
       return;
     }
 
-    if (categoryName === "PC") {
-      if (showPCDropdown) {
-        setShowPCDropdown(false);
+    closeAllDropdowns();
+
+    switch (categoryName) {
+      case "PC":
+        if (activeCategory === "PC") {
+          setActiveCategory("");
+        } else {
+          pcDropdown.open();
+          setActiveCategory("PC");
+        }
+        break;
+      case "Console":
+        if (activeCategory === "Console") {
+          setActiveCategory("");
+        } else {
+          consoleDropdown.open();
+          setActiveCategory("Console");
+        }
+        break;
+      case "Mobile":
+        if (activeCategory === "Mobile") {
+          setActiveCategory("");
+        } else {
+          mobileDropdown.open();
+          setActiveCategory("Mobile");
+        }
+        break;
+      default:
         setActiveCategory("");
-      } else {
-        setShowPCDropdown(true);
-        setActiveCategory("PC");
-      }
-      setShowConsoleDropdown(false);
-      setShowMobileDropdown(false);
-    } else if (categoryName === "Console") {
-      if (showConsoleDropdown) {
-        setShowConsoleDropdown(false);
-        setActiveCategory("");
-      } else {
-        setShowConsoleDropdown(true);
-        setActiveCategory("Console");
-      }
-      setShowPCDropdown(false);
-      setShowMobileDropdown(false);
-    } else if (categoryName === "Mobile") {
-      if (showMobileDropdown) {
-        setShowMobileDropdown(false);
-        setActiveCategory("");
-      } else {
-        setShowMobileDropdown(true);
-        setActiveCategory("Mobile");
-      }
-      setShowPCDropdown(false);
-      setShowConsoleDropdown(false);
-    } else {
-      setShowPCDropdown(false);
-      setShowConsoleDropdown(false);
-      setShowMobileDropdown(false);
-      setActiveCategory("");
     }
   };
 
@@ -125,9 +151,9 @@ const Navigation = () => {
                 <ChevronDown
                   size={14}
                   className={`transition-transform duration-150 ${
-                    (category.name === "PC" && showPCDropdown) ||
-                    (category.name === "Console" && showConsoleDropdown) ||
-                    (category.name === "Mobile" && showMobileDropdown)
+                    (category.name === "PC" && pcDropdown.isOpen) ||
+                    (category.name === "Console" && consoleDropdown.isOpen) ||
+                    (category.name === "Mobile" && mobileDropdown.isOpen)
                       ? "rotate-180"
                       : "rotate-0"
                   }`}
@@ -162,13 +188,13 @@ const Navigation = () => {
           </Button>
 
           {/* PC 드롭다운 */}
-          {category.name === "PC" && showPCDropdown && (
+          {category.name === "PC" && pcDropdown.isOpen && (
             <div
-              className="absolute top-full left-0 mt-3 w-80 z-50 animate-in fade-in-0 zoom-in-95 duration-150"
+              className={dropdownStyles.container}
               data-dropdown
             >
-              <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
-                <div className="p-2">
+              <div className={dropdownStyles.content}>
+                <div className={dropdownStyles.padding}>
                   {pcOptions.map((option, index) => (
                     <DropdownItem
                       key={option.name}
@@ -176,7 +202,7 @@ const Navigation = () => {
                       description={option.description}
                       path={option.path}
                       isLast={index === pcOptions.length - 1}
-                      onClick={() => setShowPCDropdown(false)}
+                      onClick={closePCDropdown}
                     />
                   ))}
                 </div>
@@ -185,13 +211,13 @@ const Navigation = () => {
           )}
 
           {/* Console 드롭다운 */}
-          {category.name === "Console" && showConsoleDropdown && (
+          {category.name === "Console" && consoleDropdown.isOpen && (
             <div
-              className="absolute top-full left-0 mt-3 w-80 z-50 animate-in fade-in-0 zoom-in-95 duration-150"
+              className={dropdownStyles.container}
               data-dropdown
             >
-              <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
-                <div className="p-2">
+              <div className={dropdownStyles.content}>
+                <div className={dropdownStyles.padding}>
                   {consoleOptions.map((option, index) => (
                     <DropdownItem
                       key={option.name}
@@ -199,7 +225,7 @@ const Navigation = () => {
                       description={option.description}
                       path={option.path}
                       isLast={index === consoleOptions.length - 1}
-                      onClick={() => setShowConsoleDropdown(false)}
+                      onClick={closeConsoleDropdown}
                     />
                   ))}
                 </div>
@@ -208,13 +234,13 @@ const Navigation = () => {
           )}
 
           {/* Mobile 드롭다운 */}
-          {category.name === "Mobile" && showMobileDropdown && (
+          {category.name === "Mobile" && mobileDropdown.isOpen && (
             <div
-              className="absolute top-full left-0 mt-3 w-80 z-50 animate-in fade-in-0 zoom-in-95 duration-150"
+              className={dropdownStyles.container}
               data-dropdown
             >
-              <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
-                <div className="p-2">
+              <div className={dropdownStyles.content}>
+                <div className={dropdownStyles.padding}>
                   {mobileOptions.map((option, index) => (
                     <DropdownItem
                       key={option.name}
@@ -222,7 +248,7 @@ const Navigation = () => {
                       description={option.description}
                       path={option.path}
                       isLast={index === mobileOptions.length - 1}
-                      onClick={() => setShowMobileDropdown(false)}
+                      onClick={closeMobileDropdown}
                     />
                   ))}
                 </div>

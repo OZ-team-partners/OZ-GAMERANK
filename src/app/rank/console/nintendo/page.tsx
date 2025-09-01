@@ -3,8 +3,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { GameRanking } from "../../../../types/gameRanking";
-import { getNintendoGameRankings } from "../../../../lib/gameRankingService";
+import { GameRanking } from "@/shared/types/gameRanking";
+import { getNintendoGameRankings } from "@/shared/services/gameRankingService";
 
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");

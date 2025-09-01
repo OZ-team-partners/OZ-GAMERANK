@@ -1,5 +1,5 @@
 import React from "react";
-import { GameRanking } from "../types/gameRanking";
+import { GameRanking } from "@/shared/types/gameRanking";
 import Image from "next/image";
 
 interface GameRankingCardProps {

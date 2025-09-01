@@ -1,45 +1,53 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { User, ChevronDown, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/shared/contexts/AuthContext";
+import { supabase } from "@/shared/lib/supabase";
+import { useDropdown } from "../hooks/useDropdown";
+import { dropdownStyles, buttonVariants } from "../styles/dropdownStyles";
+import { UserProfile } from "../types";
 
 const UserMenu = () => {
   const router = useRouter();
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [userProfile, setUserProfile] = useState<any>(null);
+  const profileDropdown = useDropdown();
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const { user, loading, signOut } = useAuth();
 
   // 사용자 프로필 정보 로드
-  useEffect(() => {
-    const loadUserProfile = async () => {
-      if (user?.email) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('*')
-          .eq('email', user.email)
-          .single();
-        
-        if (profile) {
-          setUserProfile(profile);
-        }
+  const loadUserProfile = useCallback(async () => {
+    if (user?.email) {
+      const { data: profile } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', user.email)
+        .single();
+      
+      if (profile) {
+        setUserProfile(profile);
       }
-    };
+    }
+  }, [user?.email]);
 
+  useEffect(() => {
     loadUserProfile();
-  }, [user]);
+  }, [loadUserProfile]);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     try {
       await signOut();
       router.push('/');
-      setShowProfileDropdown(false);
+      profileDropdown.close();
     } catch (error) {
       console.error('로그아웃 오류:', error);
     }
-  };
+  }, [signOut, router, profileDropdown]);
+
+  const handleProfileClick = useCallback(() => {
+    router.push('/profile');
+    profileDropdown.close();
+  }, [router, profileDropdown]);
 
   if (loading) {
     return (
@@ -54,17 +62,10 @@ const UserMenu = () => {
     return (
       <div className="relative" data-dropdown>
         <button
-          onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+          onClick={profileDropdown.toggle}
           aria-label="프로필 메뉴 열기"
-          className="
-            flex items-center space-x-2 px-4 py-2 
-            bg-gradient-to-r from-indigo-600 to-blue-600 
-            text-white rounded-lg font-semibold text-sm
-            hover:from-indigo-700 hover:to-blue-700
-            transition-all duration-150 ease-out
-            shadow-md hover:shadow-lg hover:shadow-indigo-500/15
-            cursor-pointer backdrop-blur-sm
-          "
+          aria-expanded={profileDropdown.isOpen}
+          className={`${dropdownStyles.buttonBase} ${buttonVariants.primary}`}
         >
           {userProfile?.avatar_url ? (
             <img 
@@ -78,19 +79,19 @@ const UserMenu = () => {
           <span>프로필</span>
           <ChevronDown
             size={14}
-            className={`transition-transform duration-150 ${
-              showProfileDropdown ? "rotate-180" : "rotate-0"
+            className={`${dropdownStyles.chevron} ${
+              profileDropdown.isOpen ? "rotate-180" : "rotate-0"
             }`}
           />
         </button>
 
-        {showProfileDropdown && (
+        {profileDropdown.isOpen && (
           <div
             className="absolute top-full right-0 mt-3 w-56 z-50 animate-in fade-in-0 zoom-in-95 duration-150"
             data-dropdown
           >
-            <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
-              <div className="p-2">
+            <div className={dropdownStyles.content}>
+              <div className={dropdownStyles.padding}>
                 <div className="px-4 py-3 border-b border-slate-200/60">
                   <div className="flex items-center space-x-3">
                     {userProfile?.avatar_url ? (
@@ -118,10 +119,7 @@ const UserMenu = () => {
                 </div>
                 
                 <button
-                  onClick={() => {
-                    router.push('/profile');
-                    setShowProfileDropdown(false);
-                  }}
+                  onClick={handleProfileClick}
                   className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-slate-50 transition-colors rounded-xl"
                 >
                   <Settings size={16} className="text-slate-500" />
@@ -147,15 +145,7 @@ const UserMenu = () => {
     <button
       onClick={() => router.push("/auth/login")}
       aria-label="로그인 페이지로 이동"
-      className="
-        flex items-center space-x-2 px-4 py-2 
-        bg-gradient-to-r from-indigo-600 to-blue-600 
-        text-white rounded-lg font-semibold text-sm
-        hover:from-indigo-700 hover:to-blue-700
-        transition-all duration-150 ease-out
-        shadow-md hover:shadow-lg hover:shadow-indigo-500/15
-        cursor-pointer backdrop-blur-sm
-      "
+      className={`${dropdownStyles.buttonBase} ${buttonVariants.primary}`}
     >
       <User size={16} />
       <span>로그인</span>

@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/shared/contexts/AuthContext";
 import ConditionalHeader from "./header/ConditionalHeader";
 
 const geistSans = Geist({
@@ -26,7 +26,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="ko">
+        <html lang="ko" suppressHydrationWarning>
             <head>
                 <link
                     href="https://fonts.googleapis.com/css2?family=Bangers&display=swap"
@@ -35,6 +35,7 @@ export default function RootLayout({
             </head>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased` }
+                suppressHydrationWarning={true}
             >     
                 <AuthProvider>
                     <ConditionalHeader />
