@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import puppeteer from "puppeteer";
+import puppeteer, { Page } from "puppeteer";
 
 interface SteamGame {
   id: string; // number에서 string으로 변경
@@ -10,9 +10,9 @@ interface SteamGame {
 }
 
 // Steam 크롤링 함수
-async function scrapeSteamGames(page: any): Promise<SteamGame[]> {
+async function scrapeSteamGames(page: Page): Promise<SteamGame[]> {
   return await page.evaluate(() => {
-    const gameElements: Element[] = [];
+    const gameElements: SteamGame[] = []; // Element[]에서 SteamGame[]로 변경
 
     // Steam 차트에서 ROWS 클래스로 게임 행들을 선택
     const gameRows = document.querySelectorAll("._2-RN6nWOY56sNmcDHu069P");
@@ -75,7 +75,7 @@ async function scrapeSteamGames(page: any): Promise<SteamGame[]> {
         }
 
         // 개발사/장르 정보 추출 (가능한 경우)
-        let subtitle = `Steam 인기 게임 ${rank}위`;
+        let subtitle = `Steam 8월 판매량 : ${rank}위`;
 
         // 제목 요소 주변에서 추가 정보 찾기
         const titleContainer = titleElement?.closest("div");
