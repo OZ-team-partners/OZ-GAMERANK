@@ -235,7 +235,7 @@ export default function SectionPage() {
                   {game.rank}
                 </div>
 
-                <div className="card-img w-64 h-64 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
+                <div className="card-img w-80 h-30 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
                   <Image
                     src={game.img || "/icon/rank_icon/steam1.jpeg"}
                     alt={game.title}

@@ -55,6 +55,18 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.nintendo.com",
+        port: "",
+        pathname: "/kr/switch/ranking/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.akamai.steamstatic.com",
+        port: "",
+        pathname: "/steam/apps/**",
+      },
     ],
   },
   // 타입스크립트 설정
