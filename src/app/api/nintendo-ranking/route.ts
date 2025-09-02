@@ -42,39 +42,19 @@ async function scrapeNintendoGames(page: Page): Promise<NintendoGame[]> {
         const developer =
           developerElement?.textContent?.trim() || "개발사 정보 없음";
 
-        // 이미지 URL 추출 - ranking_2025_1st 폴더의 이미지
-        const imgElement = card.querySelector('img[src*="ranking_2025_1st"]');
+        // 이미지 URL 추출 - 순위에 따라 직접 URL 생성
         let imgSrc = "";
 
-        if (imgElement) {
-          const src = imgElement.getAttribute("src");
-          if (src) {
-            console.log(`원본 이미지 경로: ${src}`); // 디버깅용
-
-            // 상대 경로를 절대 경로로 변환
-            if (src.startsWith("../../")) {
-              // ../../switch/ranking/img/ranking_2025_1st/01.jpg
-              // → https://www.nintendo.com/kr/switch/ranking/img/ranking_2025_1st/01.jpg
-              imgSrc = `https://www.nintendo.com/kr/switch/ranking/${src.replace(
-                "../../",
-                ""
-              )}`;
-            } else if (src.startsWith("/")) {
-              imgSrc = `https://www.nintendo.com${src}`;
-            } else if (src.startsWith("http")) {
-              imgSrc = src;
-            } else {
-              imgSrc = `https://www.nintendo.com/kr/switch/ranking/${src}`;
-            }
-
-            console.log(`변환된 이미지 경로: ${imgSrc}`); // 디버깅용
-          }
-        }
-
-        // 기본 이미지 설정
-        if (!imgSrc || !imgSrc.startsWith("http")) {
+        // 1~30위까지 순위별 이미지 URL 생성
+        if (rank >= 1 && rank <= 30) {
+          const rankNumber = rank < 10 ? `0${rank}` : `${rank}`; // 01, 02, 03... 형태로 변환
+          imgSrc = `https://www.nintendo.com/kr/switch/ranking/img/ranking_2025_1st/${rankNumber}.jpg`;
+        } else {
+          // 기본 이미지 설정
           imgSrc = `/icon/rank_icon/console${(rank % 3) + 1}.jpeg`;
         }
+
+        console.log(`게임 ${rank}위 이미지 URL: ${imgSrc}`); // 디버깅용
 
         // 부제목 생성
         const subtitle = developer;
@@ -241,7 +221,7 @@ export async function GET() {
 
     // Puppeteer 브라우저 실행
     browser = await puppeteer.launch({
-      headless: false, // 디버깅을 위해 브라우저 표시
+      headless: true, // 디버깅을 위해 브라우저 표시
       devtools: false,
       args: [
         "--no-sandbox",
