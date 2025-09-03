@@ -1,36 +1,74 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
-import Link from "next/link";
+import React, { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
-import { GameRanking } from "@/shared/types/gameRanking";
-import { getNintendoGameRankings } from "@/shared/services/gameRankingService";
+import Link from "next/link";
+
+interface NintendoGame {
+  id: number;
+  title: string;
+  subtitle: string;
+  img: string;
+  rank: number;
+  developer: string;
+}
+
+interface NintendoRankingResponse {
+  success: boolean;
+  data: NintendoGame[];
+  total: number;
+  lastUpdated: string;
+  source?: string;
+  error?: string;
+}
 
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [rankings, setRankings] = useState<GameRanking[]>([]);
+  const [games, setGames] = useState<NintendoGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [debugInfo, setDebugInfo] = useState<string>("");
+  const [lastUpdated, setLastUpdated] = useState<string>("");
+  const [dataSource, setDataSource] = useState<string>("");
 
-  // Supabase에서 Nintendo 게임 순위 데이터 가져오기 (JOIN 사용)
+  // 닌텐도 Switch 랭킹 데이터 가져오기
   useEffect(() => {
     const fetchNintendoRankings = async () => {
       try {
         setLoading(true);
-        setDebugInfo("데이터 가져오기 시작...");
-        
-        console.log("안나와!")
-        const data = await getNintendoGameRankings(100);
-        setDebugInfo(`데이터 가져오기 완료: ${data.length}개 항목`);
-        console.log("가져온 Nintendo 데이터:", data);
+        setError(null);
 
-        setRankings(data);
+        console.log("닌텐도 랭킹 API 호출 시작...");
+        const response = await fetch("/api/nintendo-ranking");
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("API 응답 오류:", response.status, errorText);
+          throw new Error(
+            `HTTP error! status: ${response.status}, response: ${errorText}`
+          );
+        }
+
+        const result: NintendoRankingResponse = await response.json();
+        console.log("API 응답 받음:", result);
+
+        if (result.success && result.data && Array.isArray(result.data)) {
+          setGames(result.data);
+          setLastUpdated(result.lastUpdated);
+          setDataSource(result.source || "API");
+          console.log(`닌텐도 랭킹 데이터 로드 완료: ${result.data.length}개`);
+        } else {
+          setError(result.error || "데이터 형식이 올바르지 않습니다.");
+          console.error("API 응답 오류:", result);
+        }
       } catch (err) {
-        const errorMessage = `Nintendo 게임 순위 데이터를 불러오는 중 오류가 발생했습니다: ${err}`;
-        setError(errorMessage);
-        setDebugInfo(`오류 발생: ${err}`);
-        console.error("Nintendo 순위 데이터 가져오기 실패:", err);
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "알 수 없는 오류가 발생했습니다.";
+        setError(
+          `닌텐도 Switch 랭킹 데이터를 불러오는 중 오류가 발생했습니다: ${errorMessage}`
+        );
+        console.error("닌텐도 Switch 랭킹 가져오기 실패:", err);
       } finally {
         setLoading(false);
       }
@@ -39,20 +77,16 @@ export default function SectionPage() {
     fetchNintendoRankings();
   }, []);
 
-  // 검색 필터링
   const filteredItems = useMemo(() => {
-    if (!rankings.length) return [];
-
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return rankings;
-
-    return rankings.filter(
+    if (!q) return games;
+    return games.filter(
       (game) =>
-        game.game_name.toLowerCase().includes(q) ||
-        (game.game_description &&
-          game.game_description.toLowerCase().includes(q))
+        game.title.toLowerCase().includes(q) ||
+        game.subtitle.toLowerCase().includes(q) ||
+        game.developer.toLowerCase().includes(q)
     );
-  }, [rankings, searchQuery]);
+  }, [games, searchQuery]);
 
   // 로딩 상태
   if (loading) {
@@ -62,9 +96,9 @@ export default function SectionPage() {
           <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
             <div className="text-sm leading-relaxed">
               <strong className="block mb-2">Lesson & Article</strong>
-              <div>2025</div>
-              <div>2024</div>
-              <div>2023</div>
+              <div>2025 상반기</div>
+              <div>2025 하반기</div>
+              <div>2026 상반기</div>
             </div>
             <div className="h-48 border border-slate-700 flex items-center justify-center">
               광고
@@ -73,17 +107,15 @@ export default function SectionPage() {
           </aside>
 
           <main className="flex-1 p-5">
-            <Link href="/blog/newsletter" className="block">
-              <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5 cursor-pointer hover:opacity-90 transition-opacity">
-                광고
-              </div>
-            </Link>
+            <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5">
+              광고
+            </div>
 
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
                 <p className="text-red-400">
-                  Nintendo 게임 순위를 불러오는 중...
+                  닌텐도 Switch 랭킹을 불러오는 중...
                 </p>
               </div>
             </div>
@@ -101,9 +133,9 @@ export default function SectionPage() {
           <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
             <div className="text-sm leading-relaxed">
               <strong className="block mb-2">Lesson & Article</strong>
-              <div>2025</div>
-              <div>2024</div>
-              <div>2023</div>
+              <div>2025 상반기</div>
+              <div>2025 하반기</div>
+              <div>2026 상반기</div>
             </div>
             <div className="h-48 border border-slate-700 flex items-center justify-center">
               광고
@@ -112,24 +144,19 @@ export default function SectionPage() {
           </aside>
 
           <main className="flex-1 p-5">
-            <Link href="/blog/newsletter" className="block">
-              <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5 cursor-pointer hover:opacity-90 transition-opacity">
-                광고
-              </div>
-            </Link>
+            <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5">
+              광고
+            </div>
 
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
                 <p className="text-red-400 mb-4">{error}</p>
-                <p className="text-yellow-400 text-sm">{debugInfo}</p>
-                <div className="mt-4 p-4 bg-slate-800 rounded text-left text-xs">
-                  <p>디버깅 정보:</p>
-                  <p>• 환경 변수 확인 필요</p>
-                  <p>• Supabase 연결 확인 필요</p>
-                  <p>• 테이블 이름: game_rank_nintendo</p>
-                  <p>• 플랫폼: console_nintendo</p>
-                  <p>• 데이터 개수: {rankings.length}</p>
-                </div>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="bg-indigo-500 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-indigo-600 transition-colors"
+                >
+                  다시 시도
+                </button>
               </div>
             </div>
           </main>
@@ -145,9 +172,9 @@ export default function SectionPage() {
         <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
           <div className="text-sm leading-relaxed">
             <strong className="block mb-2">Lesson & Article</strong>
-            <div>2025</div>
-            <div>2024</div>
-            <div>2023</div>
+            <div>2025 상반기</div>
+              <div>2025 하반기</div>
+              <div>2026 상반기</div>
           </div>
           <div className="h-48 border border-slate-700 flex items-center justify-center">
             광고
@@ -166,13 +193,25 @@ export default function SectionPage() {
           {/* 헤더 */}
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-white mb-2">
-              Nintendo 게임 순위
+              Nintendo Switch 랭킹
             </h1>
             <p className="text-slate-400">
-              Nintendo Switch에서 가장 인기 있는 게임 순위입니다.
+              2025년 상반기 Nintendo Switch 다운로드 랭킹입니다. [유료
+              소프트웨어 대상]
             </p>
             <p className="text-sm text-slate-500 mt-2">
-              총 {rankings.length}개의 게임이 등록되어 있습니다.
+              총 {games.length}개의 게임이 등록되어 있습니다.
+              {lastUpdated && (
+                <span className="ml-4">
+                  마지막 업데이트:{" "}
+                  {new Date(lastUpdated).toLocaleString("ko-KR")}
+                </span>
+              )}
+              {dataSource && (
+                <span className="ml-4 text-blue-400">
+                  데이터 소스: Nintendo Switch 랭킹
+                </span>
+              )}
             </p>
           </div>
 
@@ -185,7 +224,7 @@ export default function SectionPage() {
             </select>
             <input
               type="text"
-              placeholder="검색 (제목/설명)"
+              placeholder="검색 (제목/개발사)"
               className="bg-slate-800 border border-slate-700 text-white text-sm p-1.5 flex-grow"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -209,47 +248,36 @@ export default function SectionPage() {
                 {/* 순위 배지 */}
                 <div
                   className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
-                    game.rank_position === 1
+                    game.rank === 1
                       ? "bg-yellow-500 text-white"
-                      : game.rank_position === 2
+                      : game.rank === 2
                       ? "bg-gray-400 text-white"
-                      : game.rank_position === 3
+                      : game.rank === 3
                       ? "bg-amber-600 text-white"
                       : "bg-slate-600 text-white"
                   }`}
                 >
-                  {game.rank_position}
+                  {game.rank}
                 </div>
 
-                <div className="card-img w-64 h-64 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
+                <div className="card-img w-80 h-40 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
                   <Image
-                    src={
-                      game.game_image_url ||
-                      "/icon/rank_icon/console game1.jpeg"
-                    }
-                    alt={game.game_name}
-                    width={256}
-                    height={256}
+                    src={game.img || "/icon/rank_icon/console1.jpeg"}
+                    alt={game.title}
+                    width={320}
+                    height={160}
                     className="w-full h-full object-cover rounded"
                     placeholder="empty"
+                    unoptimized={true}
                   />
                 </div>
                 <div className="card-text flex-1">
                   <p className="card-title font-bold m-0 text-white text-2xl">
-                    {game.game_name}
+                    {game.title}
                   </p>
-                  <p className="card-subtitle text-slate-400 text-sm mb-2">
-                    {game.game_description || "설명 없음"}
+                  <p className="text-blue-400 text-sm">
+                    개발사: {game.developer}
                   </p>
-
-                  {/* 추가 정보 */}
-                  <div className="flex gap-4 text-xs text-slate-500">
-                    {game.genre && <span>장르: {game.genre}</span>}
-                    {game.rating && <span>평점: {game.rating.toFixed(1)}</span>}
-                    {game.review_count > 0 && (
-                      <span>리뷰: {game.review_count.toLocaleString()}</span>
-                    )}
-                  </div>
                 </div>
               </div>
             ))

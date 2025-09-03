@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
     remotePatterns: [
       {
@@ -35,14 +34,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // 타입스크립트 설정
-  typescript: {
-    ignoreBuildErrors: false,
-  },
-  // ESLint 설정
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
