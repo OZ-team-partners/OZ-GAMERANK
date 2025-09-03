@@ -1,25 +1,33 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Post, Category } from '@/shared/data/dummyData';
+import { supabase } from '@/lib/supabase';
+import type { User } from '@supabase/supabase-js';
+
 import CategoryFilter from './components/CategoryFilter';
 import PostModal from './components/PostModal';
 import PostList from './components/PostList';
 import Pagination from './components/Pagination';
 import LoginPrompt from './components/LoginPrompt';
-import { Search, PenSquare, Mail, TrendingUp, Star } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import type { User } from '@supabase/supabase-js';
+import CommunityHeader from './components/CommunityHeader';
+import CommunitySidebar from './components/CommunitySidebar';
+import SearchAndWriteBar from './components/SearchAndWriteBar';
+
+import type { CommunityPost, Category, PostFormData, SupabaseError } from './types';
+import { 
+  filterPostsByCategory, 
+  filterPostsBySearch, 
+  paginatePosts
+} from './utils';
 
 export default function BoardPage() {
   // 상태 관리
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [currentPost, setCurrentPost] = useState<Post | null>(null);
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
+  const [currentPost, setCurrentPost] = useState<CommunityPost | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] =
-    useState<Category>('전체');
+  const [selectedCategory, setSelectedCategory] = useState<Category>('전체');
   const [currentPage, setCurrentPage] = useState(1);
   const [user, setUser] = useState<User | null>(null);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
@@ -27,18 +35,77 @@ export default function BoardPage() {
   // 인증 상태 확인
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUser(user);
+      
+      // 로그인한 사용자가 users 테이블에 있는지 확인하고 없으면 추가
+      if (user) {
+        const { data: existingUser } = await supabase
+          .from('users')
+          .select('user_id')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (!existingUser) {
+          console.log('users 테이블에 사용자 정보가 없습니다. 추가합니다.');
+          const { error: insertError } = await supabase
+            .from('users')
+            .insert({
+              user_id: user.id,
+              username: user.user_metadata?.username || user.email?.split('@')[0] || 'Unknown User',
+              email: user.email,
+              password_hash: 'supabase_auth_managed',
+              avatar_url: user.user_metadata?.avatar_url || null,
+              join_date: user.created_at,
+              role: 'user',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            });
+          
+          if (insertError) {
+            console.error('users 테이블에 사용자 추가 실패:', insertError);
+          } else {
+            console.log('users 테이블에 사용자 추가 성공');
+          }
+        }
+      }
     };
 
     getUser();
 
     // 인증 상태 변경 감지
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_, session) => {
-        setUser(session?.user ?? null);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_, session) => {
+      setUser(session?.user ?? null);
+      
+      // 세션 변경 시에도 users 테이블 확인
+      if (session?.user) {
+        const { data: existingUser } = await supabase
+          .from('users')
+          .select('user_id')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        if (!existingUser) {
+          await supabase
+            .from('users')
+            .insert({
+              user_id: session.user.id,
+              username: session.user.user_metadata?.username || session.user.email?.split('@')[0] || 'Unknown User',
+              email: session.user.email,
+              password_hash: 'supabase_auth_managed',
+              avatar_url: session.user.user_metadata?.avatar_url || null,
+              join_date: session.user.created_at,
+              role: 'user',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            });
+        }
       }
-    );
+    });
 
     return () => subscription.unsubscribe();
   }, []);
@@ -50,14 +117,19 @@ export default function BoardPage() {
       try {
         // 단순한 쿼리부터 시작해서 테이블 존재 여부 확인
         console.log('📡 Supabase 쿼리 실행 중...');
-        // 삭제되지 않은 게시글만 조회 (is_deleted가 null이거나 false인 것)
+        // 삭제되지 않은 게시글과 작성자 정보를 함께 조회
         const { data: posts, error } = await supabase
           .from('commu_post')
-          .select('*')
+          .select(
+            `
+            *,
+            author:users(*)
+          `
+          )
           .or('is_deleted.is.null,is_deleted.eq.false')
           .order('created_at', { ascending: false })
           .limit(10);
-        
+
         console.log('📋 필터링된 게시글 조회 결과:', posts);
 
         console.log('📊 쿼리 결과:', { posts, error });
@@ -68,33 +140,20 @@ export default function BoardPage() {
             code: error.code,
             details: error.details,
           });
-          
+
           // 테이블이 존재하지 않거나 오류 발생 시 빈 배열
           setPosts([]);
           return;
         }
 
-        // posts가 성공적으로 로드되면 profiles 정보 조인 (일단 간단하게)
+        // posts가 성공적으로 로드되면 상태에 저장
         if (posts && posts.length > 0) {
-          // profiles 테이블 조인 없이 일단 표시
-          const postsWithFakeAuthors = posts.map(post => ({
-            ...post,
-            author: {
-              id: post.user_id,
-              username: 'Unknown User', // 나중에 실제 사용자명으로 교체
-              avatar_url: null,
-              bio: null,
-              created_at: post.created_at,
-              updated_at: post.created_at,
-            },
-          }));
-          console.log('로드된 게시글들:', postsWithFakeAuthors);
-          setPosts(postsWithFakeAuthors);
+          console.log('로드된 게시글들 (작성자 정보 포함):', posts);
+          setPosts(posts);
         } else {
           console.log('게시글이 없음');
           setPosts([]);
         }
-        
       } catch (error) {
         console.error('게시글 로딩 실패:', error);
         setPosts([]);
@@ -105,27 +164,30 @@ export default function BoardPage() {
   }, []);
 
   // 검색된 게시글 필터링
-  const filteredPosts = posts.filter(
-    (post) =>
-      post && // post가 존재하는지 확인
-      (selectedCategory === '전체' ||
-        post.category === selectedCategory) &&
-      ((post.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (post.content || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (post.author?.username || '').toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
+  const categoryFilteredPosts = filterPostsByCategory(posts, selectedCategory);
+  const searchFilteredPosts = filterPostsBySearch(categoryFilteredPosts, searchTerm);
+  
   // 페이지네이션
-  const postsPerPage = 10;
-  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-  const startIndex = (currentPage - 1) * postsPerPage;
-  const paginatedPosts = filteredPosts.slice(
-    startIndex,
-    startIndex + postsPerPage
-  );
+  const { paginatedPosts, totalPages } = paginatePosts(searchFilteredPosts, currentPage, 10);
 
-  // 수정 모달 열기
-  const openModal = (post: Post) => {
+  // 게시글 보기 모달 열기
+  const openViewModal = (post: CommunityPost) => {
+    setCurrentPost(post);
+    setIsEditMode(false);
+    setIsModalOpen(true);
+  };
+
+  // 보기 모드에서 수정 모드로 전환
+  const switchToEditMode = () => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
+    setIsEditMode(true);
+  };
+
+  // 게시글 수정 모달 열기
+  const openEditModal = (post: CommunityPost) => {
     // 비로그인 사용자가 수정하려고 할 때도 로그인 프롬프트 표시
     if (!user) {
       setShowLoginPrompt(true);
@@ -146,11 +208,7 @@ export default function BoardPage() {
 
   // 게시글 저장
   const handleSubmit = async (
-    formData: {
-      title: string;
-      content: string;
-      category: Category;
-    },
+    formData: PostFormData,
     imagePreview: string
   ) => {
     if (!user) {
@@ -172,7 +230,10 @@ export default function BoardPage() {
           })
           .eq('post_id', currentPost.id)
           .eq('user_id', user.id) // 작성자만 수정 가능
-          .select('*')
+          .select(`
+            *,
+            author:users(*)
+          `)
           .single();
 
         if (error) throw error;
@@ -180,7 +241,9 @@ export default function BoardPage() {
         // 로컬 상태 업데이트
         if (updatedPost) {
           setPosts((prev) =>
-            prev.map((post) => (post.id === currentPost.id ? updatedPost : post))
+            prev.map((post) =>
+              post.id === currentPost.id ? updatedPost : post
+            )
           );
         }
       } else {
@@ -193,8 +256,12 @@ export default function BoardPage() {
             category: formData.category,
             image_url: imagePreview || null,
             user_id: user.id,
+            created_at: new Date().toISOString(),
           })
-          .select('*')
+          .select(`
+            *,
+            author:users(*)
+          `)
           .single();
 
         if (error) throw error;
@@ -208,13 +275,18 @@ export default function BoardPage() {
       closeModal();
     } catch (error) {
       console.error('게시글 저장 실패:', error);
+      const supabaseError = error as SupabaseError;
       console.error('Error details:', {
-        message: (error as any)?.message,
-        code: (error as any)?.code,
-        details: (error as any)?.details,
-        hint: (error as any)?.hint,
+        message: supabaseError?.message,
+        code: supabaseError?.code,
+        details: supabaseError?.details,
+        hint: supabaseError?.hint,
       });
-      alert(`게시글 저장에 실패했습니다: ${(error as any)?.message || '알 수 없는 오류'}`);
+      alert(
+        `게시글 저장에 실패했습니다: ${
+          supabaseError?.message || '알 수 없는 오류'
+        }`
+      );
     }
   };
 
@@ -260,146 +332,45 @@ export default function BoardPage() {
     }
   };
 
+  const handleWriteClick = () => {
+    if (!user) {
+      setShowLoginPrompt(true);
+    } else {
+      setCurrentPost(null);
+      setIsEditMode(false);
+      setIsModalOpen(true);
+    }
+  };
 
   return (
     <div className="m-0 font-sans bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 text-white min-h-screen">
       <div className="max-w-7xl mx-auto py-8 px-2 sm:px-4 lg:px-6">
-        {/* 헤더 섹션 */}
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
-            Game Community
-          </h1>
-          <p className="text-slate-400">게임을 사랑하는 사람들의 모임</p>
-        </div>
-
-        {/* 카테고리 필터 */}
+        
+        <CommunityHeader />
+        
         <CategoryFilter
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* LEFT: 사이드바 */}
-          <div className="lg:col-span-1 flex flex-col gap-4">
-            {/* 구독 카드 */}
-            <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-5 rounded-2xl shadow-xl">
-              <div className="flex items-center gap-2 mb-3">
-                <Mail className="w-5 h-5" />
-                <h4 className="font-semibold text-lg">뉴스레터 구독</h4>
-              </div>
-              <p className="text-sm mb-4 opacity-90">
-                최신 게임 소식을 받아보세요
-              </p>
-              <div className="space-y-3">
-                <input
-                  type="email"
-                  placeholder="이메일 주소"
-                  className="w-full p-3 rounded-lg bg-white/20 backdrop-blur-sm placeholder-white/70 text-white border border-white/30 focus:outline-none focus:border-white"
-                />
-                <button className="w-full p-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-white/90 transition-all cursor-pointer">
-                  구독하기
-                </button>
-              </div>
-            </div>
+          <CommunitySidebar />
 
-            {/* 트렌딩 카드 */}
-            <div className="bg-slate-800/50 backdrop-blur-sm p-5 rounded-2xl border border-slate-700 shadow-xl">
-              <div className="flex items-center gap-2 mb-4">
-                <TrendingUp className="w-5 h-5 text-green-400" />
-                <h4 className="font-semibold">인기 토픽</h4>
-              </div>
-              <div className="space-y-2">
-                <div className="p-2 bg-slate-700/50 rounded-lg text-sm hover:bg-slate-700 transition-colors cursor-pointer">
-                  #발더스게이트3
-                </div>
-                <div className="p-2 bg-slate-700/50 rounded-lg text-sm hover:bg-slate-700 transition-colors cursor-pointer">
-                  #스팀세일
-                </div>
-                <div className="p-2 bg-slate-700/50 rounded-lg text-sm hover:bg-slate-700 transition-colors cursor-pointer">
-                  #PS5신작
-                </div>
-              </div>
-            </div>
-
-            {/* 광고 영역 */}
-            <div className="h-[350px] bg-gradient-to-br from-yellow-400 via-orange-500 to-red-600 rounded-2xl shadow-2xl overflow-hidden relative">
-              {/* 배경 패턴 */}
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent rotate-45 transform translate-x-[-100%] animate-pulse"></div>
-              </div>
-              
-              {/* 광고 모집 문구 */}
-              <div className="absolute top-4 left-0 right-0 text-center z-10">
-                <div className="inline-block bg-black/70 backdrop-blur-sm px-5 py-2.5 rounded-full">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">📢</span>
-                    <span className="text-yellow-300 text-base font-bold tracking-wider">광고 모집 중</span>
-                    <span className="text-xl">📢</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* 메인 광고 컨텐츠 */}
-              <div className="relative h-full flex flex-col justify-center items-center p-8 text-center">
-                <div className="flex flex-col items-center gap-3 mb-6">
-                  <div className="flex items-center gap-3">
-                    <Star className="w-6 h-6 text-yellow-300" />
-                    <h3 className="text-2xl font-bold text-white drop-shadow-lg">소중한 광고주</h3>
-                    <Star className="w-6 h-6 text-yellow-300" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white drop-shadow-lg">모십니다!</h3>
-                </div>
-                
-                {/* 장식 아이콘들 */}
-                <Star className="absolute top-16 right-6 w-5 h-5 text-yellow-300 opacity-80 animate-ping" />
-                <Star className="absolute bottom-16 left-6 w-4 h-4 text-white opacity-60 animate-pulse" />
-                <Star className="absolute top-28 left-4 w-3 h-3 text-yellow-200 opacity-50 animate-bounce" />
-                <Star className="absolute top-20 right-2 w-3 h-3 text-yellow-400 opacity-40 animate-pulse" />
-              </div>
-              
-              {/* 테두리 네온 효과 */}
-              <div className="absolute inset-0 rounded-2xl border-4 border-yellow-300/50 animate-pulse"></div>
-            </div>
-          </div>
-
-          {/* RIGHT: 메인 콘텐츠 */}
+          {/* 메인 콘텐츠 */}
           <div className="lg:col-span-3">
-            {/* 검색 및 글쓰기 바 */}
-            <div className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-2xl border border-slate-700 mb-6 shadow-xl">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder="게시글 검색..."
-                    className="w-full pl-10 pr-4 py-3 bg-slate-700/50 rounded-xl text-white placeholder-slate-400 border border-slate-600 focus:outline-none focus:border-blue-500 transition-colors"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <button
-                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold hover:shadow-lg transition-all cursor-pointer"
-                  onClick={() => {
-                    if (!user) {
-                      setShowLoginPrompt(true);
-                    } else {
-                      setCurrentPost(null);
-                      setIsEditMode(false);
-                      setIsModalOpen(true);
-                    }
-                  }}
-                >
-                  <PenSquare className="w-5 h-5" />
-                  <span>글쓰기</span>
-                </button>
-              </div>
-            </div>
+            <SearchAndWriteBar
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              onWriteClick={handleWriteClick}
+            />
 
             <PostList
               posts={paginatedPosts}
-              onEditPost={openModal}
+              onViewPost={openViewModal}
+              onEditPost={openEditModal}
               onDeletePost={handleDelete}
               isAuthenticated={!!user}
+              currentUserId={user?.id}
             />
 
             <Pagination
@@ -415,11 +386,13 @@ export default function BoardPage() {
       <PostModal
         isOpen={isModalOpen}
         isEditMode={isEditMode}
+        isViewMode={!isEditMode && !!currentPost} // 수정 모드가 아니고 게시글이 있으면 보기 모드
         currentPost={currentPost}
         user={user}
         onClose={closeModal}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
+        onEdit={switchToEditMode}
       />
 
       {/* 로그인 프롬프트 */}

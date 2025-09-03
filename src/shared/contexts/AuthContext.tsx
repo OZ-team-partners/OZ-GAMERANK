@@ -74,16 +74,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (data.user) {
         // users 테이블에 사용자 정보 저장
-        try {
-          await supabase.from('users').insert([{
-            username,
-            email,
-            password_hash: 'supabase_auth_managed',
-            avatar_url: null,
-            role: 'user'
-          }]);
-        } catch (err) {
-          console.log('사용자 정보 저장 오류:', err);
+        const { error: insertError } = await supabase.from('users').insert([{
+          user_id: data.user.id,
+          username,
+          email,
+          password_hash: 'supabase_auth_managed',
+          avatar_url: null,
+          join_date: new Date().toISOString(),
+          role: 'user',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }]);
+        
+        if (insertError) {
+          console.error('users 테이블 저장 오류:', insertError);
+          return { user: null, error: `회원가입 실패: ${insertError.message}` };
         }
 
         // 강제 자동 로그인

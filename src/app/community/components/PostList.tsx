@@ -2,17 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
-import { Post } from "@/shared/data/dummyData";
 import { Edit2, Trash2, Eye, Calendar, MessageCircle, User, Heart, Pin } from "lucide-react";
+import type { PostListProps } from "../types";
 
-interface PostListProps {
-  posts: Post[];
-  onEditPost: (post: Post) => void;
-  onDeletePost: (id: number) => void;
-  isAuthenticated?: boolean;
-}
-
-export default function PostList({ posts, onEditPost, onDeletePost, isAuthenticated = false }: PostListProps) {
+export default function PostList({ posts, onViewPost, onEditPost, onDeletePost, isAuthenticated = false, currentUserId }: PostListProps) {
   if (posts.length === 0) {
     return (
       <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-12 text-center">
@@ -29,7 +22,7 @@ export default function PostList({ posts, onEditPost, onDeletePost, isAuthentica
     <div className="space-y-4">
       {posts.map((post, index) => (
         <div 
-          key={(post as any).post_id || post.id || index}
+          key={post.post_id || post.id || index}
           className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 hover:border-slate-600 overflow-hidden hover:cursor-pointer group"
         >
           <div className="p-5">
@@ -58,7 +51,7 @@ export default function PostList({ posts, onEditPost, onDeletePost, isAuthentica
               <div className="flex-1 min-w-0">
                 <div 
                   className="hover:cursor-pointer"
-                  onClick={() => onEditPost(post)}
+                  onClick={() => onViewPost(post)}
                 >
                   <h3 className="font-semibold text-lg mb-1 text-white group-hover:text-blue-400">
                     {post?.title || 'Untitled'}
@@ -114,8 +107,8 @@ export default function PostList({ posts, onEditPost, onDeletePost, isAuthentica
                 </div>
               </div>
 
-              {/* 액션 버튼 - 로그인한 사용자만 표시 */}
-              {isAuthenticated && (
+              {/* 액션 버튼 - 게시글 작성자만 표시 */}
+              {isAuthenticated && currentUserId && post.user_id === currentUserId && (
                 <div className="flex gap-2 items-start">
                   <button
                     onClick={(e) => {
