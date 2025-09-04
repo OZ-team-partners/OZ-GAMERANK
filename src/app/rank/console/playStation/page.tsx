@@ -6,31 +6,31 @@ import Image from "next/image";
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const items = [
-    {
-      id: 1,
-      title: "플레이 스테이션호라이즌 제로 던",
-      subtitle: "미려한 그래픽과 풍부한 스토리의 수작!",
-      img: "/icon/rank_icon/console game1.jpeg",
-      fit: "object-contain",
-    },
-    {
-      id: 2,
-      title: "마블 스파이더맨 2",
-      subtitle: "스파이더맨이 되어 뉴욕시를 누비며 악당을 무찌르자!",
-      img: "/icon/rank_icon/console game2.jpeg",
-      fit: "object-cover",
-    },
-    {
-      id: 3,
-      title: "GTA5",
-      subtitle: "말이 필요없는 최고의 오픈월드 게임!",
-      img: "/icon/rank_icon/console game3.jpeg",
-      fit: "object-cover",
-    },
-  ];
-
   const filteredItems = useMemo(() => {
+    const items = [
+      {
+        id: 1,
+        title: "플레이 스테이션호라이즌 제로 던",
+        subtitle: "미려한 그래픽과 풍부한 스토리의 수작!",
+        img: "/icon/rank_icon/console game1.jpeg",
+        fit: "object-contain",
+      },
+      {
+        id: 2,
+        title: "마블 스파이더맨 2",
+        subtitle: "스파이더맨이 되어 뉴욕시를 누비며 악당을 무찌르자!",
+        img: "/icon/rank_icon/console game2.jpeg",
+        fit: "object-cover",
+      },
+      {
+        id: 3,
+        title: "GTA5",
+        subtitle: "말이 필요없는 최고의 오픈월드 게임!",
+        img: "/icon/rank_icon/console game3.jpeg",
+        fit: "object-cover",
+      },
+    ];
+    
     const q = searchQuery.trim().toLowerCase();
     if (!q) return items;
     return items.filter(

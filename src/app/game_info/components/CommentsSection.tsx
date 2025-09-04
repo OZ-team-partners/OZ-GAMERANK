@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
 export default function CommentsSection() {
   const [visibleComments, setVisibleComments] = useState(4);
@@ -241,7 +241,7 @@ export default function CommentsSection() {
     setShowValidationMessage(false);
   };
 
-  const loadMoreComments = () => {
+  const loadMoreComments = useCallback(() => {
     if (isLoading || visibleComments >= allComments.length) return;
     
     setIsLoading(true);
@@ -250,7 +250,7 @@ export default function CommentsSection() {
       setVisibleComments(prev => Math.min(prev + 5, allComments.length));
       setIsLoading(false);
     }, 1000);
-  };
+  }, [isLoading, visibleComments, allComments.length]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -262,16 +262,17 @@ export default function CommentsSection() {
       { threshold: 0.1 }
     );
 
-    if (sentinelRef.current) {
-      observer.observe(sentinelRef.current);
+    const currentSentinel = sentinelRef.current;
+    if (currentSentinel) {
+      observer.observe(currentSentinel);
     }
 
     return () => {
-      if (sentinelRef.current) {
-        observer.unobserve(sentinelRef.current);
+      if (currentSentinel) {
+        observer.unobserve(currentSentinel);
       }
     };
-  }, [isLoading, visibleComments, allComments.length]);
+  }, [isLoading, visibleComments, allComments.length, loadMoreComments]);
   return (
     <div className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700 mt-6">
       <h2 className="text-2xl font-bold text-white mb-6">

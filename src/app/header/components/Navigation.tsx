@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@mui/material";
 import { Gamepad2, Zap, Trophy, Award, ChevronDown } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
@@ -67,17 +67,17 @@ const Navigation = () => {
     },
   ];
 
-  const closeAllDropdowns = () => {
+  const closeAllDropdowns = useCallback(() => {
     pcDropdown.close();
     consoleDropdown.close();
     mobileDropdown.close();
     setActiveCategory(""); // 모든 드롭다운 닫을 때 activeCategory도 초기화
-  };
+  }, [pcDropdown.close, consoleDropdown.close, mobileDropdown.close]);
 
   // 경로 변경 시 모든 드롭다운 닫기
   useEffect(() => {
     closeAllDropdowns();
-  }, [pathname]);
+  }, [pathname, closeAllDropdowns]);
 
   // 각 카테고리별 드롭다운 닫기 핸들러
   const closePCDropdown = () => {

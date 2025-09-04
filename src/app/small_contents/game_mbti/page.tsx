@@ -1,5 +1,6 @@
 "use client"; // useState 등 client 컴포넌트 훅 쓰려면 필수
 import React, { useState } from "react";
+import Image from "next/image";
 import "@fontsource/press-start-2p"; // 8비트 폰트 적용
 
 interface IChoice {
@@ -256,7 +257,13 @@ export default function GameQuiz() {
                 key={idx}
                 className="bg-gray-800 p-3 rounded-lg shadow-lg hover:scale-105 transition transform duration-200 border-4 border-pink-500"
               >
-                <img src={game.image} alt={game.title} className="rounded mb-3" />
+                <Image 
+                  src={game.image} 
+                  alt={game.title} 
+                  width={200}
+                  height={150}
+                  className="rounded mb-3 w-full h-auto" 
+                />
                 <p className="text-sm">{game.title}</p>
               </div>
             ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { User, ChevronDown, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/shared/contexts/AuthContext";
@@ -68,9 +69,11 @@ const UserMenu = () => {
           className={`${dropdownStyles.buttonBase} ${buttonVariants.primary}`}
         >
           {userProfile?.avatar_url ? (
-            <img 
+            <Image 
               src={userProfile.avatar_url} 
               alt="프로필" 
+              width={16}
+              height={16}
               className="w-4 h-4 rounded-full object-cover border border-white/20"
             />
           ) : (
@@ -95,9 +98,11 @@ const UserMenu = () => {
                 <div className="px-4 py-3 border-b border-slate-200/60">
                   <div className="flex items-center space-x-3">
                     {userProfile?.avatar_url ? (
-                      <img 
+                      <Image 
                         src={userProfile.avatar_url} 
                         alt="프로필" 
+                        width={32}
+                        height={32}
                         className="w-8 h-8 rounded-full object-cover"
                       />
                     ) : (

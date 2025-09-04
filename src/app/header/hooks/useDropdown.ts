@@ -19,7 +19,7 @@ export const useDropdown = () => {
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
-        close();
+        setIsOpen(false);
       }
     };
 
@@ -27,7 +27,7 @@ export const useDropdown = () => {
       document.addEventListener('keydown', handleEscape);
       return () => document.removeEventListener('keydown', handleEscape);
     }
-  }, [isOpen, close]);
+  }, [isOpen]);
 
   // 외부 클릭시 드롭다운 닫기
   useEffect(() => {
@@ -36,7 +36,7 @@ export const useDropdown = () => {
       const dropdown = target.closest('[data-dropdown]');
       
       if (!dropdown && isOpen) {
-        close();
+        setIsOpen(false);
       }
     };
 
@@ -51,7 +51,7 @@ export const useDropdown = () => {
         document.removeEventListener('click', handleClickOutside);
       };
     }
-  }, [isOpen, close]);
+  }, [isOpen]);
 
   return {
     isOpen,
