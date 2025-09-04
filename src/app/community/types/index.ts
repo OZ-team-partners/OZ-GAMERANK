@@ -68,6 +68,7 @@ export interface PostListProps {
   onDeletePost: (id: number) => void;
   isAuthenticated?: boolean;
   currentUserId?: string;
+  isLoading?: boolean;
 }
 
 export interface SupabaseError {

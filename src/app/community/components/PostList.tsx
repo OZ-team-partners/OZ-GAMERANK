@@ -5,7 +5,21 @@ import Image from "next/image";
 import { Edit2, Trash2, Eye, Calendar, MessageCircle, User, Heart, Pin } from "lucide-react";
 import type { PostListProps } from "../types";
 
-export default function PostList({ posts, onViewPost, onEditPost, onDeletePost, isAuthenticated = false, currentUserId }: PostListProps) {
+export default function PostList({ posts, onViewPost, onEditPost, onDeletePost, isAuthenticated = false, currentUserId, isLoading = false }: PostListProps) {
+  if (isLoading) {
+    return (
+      <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-12 text-center">
+        <div className="text-slate-400">
+          <div className="w-16 h-16 mx-auto mb-4 relative">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-slate-600 border-t-blue-500"></div>
+          </div>
+          <p className="text-lg">게시글 불러오는 중입니다</p>
+          <p className="text-sm mt-2">잠시만 기다려주세요...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (posts.length === 0) {
     return (
       <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700 p-12 text-center">
