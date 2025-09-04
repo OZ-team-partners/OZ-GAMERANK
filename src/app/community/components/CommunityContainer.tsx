@@ -12,12 +12,14 @@ import Pagination from './Pagination';
 import LoginPrompt from './LoginPrompt';
 import CommunityHeader from './CommunityHeader';
 import CommunitySidebar from './CommunitySidebar';
+import SearchAndWriteBar from './SearchAndWriteBar';
 import { useCommunity } from './CommunityProvider';
 
 export default function CommunityContainer() {
   const {
     // State
     currentPost,
+    searchTerm,
     selectedCategory,
     currentPage,
     user,
@@ -34,10 +36,12 @@ export default function CommunityContainer() {
     totalPages,
     
     // Actions
+    setSearchTerm,
     setSelectedCategory,
     setCurrentPage,
     openPostDetail,
     backToList,
+    handleWriteClick,
     openDeleteModal,
     closeDeleteModal,
     switchToEditMode,
@@ -125,6 +129,11 @@ export default function CommunityContainer() {
             ) : (
               /* 게시글 목록 */
               <>
+                <SearchAndWriteBar
+                  searchTerm={searchTerm}
+                  onSearchChange={setSearchTerm}
+                  onWriteClick={handleWriteClick}
+                />
 
                 <PostList
                   posts={paginatedPosts}
