@@ -1,26 +1,52 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
-import { GameRanking } from "@/shared/types/gameRanking";
-import { getGameRankings } from "@/shared/services/gameRankingService";
+import Link from "next/link";
+
+interface IOSGame {
+  id: number;
+  title: string;
+  subtitle: string;
+  img: string;
+  rank: number;
+}
+
+interface IOSRankingResponse {
+  success: boolean;
+  data: IOSGame[];
+  total: number;
+  lastUpdated: string;
+  source?: string;
+  error?: string;
+}
 
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [rankings, setRankings] = useState<GameRanking[]>([]);
+  const [games, setGames] = useState<IOSGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<string>("");
+  const [dataSource, setDataSource] = useState<string>("");
 
-  // Supabase에서 iOS 게임 순위 데이터 가져오기
+  // iOS 랭킹 데이터 가져오기
   useEffect(() => {
     const fetchIOSRankings = async () => {
       try {
         setLoading(true);
-        const data = await getGameRankings("mobile_ios", 100);
-        setRankings(data);
+        const response = await fetch("/api/ios-ranking");
+        const result: IOSRankingResponse = await response.json();
+
+        if (result.success) {
+          setGames(result.data);
+          setLastUpdated(result.lastUpdated);
+          setDataSource(result.source || "API");
+        } else {
+          setError(result.error || "데이터를 가져오는데 실패했습니다.");
+        }
       } catch (err) {
-        setError("iOS 게임 순위 데이터를 불러오는 중 오류가 발생했습니다.");
-        console.error("iOS 순위 데이터 가져오기 실패:", err);
+        setError("iOS 랭킹 데이터를 불러오는 중 오류가 발생했습니다.");
+        console.error("iOS 랭킹 가져오기 실패:", err);
       } finally {
         setLoading(false);
       }
@@ -29,20 +55,15 @@ export default function SectionPage() {
     fetchIOSRankings();
   }, []);
 
-  // 검색 필터링
   const filteredItems = useMemo(() => {
-    if (!rankings.length) return [];
-
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return rankings;
-
-    return rankings.filter(
+    if (!q) return games;
+    return games.filter(
       (game) =>
-        game.game_name.toLowerCase().includes(q) ||
-        (game.game_description &&
-          game.game_description.toLowerCase().includes(q))
+        game.title.toLowerCase().includes(q) ||
+        game.subtitle.toLowerCase().includes(q)
     );
-  }, [rankings, searchQuery]);
+  }, [games, searchQuery]);
 
   // 로딩 상태
   if (loading) {
@@ -52,9 +73,9 @@ export default function SectionPage() {
           <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
             <div className="text-sm leading-relaxed">
               <strong className="block mb-2">Lesson & Article</strong>
-              <div>2025</div>
-              <div>2024</div>
-              <div>2023</div>
+              <div>2025.8</div>
+              <div>2025.9</div>
+              <div>2025.10</div>
             </div>
             <div className="h-48 border border-slate-700 flex items-center justify-center">
               광고
@@ -104,7 +125,13 @@ export default function SectionPage() {
 
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
-                <p className="text-red-400">{error}</p>
+                <p className="text-red-400 mb-4">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="bg-indigo-500 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-indigo-600 transition-colors"
+                >
+                  다시 시도
+                </button>
               </div>
             </div>
           </main>
@@ -132,9 +159,11 @@ export default function SectionPage() {
 
         {/* 메인 영역 */}
         <main className="flex-1 p-5">
-          <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5">
-            광고
-          </div>
+          <Link href="/blog/newsletter" className="block">
+            <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5 cursor-pointer hover:opacity-90 transition-opacity">
+              광고
+            </div>
+          </Link>
 
           {/* 헤더 */}
           <div className="mb-6">
@@ -142,10 +171,21 @@ export default function SectionPage() {
               iOS 게임 순위
             </h1>
             <p className="text-slate-400">
-              App Store에서 가장 인기 있는 iOS 게임 순위입니다.
+              App Store에서 가장 인기 있는 iOS 유료 게임 순위입니다.
             </p>
             <p className="text-sm text-slate-500 mt-2">
-              총 {rankings.length}개의 게임이 등록되어 있습니다.
+              총 {games.length}개의 게임이 등록되어 있습니다.
+              {lastUpdated && (
+                <span className="ml-4">
+                  마지막 업데이트:{" "}
+                  {new Date(lastUpdated).toLocaleString("ko-KR")}
+                </span>
+              )}
+              {dataSource && (
+                <span className="ml-4 text-blue-400">
+                  데이터 소스: {dataSource}
+                </span>
+              )}
             </p>
           </div>
 
@@ -182,22 +222,22 @@ export default function SectionPage() {
                 {/* 순위 배지 */}
                 <div
                   className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
-                    game.rank_position === 1
+                    game.rank === 1
                       ? "bg-yellow-500 text-white"
-                      : game.rank_position === 2
+                      : game.rank === 2
                       ? "bg-gray-400 text-white"
-                      : game.rank_position === 3
+                      : game.rank === 3
                       ? "bg-amber-600 text-white"
                       : "bg-slate-600 text-white"
                   }`}
                 >
-                  {game.rank_position}
+                  {game.rank}
                 </div>
 
-                <div className="card-img w-64 h-64 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
+                <div className="card-img w-40 h-40 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
                   <Image
-                    src={game.game_image_url || "/icon/rank_icon/mobile1.jpeg"}
-                    alt={game.game_name}
+                    src={game.img || "/icon/rank_icon/mobile1.jpeg"}
+                    alt={game.title}
                     width={256}
                     height={256}
                     className="w-full h-full object-cover rounded"
@@ -206,20 +246,11 @@ export default function SectionPage() {
                 </div>
                 <div className="card-text flex-1">
                   <p className="card-title font-bold m-0 text-white text-2xl">
-                    {game.game_name}
+                    {game.title}
                   </p>
                   <p className="card-subtitle text-slate-400 text-sm mb-2">
-                    {game.game_description || "설명 없음"}
+                    {game.subtitle}
                   </p>
-
-                  {/* 추가 정보 */}
-                  <div className="flex gap-4 text-xs text-slate-500">
-                    {game.genre && <span>장르: {game.genre}</span>}
-                    {game.rating && <span>평점: {game.rating.toFixed(1)}</span>}
-                    {game.review_count > 0 && (
-                      <span>리뷰: {game.review_count.toLocaleString()}</span>
-                    )}
-                  </div>
                 </div>
               </div>
             ))

@@ -50,6 +50,30 @@ const nextConfig = {
         port: "",
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "apps.apple.com",
+        port: "",
+        pathname: "/assets/**",
+      },
+      {
+        protocol: "https",
+        hostname: "is1-ssl.mzstatic.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.mobileindex.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "play-lh.googleusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };
