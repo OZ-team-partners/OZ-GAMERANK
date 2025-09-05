@@ -17,33 +17,54 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import NewsletterPage from "./blog/newsletter/page";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentSmallSlide] = useState(0);
+  // 이 부분들을 주석 처리하거나 제거
+  // const [rankingData, setRankingData] = useState(null);
+  // const [rankingLoading, setRankingLoading] = useState(true);
 
   // Supabase 연결 테스트
   useEffect(() => {
     const testConnection = async () => {
       try {
         const { data, error } = await supabase
-          .from('test')
-          .select('*')
+          .from("test")
+          .select("*")
           .limit(1);
-        
+
         if (error) {
-          console.log('Supabase 연결 실패:', error);
+          console.log("Supabase 연결 실패:", error);
         } else {
-          console.log('Supabase 연결 성공!', data);
+          console.log("Supabase 연결 성공!", data);
         }
       } catch (error) {
-        console.log('Supabase 테스트 중 오류:', error);
+        console.log("Supabase 테스트 중 오류:", error);
       }
     };
 
     testConnection();
   }, []);
+
+  // 이 useEffect를 주석 처리하거나 제거
+  // useEffect(() => {
+  //   const fetchRankingSummary = async () => {
+  //     try {
+  //       const response = await fetch("/api/ranking-summary");
+  //       const result = await response.json();
+  //       if (result.success) {
+  //         setRankingData(result.data);
+  //       }
+  //     } catch (error) {
+  //       console.error("랭킹 데이터 로드 실패:", error);
+  //     } finally {
+  //       setRankingLoading(false);
+  //     }
+  //   };
+  //   fetchRankingSummary();
+  // }, []);
 
   const mainSlides = [
     {
@@ -57,7 +78,8 @@ export default function Home() {
       id: 2,
       title: "2024 GOTY",
       desc: "24년을 휩쓴 GOTY작",
-      image: "/images/console/nintendo/nintendo_The Legend of Zelda- Breath of the Wild_01.jpg",
+      image:
+        "/images/console/nintendo/nintendo_The Legend of Zelda- Breath of the Wild_01.jpg",
     },
     {
       id: 3,
@@ -78,29 +100,30 @@ export default function Home() {
       id: 1,
       title: "디지털 50% sale 지금 바로!",
       smallSlides_text: "지금이 제일 저렴할때!",
-      image: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=400&h=300&fit=crop",
-      href:"/community/board"
+      image:
+        "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=400&h=300&fit=crop",
+      href: "/community/board",
     },
     {
       id: 2,
       title: "게임특전",
       smallSlides_text: "지금이 제일 할인률이 높은거 아시죠?",
       image: "/rpg.jpg",
-      href:"/small_contents/game_mbti/"
+      href: "/small_contents/game_mbti/",
     },
     {
       id: 3,
       title: "ads",
       smallSlides_text: "S&P 500은 언제가 제일 싸다?",
       image: "/rpg.jpg",
-      href:"/small_contents/game_mbti/"
+      href: "/small_contents/game_mbti/",
     },
     {
       id: 4,
       title: "game-bti",
       smallSlides_text: "게임도 적성검사가 있는거 아세요?",
       image: "/icon/page_icon/small_contents_game_mbti.png",
-      href:"/small_contents/game_mbti/"
+      href: "/small_contents/game_mbti/",
     },
   ];
   const router = useRouter();
@@ -273,16 +296,18 @@ export default function Home() {
                       >
                         <div className="bg-slate-600 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
                           <Image
-                            src={slide.image}       // slide 객체의 image 경로
-                            alt={slide.title}       // 웹 접근성을 위한 alt 속성
-                            width={768}             // w-full을 고정값으로 변환 (컨테이너 너비에 맞춰 조절)
-                            height={600}            // h-45 → 45*4 = 180px
+                            src={slide.image} // slide 객체의 image 경로
+                            alt={slide.title} // 웹 접근성을 위한 alt 속성
+                            width={768} // w-full을 고정값으로 변환 (컨테이너 너비에 맞춰 조절)
+                            height={600} // h-45 → 45*4 = 180px
                             className="object-cover"
                           />
                           <div className="h-20 flex flex-col justify-end items-start p-3">
                             <h3
                               className={`font-semibold ${
-                                slide.title === "game-bti" ? "font-bangers text-xl" : ""
+                                slide.title === "game-bti"
+                                  ? "font-bangers text-xl"
+                                  : ""
                               }`}
                             >
                               {slide.title}

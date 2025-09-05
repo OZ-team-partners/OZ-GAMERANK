@@ -16,6 +16,18 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "shared.akamai.steamstatic.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "shared.fastly.steamstatic.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
         port: "",
         pathname: "/**",
@@ -28,9 +40,15 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "shared.akamai.steamstatic.com",
+        hostname: "placehold.co",
         port: "",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "tcrmxwxtocryjvecdgib.supabase.co",
+        port: "",
+        pathname: "/storage/v1/object/public/**",
       },
     ],
   },
