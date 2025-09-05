@@ -72,7 +72,7 @@ const Navigation = () => {
     consoleDropdown.close();
     mobileDropdown.close();
     setActiveCategory(""); // 모든 드롭다운 닫을 때 activeCategory도 초기화
-  }, [pcDropdown.close, consoleDropdown.close, mobileDropdown.close]);
+  }, [pcDropdown, consoleDropdown, mobileDropdown]);
 
   // 경로 변경 시 모든 드롭다운 닫기
   useEffect(() => {
