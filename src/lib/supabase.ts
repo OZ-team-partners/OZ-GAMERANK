@@ -23,6 +23,10 @@ export const communityApi = {
     page?: number;
     limit?: number;
   }) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      return { data: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 0 } };
+    }
     let query = supabase
       .from('posts')
       .select(`
@@ -61,6 +65,10 @@ export const communityApi = {
   },
 
   async getPostById(id: number) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      throw new Error('Supabase client is not initialized');
+    }
     const { data, error } = await supabase
       .from('posts')
       .select(`
@@ -85,6 +93,10 @@ export const communityApi = {
     category: string;
     image_url?: string;
   }) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      throw new Error('Supabase client is not initialized');
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -110,6 +122,10 @@ export const communityApi = {
     category?: string;
     image_url?: string;
   }) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      throw new Error('Supabase client is not initialized');
+    }
     const { data, error } = await supabase
       .from('posts')
       .update(updates)
@@ -125,6 +141,10 @@ export const communityApi = {
   },
 
   async deletePost(id: number) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      throw new Error('Supabase client is not initialized');
+    }
     const { error } = await supabase
       .from('posts')
       .update({ is_deleted: true })
@@ -139,6 +159,10 @@ export const communityApi = {
     parent_id?: number;
     content: string;
   }) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      throw new Error('Supabase client is not initialized');
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -175,6 +199,10 @@ export const communityApi = {
 
   // Likes
   async toggleLike(post_id: number) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      throw new Error('Supabase client is not initialized');
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -234,6 +262,10 @@ export const communityApi = {
 
   // View count
   async incrementViewCount(post_id: number) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      throw new Error('Supabase client is not initialized');
+    }
     const { data: post } = await supabase
       .from('posts')
       .select('view_count')
@@ -250,6 +282,10 @@ export const communityApi = {
 
   // Profile
   async getProfile(user_id: string) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      throw new Error('Supabase client is not initialized');
+    }
     const { data, error } = await supabase
       .from('profiles')
       .select()
@@ -265,6 +301,10 @@ export const communityApi = {
     avatar_url?: string;
     bio?: string;
   }) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      throw new Error('Supabase client is not initialized');
+    }
     const { data, error } = await supabase
       .from('profiles')
       .update(updates)
@@ -278,6 +318,10 @@ export const communityApi = {
 
   // Check if user liked a post
   async checkUserLiked(post_id: number) {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      return false;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
 

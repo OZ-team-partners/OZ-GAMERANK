@@ -30,6 +30,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Supabase가 초기화되지 않았으면 로딩 종료
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      setLoading(false);
+      return;
+    }
+
     // 초기 세션 확인
     const getInitialSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -54,6 +61,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, username: string) => {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      return { user: null, error: 'Supabase client is not initialized' };
+    }
     try {
       // 비밀번호 자동 확장 (Supabase 최소 요구사항)
       const finalPassword = password.length < 6 ? password + "123456".slice(0, 6 - password.length) : password;
@@ -111,6 +122,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signIn = async (email: string, password: string) => {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      return { user: null, error: 'Supabase client is not initialized' };
+    }
     try {
       // 비밀번호 자동 확장 (회원가입 시와 동일하게)
       const finalPassword = password.length < 6 ? password + "123456".slice(0, 6 - password.length) : password;
@@ -131,6 +146,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOut = async () => {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized');
+      return;
+    }
     try {
       await supabase.auth.signOut();
     } catch (err) {
