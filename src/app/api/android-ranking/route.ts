@@ -26,7 +26,7 @@ export async function GET() {
     chromeBrowser = await puppeteer.launch({
       browser: "chrome",
       protocol: "webDriverBiDi",
-      headless: false,
+      headless: true,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
