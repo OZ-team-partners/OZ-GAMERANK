@@ -12,7 +12,7 @@ export const supabase = supabaseUrl && supabaseAnonKey
         persistSession: true,
       },
     })
-  : null as any;
+  : null as unknown as ReturnType<typeof createClient>;
 
 // Helper functions for community features
 export const communityApi = {

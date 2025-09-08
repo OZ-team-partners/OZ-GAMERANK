@@ -7,4 +7,4 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 // During build time, these might not be available yet
 export const supabase = supabaseUrl && supabaseAnonKey 
   ? createClient(supabaseUrl, supabaseAnonKey)
-  : null as any
+  : null as unknown as ReturnType<typeof createClient>

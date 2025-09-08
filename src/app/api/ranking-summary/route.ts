@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
 import puppeteer, { Page } from "puppeteer";
 
@@ -24,4 +25,8 @@ interface NintendoGame {
   img: string;
   rank: number;
   developer: string;
+}
+
+export async function GET() {
+  return NextResponse.json({ message: "Ranking summary endpoint" });
 }
