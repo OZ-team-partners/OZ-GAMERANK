@@ -33,22 +33,26 @@ export const useDropdown = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      const dropdown = target.closest('[data-dropdown]');
       
-      if (!dropdown && isOpen) {
+      // 드롭다운 관련 요소들을 찾기 (클래스명 기반으로 변경)
+      const isDropdownButton = target.closest('.dropdown-button');
+      const isDropdownContent = target.closest('.dropdown-content');
+      
+      // 버튼이나 드롭다운 내용 클릭이 아닌 경우에만 닫기
+      if (!isDropdownButton && !isDropdownContent && isOpen) {
         setIsOpen(false);
       }
     };
 
     if (isOpen) {
-      // 짧은 딜레이를 두어 클릭 이벤트 전파 문제 방지
+      // 더 긴 딜레이로 이벤트 충돌 방지
       const timeoutId = setTimeout(() => {
-        document.addEventListener('click', handleClickOutside);
-      }, 0);
+        document.addEventListener('click', handleClickOutside, { capture: true });
+      }, 150);
       
       return () => {
         clearTimeout(timeoutId);
-        document.removeEventListener('click', handleClickOutside);
+        document.removeEventListener('click', handleClickOutside, { capture: true });
       };
     }
   }, [isOpen]);

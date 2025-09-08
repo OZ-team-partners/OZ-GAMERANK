@@ -1,21 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@mui/material";
 import { Gamepad2, Zap, Trophy, Award, ChevronDown } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import DropdownItem from "./DropdownItem";
-import { useDropdown } from "../hooks/useDropdown";
 import { Category, DropdownOption } from "../types";
-import { dropdownStyles } from "../styles/dropdownStyles";
 
 const Navigation = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const [activeCategory, setActiveCategory] = useState("");
-  const pcDropdown = useDropdown();
-  const consoleDropdown = useDropdown();
-  const mobileDropdown = useDropdown();
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const categories: Category[] = [
     {
@@ -67,33 +63,32 @@ const Navigation = () => {
     },
   ];
 
-  const closeAllDropdowns = useCallback(() => {
-    pcDropdown.close();
-    consoleDropdown.close();
-    mobileDropdown.close();
-    setActiveCategory(""); // 모든 드롭다운 닫을 때 activeCategory도 초기화
-  }, [pcDropdown, consoleDropdown, mobileDropdown]);
-
-  // 경로 변경 시 모든 드롭다운 닫기
+  // 외부 클릭시 드롭다운 닫기
   useEffect(() => {
-    closeAllDropdowns();
-  }, [pathname, closeAllDropdowns]);
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      let clickedInside = false;
 
-  // 각 카테고리별 드롭다운 닫기 핸들러
-  const closePCDropdown = () => {
-    pcDropdown.close();
-    setActiveCategory("");
-  };
+      // 드롭다운 영역 클릭 확인
+      Object.values(dropdownRefs.current).forEach((ref) => {
+        if (ref && ref.contains(target)) {
+          clickedInside = true;
+        }
+      });
 
-  const closeConsoleDropdown = () => {
-    consoleDropdown.close();
-    setActiveCategory("");
-  };
+      if (!clickedInside) {
+        setOpenDropdown(null);
+      }
+    };
 
-  const closeMobileDropdown = () => {
-    mobileDropdown.close();
-    setActiveCategory("");
-  };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // 경로 변경시 드롭다운 닫기
+  useEffect(() => {
+    setOpenDropdown(null);
+  }, [pathname]);
 
   const handleCategoryClick = (categoryName: string) => {
     if (categoryName === "Community") {
@@ -101,42 +96,36 @@ const Navigation = () => {
       return;
     }
 
-    closeAllDropdowns();
+    if (openDropdown === categoryName) {
+      setOpenDropdown(null);
+    } else {
+      setOpenDropdown(categoryName);
+    }
+  };
 
+  const closeDropdown = () => {
+    setOpenDropdown(null);
+  };
+
+  const getDropdownOptions = (categoryName: string) => {
     switch (categoryName) {
-      case "PC":
-        if (activeCategory === "PC") {
-          setActiveCategory("");
-        } else {
-          pcDropdown.open();
-          setActiveCategory("PC");
-        }
-        break;
-      case "Console":
-        if (activeCategory === "Console") {
-          setActiveCategory("");
-        } else {
-          consoleDropdown.open();
-          setActiveCategory("Console");
-        }
-        break;
-      case "Mobile":
-        if (activeCategory === "Mobile") {
-          setActiveCategory("");
-        } else {
-          mobileDropdown.open();
-          setActiveCategory("Mobile");
-        }
-        break;
-      default:
-        setActiveCategory("");
+      case "PC": return pcOptions;
+      case "Console": return consoleOptions;
+      case "Mobile": return mobileOptions;
+      default: return [];
     }
   };
 
   return (
     <nav className="flex items-center justify-center flex-1 relative">
       {categories.map((category) => (
-        <div key={category.name} className="relative" data-dropdown>
+        <div 
+          key={category.name} 
+          className="relative"
+          ref={(el) => {
+            dropdownRefs.current[category.name] = el;
+          }}
+        >
           <Button
             onClick={() => handleCategoryClick(category.name)}
             variant="text"
@@ -151,11 +140,7 @@ const Navigation = () => {
                 <ChevronDown
                   size={14}
                   className={`transition-transform duration-150 ${
-                    (category.name === "PC" && pcDropdown.isOpen) ||
-                    (category.name === "Console" && consoleDropdown.isOpen) ||
-                    (category.name === "Mobile" && mobileDropdown.isOpen)
-                      ? "rotate-180"
-                      : "rotate-0"
+                    openDropdown === category.name ? "rotate-180" : "rotate-0"
                   }`}
                 />
               ) : null
@@ -169,9 +154,9 @@ const Navigation = () => {
               fontWeight: 600,
               paddingX: 3,
               marginRight: 1,
-              color: activeCategory === category.name ? "#FFFFFF" : "#CBD5E1",
+              color: openDropdown === category.name ? "#FFFFFF" : "#CBD5E1",
               backgroundColor:
-                activeCategory === category.name
+                openDropdown === category.name
                   ? "rgba(148, 163, 184, 0.1)"
                   : "transparent",
               "&:hover": {
@@ -187,68 +172,19 @@ const Navigation = () => {
             {category.name}
           </Button>
 
-          {/* PC 드롭다운 */}
-          {category.name === "PC" && pcDropdown.isOpen && (
-            <div
-              className={dropdownStyles.container}
-              data-dropdown
-            >
-              <div className={dropdownStyles.content}>
-                <div className={dropdownStyles.padding}>
-                  {pcOptions.map((option, index) => (
+          {/* 드롭다운 메뉴 */}
+          {openDropdown === category.name && getDropdownOptions(category.name).length > 0 && (
+            <div className="absolute top-full mt-3 w-80 z-50">
+              <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
+                <div className="p-2">
+                  {getDropdownOptions(category.name).map((option, index) => (
                     <DropdownItem
                       key={option.name}
                       title={option.name}
                       description={option.description}
                       path={option.path}
-                      isLast={index === pcOptions.length - 1}
-                      onClick={closePCDropdown}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Console 드롭다운 */}
-          {category.name === "Console" && consoleDropdown.isOpen && (
-            <div
-              className={dropdownStyles.container}
-              data-dropdown
-            >
-              <div className={dropdownStyles.content}>
-                <div className={dropdownStyles.padding}>
-                  {consoleOptions.map((option, index) => (
-                    <DropdownItem
-                      key={option.name}
-                      title={option.name}
-                      description={option.description}
-                      path={option.path}
-                      isLast={index === consoleOptions.length - 1}
-                      onClick={closeConsoleDropdown}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Mobile 드롭다운 */}
-          {category.name === "Mobile" && mobileDropdown.isOpen && (
-            <div
-              className={dropdownStyles.container}
-              data-dropdown
-            >
-              <div className={dropdownStyles.content}>
-                <div className={dropdownStyles.padding}>
-                  {mobileOptions.map((option, index) => (
-                    <DropdownItem
-                      key={option.name}
-                      title={option.name}
-                      description={option.description}
-                      path={option.path}
-                      isLast={index === mobileOptions.length - 1}
-                      onClick={closeMobileDropdown}
+                      isLast={index === getDropdownOptions(category.name).length - 1}
+                      onClick={closeDropdown}
                     />
                   ))}
                 </div>
