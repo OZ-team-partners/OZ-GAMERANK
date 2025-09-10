@@ -30,6 +30,11 @@ export default function Home() {
   useEffect(() => {
     const testConnection = async () => {
       try {
+        if (!supabase) {
+          console.log("Supabase 클라이언트가 초기화되지 않았습니다.");
+          return;
+        }
+        
         const { data, error } = await supabase
           .from("test")
           .select("*")

@@ -51,6 +51,11 @@ const ProfilePage = () => {
         const loadUserProfile = async () => {
             try {
                 // 현재 사용자 확인
+                if (!supabase) {
+                    router.push('/auth/login');
+                    return;
+                }
+                
                 const { data: { session } } = await supabase.auth.getSession();
                 
                 if (!session?.user) {
@@ -97,7 +102,7 @@ const ProfilePage = () => {
         setSaving(true);
 
         try {
-            if (!user) return;
+            if (!user || !supabase) return;
 
             // users 테이블 업데이트 (password_hash 제외)
             const { error: updateError } = await supabase

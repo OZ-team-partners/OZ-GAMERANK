@@ -40,6 +40,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // 초기 세션 확인
     const getInitialSession = async () => {
       try {
+        if (!supabase) {
+          console.error('Supabase client not initialized');
+          setLoading(false);
+          return;
+        }
+        
         const { data: { session } } = await supabase.auth.getSession();
         setSession(session);
         setUser(session?.user ?? null);

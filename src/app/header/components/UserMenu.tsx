@@ -18,7 +18,7 @@ const UserMenu = () => {
 
   // 사용자 프로필 정보 로드
   const loadUserProfile = useCallback(async () => {
-    if (user?.email) {
+    if (user?.email && supabase) {
       const { data: profile } = await supabase
         .from('users')
         .select('*')
