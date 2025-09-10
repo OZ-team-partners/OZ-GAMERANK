@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import puppeteer, { Page } from "puppeteer";
+import { saveRankGameForPlatform } from "@/lib/supabase";
 
 interface SteamGame {
   id: string; // number에서 string으로 변경
@@ -217,6 +218,30 @@ export async function GET() {
       );
     }
 
+    // DB 저장
+    const payload = games.map((g) => ({
+      rank_position: g.rank,
+      title: g.title,
+      subtitle: g.subtitle,
+      img_url: g.img,
+    }));
+    const save = await saveRankGameForPlatform("steam", payload);
+    if (save.error) {
+      return NextResponse.json(
+        {
+          success: false,
+          data: games,
+          total: games.length,
+          lastUpdated: new Date().toISOString(),
+          source: "Steam Charts (Puppeteer)",
+          scrapedCount: games.length,
+          retryCount: retryCount,
+          error: save.error,
+        },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
       data: games,
@@ -225,6 +250,7 @@ export async function GET() {
       source: "Steam Charts (Puppeteer)",
       scrapedCount: games.length,
       retryCount: retryCount,
+      savedToDatabase: true,
     });
   } catch (error) {
     console.error("Steam 랭킹 크롤링 오류:", error);

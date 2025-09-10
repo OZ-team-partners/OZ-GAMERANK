@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import puppeteer from "puppeteer";
+import { saveRankGameForPlatform } from "@/lib/supabase";
 
 interface AndroidGame {
   id: number;
@@ -26,7 +27,7 @@ export async function GET() {
     chromeBrowser = await puppeteer.launch({
       browser: "chrome",
       protocol: "webDriverBiDi",
-      headless: false,
+      headless: true,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -154,16 +155,38 @@ export async function GET() {
 
     await chromeBrowser.close();
 
-    const result: AndroidRankingResponse = {
+    // DB 저장
+    const payload = games.map((g) => ({
+      rank_position: g.rank,
+      title: g.title,
+      subtitle: g.subtitle,
+      img_url: g.img,
+    }));
+    const save = await saveRankGameForPlatform("android", payload);
+    if (save.error) {
+      return NextResponse.json(
+        {
+          success: false,
+          data: games,
+          total: games.length,
+          lastUpdated: new Date().toISOString(),
+          source:
+            "https://www.similarweb.com/top-apps/google/korea-republic-of/games/top-paid/",
+          error: save.error,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
       success: true,
       data: games,
       total: games.length,
       lastUpdated: new Date().toISOString(),
       source:
         "https://www.similarweb.com/top-apps/google/korea-republic-of/games/top-paid/",
-    };
-
-    return NextResponse.json(result);
+      savedToDatabase: true,
+    });
   } catch (error) {
     console.error("Android 랭킹 크롤링 실패:", error);
 

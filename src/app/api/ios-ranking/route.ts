@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import puppeteer from "puppeteer";
+import { saveRankGameForPlatform } from "@/lib/supabase";
 
 interface IOSGame {
   id: number;
@@ -135,15 +136,36 @@ export async function GET() {
 
     await chromeBrowser.close();
 
-    const result: IOSRankingResponse = {
+    // DB 저장
+    const payload = games.map((g) => ({
+      rank_position: g.rank,
+      title: g.title,
+      subtitle: g.subtitle,
+      img_url: g.img,
+    }));
+    const save = await saveRankGameForPlatform("ios", payload);
+    if (save.error) {
+      return NextResponse.json(
+        {
+          success: false,
+          data: games,
+          total: games.length,
+          lastUpdated: new Date().toISOString(),
+          source: "https://apps.apple.com/kr/charts/iphone/top-paid-games/6014",
+          error: save.error,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
       success: true,
       data: games,
       total: games.length,
       lastUpdated: new Date().toISOString(),
       source: "https://apps.apple.com/kr/charts/iphone/top-paid-games/6014",
-    };
-
-    return NextResponse.json(result);
+      savedToDatabase: true,
+    });
   } catch (error) {
     console.error("iOS 랭킹 크롤링 실패:", error);
 

@@ -5,6 +5,7 @@
 ## 🚀 주요 기능
 
 - **게임 랭킹**: PC/콘솔/모바일 플랫폼별 게임 순위
+- **닌텐도 랭킹 자동화**: 매일 오전 1시 자동 크롤링 및 데이터베이스 저장
 - **게임 정보**: 상세한 게임 정보 및 리뷰
 - **커뮤니티**: 게이머들을 위한 커뮤니티 게시판
 - **게임 MBTI**: 게이밍 성향 테스트
@@ -13,6 +14,7 @@
 ## 🛠️ 기술 스택
 
 ### Frontend
+
 - **Framework**: Next.js 15.4.5 (App Router)
 - **Language**: TypeScript 5.x
 - **Styling**: TailwindCSS 4.x
@@ -21,6 +23,7 @@
 - **Font**: Press Start 2P (게이밍 테마)
 
 ### Backend
+
 - **Database**: Supabase (PostgreSQL)
 - **Authentication**: Supabase Auth
 - **API**: Next.js API Routes
@@ -58,18 +61,22 @@ docs/                 # 문서화 파일들
 ## 🚦 시작하기
 
 ### 1. 의존성 설치
+
 ```bash
 npm install
 ```
 
 ### 2. 환경 변수 설정
+
 `.env.local` 파일을 생성하고 다음 내용을 추가하세요:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ### 3. 개발 서버 실행
+
 ```bash
 npm run dev
 ```
@@ -90,11 +97,13 @@ npm run lint     # ESLint 실행
 Supabase를 사용하여 PostgreSQL 데이터베이스를 관리합니다.
 
 ### 마이그레이션 실행
+
 ```bash
 npx supabase db push
 ```
 
 ### 로컬 개발 환경
+
 ```bash
 npx supabase start  # 로컬 Supabase 시작
 npx supabase stop   # 로컬 Supabase 중지
@@ -105,6 +114,42 @@ npx supabase stop   # 로컬 Supabase 중지
 - **테마**: 다크 모드 (slate 색상 계열)
 - **반응형**: 모바일 퍼스트 디자인
 - **게이밍 스타일**: 그라데이션 배경, 호버 효과
+
+## 🤖 닌텐도 랭킹 자동화 설정
+
+### 자동 크롤링 시스템
+
+- **스케줄**: 매일 오전 1시 (KST)
+- **데이터 소스**: [닌텐도 Switch 랭킹 페이지](https://www.nintendo.com/kr/switch/ranking/ranking_2025_1st.html)
+- **저장소**: Supabase `rank_game` 테이블 (platform: 'nintendo')
+
+### API 엔드포인트
+
+- `GET /api/nintendo-ranking` - 수동 크롤링 및 저장
+- `GET /api/nintendo-ranking/latest` - 최신 랭킹 데이터 조회
+- `GET /api/nintendo-ranking/history?days=7` - 히스토리 조회 (최대 30일)
+- `GET /api/nintendo-ranking/cron` - 자동 크롤링 (Vercel Cron)
+
+### 환경 변수 설정
+
+```bash
+# Supabase 설정
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### Vercel 배포 시 Cron Jobs 설정
+
+1. `vercel.json` 파일이 프로젝트 루트에 있는지 확인
+2. Vercel 대시보드에서 Cron Jobs 활성화
+3. 매일 오전 1시에 자동으로 크롤링 실행
+
+### 데이터베이스 마이그레이션
+
+```bash
+# 새로운 마이그레이션 적용
+npx supabase db push
+```
 
 ## 📚 문서
 
@@ -120,4 +165,4 @@ npx supabase stop   # 로컬 Supabase 중지
 
 ---
 
-*OZ-GAMERANK - 게이머를 위한, 게이머에 의한 랭킹 서비스* 🎮
+_OZ-GAMERANK - 게이머를 위한, 게이머에 의한 랭킹 서비스_ 🎮

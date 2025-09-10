@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/nintendo-ranking/cron",
+      "schedule": "0 1 * * *"
+    }
+  ]
+}

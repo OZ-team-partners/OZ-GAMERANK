@@ -3,6 +3,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
 interface OnlineGame {
   id: number;
@@ -29,21 +30,47 @@ export default function SectionPage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [dataSource, setDataSource] = useState<string>("");
 
-  // Online-game 랭킹 데이터 가져오기
+  // Online-game 랭킹 데이터 가져오기 (DB)
   useEffect(() => {
     const fetchOnlineRankings = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/online-rank");
-        const result: OnlineRankingResponse = await response.json();
+        const { data, error } = await supabase
+          .from("rank_game")
+          .select("id, game_title, game_subtitle, image_url, rank, update_when")
+          .eq("platform", "online")
+          .order("rank", { ascending: true });
 
-        if (result.success) {
-          setGames(result.data);
-          setLastUpdated(result.lastUpdated);
-          setDataSource(result.source || "API");
-        } else {
-          setError(result.error || "데이터를 가져오는데 실패했습니다.");
-        }
+        if (error) throw new Error(error.message);
+
+        type RankGameRow = {
+          id: number;
+          game_title: string;
+          game_subtitle: string | null;
+          image_url: string | null;
+          rank: number;
+          update_when: string | null;
+        };
+
+        const mapped: OnlineGame[] = ((data as RankGameRow[] | null) || []).map(
+          (row) => ({
+            id: row.id,
+            title: row.game_title,
+            subtitle: row.game_subtitle || "",
+            img: row.image_url || "/icon/rank_icon/online1.jpeg",
+            rank: row.rank,
+          })
+        );
+
+        setGames(mapped);
+        setLastUpdated(
+          data && (data as RankGameRow[])[0]?.update_when
+            ? new Date(
+                (data as RankGameRow[])[0].update_when as string
+              ).toISOString()
+            : new Date().toISOString()
+        );
+        setDataSource("DB: rank_game (online)");
       } catch (err) {
         setError("Online-game 랭킹 데이터를 불러오는 중 오류가 발생했습니다.");
         console.error("Online-game 랭킹 가져오기 실패:", err);
@@ -91,7 +118,9 @@ export default function SectionPage() {
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-                <p className="text-red-400">Online-game 순위를 불러오는 중...</p>
+                <p className="text-red-400">
+                  Online-game 순위를 불러오는 중...
+                </p>
               </div>
             </div>
           </main>
@@ -171,7 +200,8 @@ export default function SectionPage() {
               Online 게임 순위
             </h1>
             <p className="text-slate-400">
-              PC에서 가장 인기 있는 Online 게임 순위입니다. [포털 트렌드 , PC방 접속 , 게임방송 시청자 , 메카 유저 투표 기준]
+              PC에서 가장 인기 있는 Online 게임 순위입니다. [포털 트렌드 , PC방
+              접속 , 게임방송 시청자 , 메카 유저 투표 기준]
             </p>
             <p className="text-sm text-slate-500 mt-2">
               총 {games.length}개의 게임이 등록되어 있습니다.
@@ -183,8 +213,7 @@ export default function SectionPage() {
               )}
               {dataSource && (
                 <span className="ml-4 text-blue-400">
-                  데이터 소스:
-                  &#39;https://www.gamemeca.com/ranking.php&#39;
+                  데이터 소스: &#39;https://www.gamemeca.com/ranking.php&#39;
                 </span>
               )}
             </p>

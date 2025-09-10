@@ -55,8 +55,6 @@ async function scrapeNintendoGames(page: Page): Promise<NintendoGame[]> {
           imgSrc = `/icon/rank_icon/console${(rank % 3) + 1}.jpeg`;
         }
 
-        console.log(`게임 ${rank}위 이미지 URL: ${imgSrc}`); // 디버깅용
-
         // 부제목 생성
         const subtitle = developer;
 
@@ -212,17 +210,17 @@ async function scrapeNintendoGames(page: Page): Promise<NintendoGame[]> {
   });
 }
 
-export async function GET() {
+export async function POST() {
   let browser: Browser | null = null;
   let page: Page | null = null;
 
   try {
-    console.log("=== 닌텐도 랭킹 크롤링 시작 ===");
+    console.log("=== 닌텐도 랭킹 크론 작업 시작 ===");
     console.log("Puppeteer 브라우저 시작...");
 
     // Puppeteer 브라우저 실행
     browser = await puppeteer.launch({
-      headless: true, // 디버깅을 위해 브라우저 표시
+      headless: true,
       devtools: false,
       args: [
         "--no-sandbox",
@@ -277,8 +275,8 @@ export async function GET() {
     await page.goto(
       "https://www.nintendo.com/kr/switch/ranking/ranking_2025_1st.html",
       {
-        waitUntil: "domcontentloaded", // networkidle0 대신 domcontentloaded 사용
-        timeout: 60000, // 타임아웃을 60초로 증가
+        waitUntil: "domcontentloaded",
+        timeout: 60000,
       }
     );
 
@@ -348,7 +346,7 @@ export async function GET() {
             "닌텐도 Switch 랭킹에서 데이터를 추출할 수 없습니다. 페이지 구조가 변경되었을 수 있습니다.",
           retryCount: retryCount,
           lastUpdated: new Date().toISOString(),
-          source: "닌텐도 Switch 랭킹 (Failed)",
+          source: "닌텐도 Switch 랭킹 (Cron Failed)",
         },
         { status: 500 }
       );
@@ -377,34 +375,34 @@ export async function GET() {
           details: saveResult.error,
           scrapedData: games,
           lastUpdated: new Date().toISOString(),
-          source: "닌텐도 Switch 랭킹 (Save Failed)",
+          source: "닌텐도 Switch 랭킹 (Cron Save Failed)",
         },
         { status: 500 }
       );
     }
 
-    console.log("=== 데이터 저장 완료 ===");
+    console.log("=== 크론 작업 완료 ===");
     return NextResponse.json({
       success: true,
       data: games,
       total: games.length,
       lastUpdated: new Date().toISOString(),
-      source: "닌텐도 Switch 랭킹 (Puppeteer + Supabase)",
+      source: "닌텐도 Switch 랭킹 (Cron + Supabase)",
       scrapedCount: games.length,
       retryCount: retryCount,
       savedToDatabase: true,
     });
   } catch (error) {
-    console.error("=== 닌텐도 Switch 랭킹 크롤링 오류 ===");
+    console.error("=== 닌텐도 Switch 랭킹 크론 작업 오류 ===");
     console.error("오류 상세:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: "닌텐도 Switch 랭킹 데이터를 가져오는데 실패했습니다.",
+        error: "닌텐도 Switch 랭킹 크론 작업에 실패했습니다.",
         details: error instanceof Error ? error.message : "Unknown error",
         lastUpdated: new Date().toISOString(),
-        source: "닌텐도 Switch 랭킹 (Error)",
+        source: "닌텐도 Switch 랭킹 (Cron Error)",
       },
       { status: 500 }
     );

@@ -3,6 +3,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
 interface NintendoGame {
   id: number;
@@ -13,14 +14,7 @@ interface NintendoGame {
   developer: string;
 }
 
-interface NintendoRankingResponse {
-  success: boolean;
-  data: NintendoGame[];
-  total: number;
-  lastUpdated: string;
-  source?: string;
-  error?: string;
-}
+// API 응답 타입은 더 이상 사용하지 않음 (DB 직접 조회)
 
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,29 +31,46 @@ export default function SectionPage() {
         setLoading(true);
         setError(null);
 
-        console.log("닌텐도 랭킹 API 호출 시작...");
-        const response = await fetch("/api/nintendo-ranking");
+        console.log("닌텐도 랭킹 DB 조회 시작...");
+        const { data, error } = await supabase
+          .from("rank_game")
+          .select("id, game_title, game_subtitle, image_url, rank, update_when")
+          .eq("platform", "nintendo")
+          .order("rank", { ascending: true });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error("API 응답 오류:", response.status, errorText);
-          throw new Error(
-            `HTTP error! status: ${response.status}, response: ${errorText}`
-          );
+        if (error) {
+          console.error("DB 조회 오류:", error);
+          throw new Error(error.message);
         }
 
-        const result: NintendoRankingResponse = await response.json();
-        console.log("API 응답 받음:", result);
+        type RankGameRow = {
+          id: number;
+          game_title: string;
+          game_subtitle: string | null;
+          image_url: string | null;
+          rank: number;
+          update_when: string | null;
+        };
 
-        if (result.success && result.data && Array.isArray(result.data)) {
-          setGames(result.data);
-          setLastUpdated(result.lastUpdated);
-          setDataSource(result.source || "API");
-          console.log(`닌텐도 랭킹 데이터 로드 완료: ${result.data.length}개`);
-        } else {
-          setError(result.error || "데이터 형식이 올바르지 않습니다.");
-          console.error("API 응답 오류:", result);
-        }
+        const mapped: NintendoGame[] = (
+          (data as RankGameRow[] | null) || []
+        ).map((row) => ({
+          id: row.id,
+          title: row.game_title,
+          subtitle: row.game_subtitle || "",
+          img: row.image_url || "/icon/rank_icon/console1.jpeg",
+          rank: row.rank,
+          developer: row.game_subtitle || "",
+        }));
+
+        setGames(mapped);
+        setLastUpdated(
+          data && data[0]?.update_when
+            ? new Date(data[0].update_when).toISOString()
+            : new Date().toISOString()
+        );
+        setDataSource("DB: rank_game (nintendo)");
+        console.log(`닌텐도 랭킹 DB 데이터 로드 완료: ${mapped.length}개`);
       } catch (err) {
         const errorMessage =
           err instanceof Error
@@ -173,8 +184,8 @@ export default function SectionPage() {
           <div className="text-sm leading-relaxed">
             <strong className="block mb-2">Lesson & Article</strong>
             <div>2025 상반기</div>
-              <div>2025 하반기</div>
-              <div>2026 상반기</div>
+            <div>2025 하반기</div>
+            <div>2026 상반기</div>
           </div>
           <div className="h-48 border border-slate-700 flex items-center justify-center">
             광고

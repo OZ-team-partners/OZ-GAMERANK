@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import puppeteer, { Page } from "puppeteer";
+import { saveRankGameForPlatform } from "@/lib/supabase";
 
 interface OnlineGame {
   id: string;
@@ -173,6 +174,30 @@ export async function GET() {
       );
     }
 
+    // DB 저장
+    const payload = games.map((g) => ({
+      rank_position: g.rank,
+      title: g.title,
+      subtitle: g.subtitle,
+      img_url: g.img,
+    }));
+    const save = await saveRankGameForPlatform("online", payload);
+    if (save.error) {
+      return NextResponse.json(
+        {
+          success: false,
+          data: games,
+          total: games.length,
+          lastUpdated: new Date().toISOString(),
+          source: "게임메카 순위 (Puppeteer)",
+          scrapedCount: games.length,
+          retryCount: retryCount,
+          error: save.error,
+        },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
       data: games,
@@ -181,6 +206,7 @@ export async function GET() {
       source: "게임메카 순위 (Puppeteer)",
       scrapedCount: games.length,
       retryCount: retryCount,
+      savedToDatabase: true,
     });
   } catch (error) {
     console.error("게임메카 온라인 게임 랭킹 크롤링 오류:", error);
