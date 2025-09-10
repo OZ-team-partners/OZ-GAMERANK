@@ -32,9 +32,10 @@ export default function Home() {
     const testConnection = async () => {
       try {
         if (!supabase) {
-          console.log("Supabase 인스턴스가 존재하지 않습니다.");
+          console.log("Supabase 클라이언트가 초기화되지 않았습니다.");
           return;
         }
+        
         const { data, error } = await supabase
           .from("test")
           .select("*")

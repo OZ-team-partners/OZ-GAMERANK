@@ -95,19 +95,23 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
 
     const getUser = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
+        if (supabase) {
+          const { data: { user } } = await supabase.auth.getUser();
+          setUser(user);
+        }
       } catch (error) {
         console.error('Failed to get user:', error);
       }
     };
     getUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+      });
 
-    return () => subscription.unsubscribe();
+      return () => subscription.unsubscribe();
+    }
   }, []);
 
   // 게시글 로드
@@ -124,6 +128,10 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
       
       try {
         console.log('📡 Supabase 쿼리 실행 중...');
+        
+        if (!supabase) {
+          throw new Error('Supabase client is not available');
+        }
         
         const { data: posts, error } = await supabase
           .from('commu_post')
@@ -251,6 +259,8 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
         return;
       }
 
+      if (!supabase) return;
+      
       const { data: currentPost } = await supabase
         .from('commu_post')
         .select('view_count')
@@ -333,7 +343,7 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
     if (!user || !supabase) return;
 
     try {
-      if (showEditView && currentPost) {
+      if (showEditView && currentPost && supabase) {
         // 수정 로직
         const { error } = await supabase
           .from('commu_post')
@@ -366,7 +376,7 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
         setShowDetailView(true);
         const newUrl = `/community?post=${currentPost.post_id || currentPost.id}`;
         window.history.pushState({ postId: currentPost.post_id || currentPost.id }, '', newUrl);
-      } else {
+      } else if (supabase) {
         // 새 게시글 작성 로직
         const { data, error } = await supabase
           .from('commu_post')
