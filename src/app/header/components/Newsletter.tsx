@@ -26,7 +26,7 @@ const Newsletter = () => {
   return (
     <Dropdown
       label="Level Up! 소식통"
-      icon={<span>📧</span>}
+      icon={<span className="newsletter-icon">📧</span>}
       options={newsletterOptions}
       variant="success"
       ariaLabel="Level Up! 소식통 메뉴 열기"

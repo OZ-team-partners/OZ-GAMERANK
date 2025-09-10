@@ -66,7 +66,7 @@ const UserMenu = () => {
           onClick={profileDropdown.toggle}
           aria-label="프로필 메뉴 열기"
           aria-expanded={profileDropdown.isOpen}
-          className={`${dropdownStyles.buttonBase} ${buttonVariants.primary}`}
+          className={`${dropdownStyles.buttonBase} ${buttonVariants.primary} user-menu-button`}
         >
           {userProfile?.avatar_url ? (
             <Image 
@@ -79,10 +79,10 @@ const UserMenu = () => {
           ) : (
             <User size={16} />
           )}
-          <span>프로필</span>
+          <span className="user-menu-label">프로필</span>
           <ChevronDown
             size={14}
-            className={`${dropdownStyles.chevron} ${
+            className={`${dropdownStyles.chevron} user-menu-chevron ${
               profileDropdown.isOpen ? "rotate-180" : "rotate-0"
             }`}
           />
@@ -150,10 +150,10 @@ const UserMenu = () => {
     <button
       onClick={() => router.push("/auth/login")}
       aria-label="로그인 페이지로 이동"
-      className={`${dropdownStyles.buttonBase} ${buttonVariants.primary}`}
+      className={`${dropdownStyles.buttonBase} ${buttonVariants.primary} user-menu-button`}
     >
       <User size={16} />
-      <span>로그인</span>
+      <span className="user-menu-label">로그인</span>
     </button>
   );
 };

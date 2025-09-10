@@ -16,7 +16,7 @@ const SearchBar = () => {
   }, []);
 
   return (
-    <div className="relative w-48">
+    <div className="relative w-48 desktop-search">
       <form onSubmit={handleSearch}>
         <Search
           className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-300 z-10"
