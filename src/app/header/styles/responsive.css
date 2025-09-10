@@ -49,10 +49,10 @@
   .dropdown-button,
   .user-menu-button {
     padding: 0 !important;
-    min-width: 44px !important;
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 12px !important;
+    min-width: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
