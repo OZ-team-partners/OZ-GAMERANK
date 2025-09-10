@@ -39,10 +39,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // 초기 세션 확인
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setSession(session);
+        setUser(session?.user ?? null);
+      } catch (error) {
+        console.error('Failed to get initial session:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getInitialSession();

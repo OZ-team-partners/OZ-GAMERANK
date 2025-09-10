@@ -1,0 +1,75 @@
+/* Responsive header styles */
+
+/* 1270px 이상에서 Navigation 표시, 햄버거 숨김 */
+@media (min-width: 1270px) {
+  .navigation-desktop {
+    display: flex !important;
+  }
+  
+  .hamburger-menu {
+    display: none !important;
+  }
+}
+
+/* 1270px 미만에서 Navigation 숨김, 햄버거 표시 */
+@media (max-width: 1269px) {
+  .navigation-desktop {
+    display: none !important;
+  }
+  
+  .hamburger-menu {
+    display: inline-flex !important;
+  }
+}
+
+/* 768px 이하에서 버튼들을 아이콘만 표시 */
+@media (max-width: 768px) {
+  /* 검색바 숨기고 검색 아이콘 표시 */
+  .desktop-search {
+    display: none !important;
+  }
+  
+  .mobile-search-icon {
+    display: inline-flex !important;
+  }
+  
+  /* 드롭다운 버튼 라벨과 화살표 숨기기 */
+  .dropdown-label,
+  .dropdown-chevron {
+    display: none !important;
+  }
+  
+  /* 프로필 버튼 라벨과 화살표 숨기기 */
+  .user-menu-label,
+  .user-menu-chevron {
+    display: none !important;
+  }
+  
+  /* 버튼을 정사각형으로 조정 */
+  .dropdown-button,
+  .user-menu-button {
+    padding: 0 !important;
+    min-width: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+  }
+  
+  /* 이모지 중앙 정렬 */
+  .newsletter-icon {
+    display: block !important;
+    font-size: 20px !important;
+    line-height: 20px !important;
+    text-align: center !important;
+    margin: 0 !important;
+  }
+  
+  /* User 아이콘 중앙 정렬 */
+  .user-menu-button svg {
+    margin: 0 !important;
+  }
+}

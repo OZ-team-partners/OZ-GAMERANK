@@ -32,13 +32,13 @@ const Dropdown: React.FC<DropdownProps> = ({
         onClick={toggle}
         aria-label={ariaLabel}
         aria-expanded={isOpen}
-        className={`${dropdownStyles.buttonBase} ${buttonVariants[variant]}`}
+        className={`${dropdownStyles.buttonBase} ${buttonVariants[variant]} dropdown-button`}
       >
         {icon}
-        <span>{label}</span>
+        <span className="dropdown-label">{label}</span>
         <ChevronDown
           size={14}
-          className={`${dropdownStyles.chevron} ${
+          className={`${dropdownStyles.chevron} dropdown-chevron ${
             isOpen ? "rotate-180" : "rotate-0"
           }`}
         />

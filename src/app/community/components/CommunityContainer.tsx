@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/shared/lib/supabase';
 import CategoryFilter from './CategoryFilter';
 import PostList from './PostList';
 import PostDetailView from './PostDetailView';
@@ -55,7 +55,7 @@ export default function CommunityContainer() {
 
   // 삭제 확인
   const confirmDelete = async () => {
-    if (!user || !postToDelete) return;
+    if (!user || !postToDelete || !supabase) return;
 
     setIsSubmitting(true);
     try {

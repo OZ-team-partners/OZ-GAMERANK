@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/shared/lib/supabase';
 import type { User } from '@supabase/supabase-js';
 import type { CommunityPost, Category, PostFormData } from '../types';
 import { 
@@ -88,9 +88,18 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
 
   // 인증 상태 확인
   useEffect(() => {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized in CommunityProvider');
+      return;
+    }
+
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        console.error('Failed to get user:', error);
+      }
     };
     getUser();
 
@@ -104,6 +113,12 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
   // 게시글 로드
   useEffect(() => {
     const loadPosts = async () => {
+      if (!supabase) {
+        console.warn('Supabase client is not initialized, cannot load posts');
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       console.log('🔄 게시글 로딩 시작...');
       
@@ -221,6 +236,11 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
 
   // 조회수 증가 함수 (세션당 한 번만)
   const incrementViewCount = async (postId: number) => {
+    if (!supabase) {
+      console.warn('Supabase client is not initialized, cannot increment view count');
+      return;
+    }
+
     try {
       const viewedPostsKey = 'community_viewed_posts';
       const viewedPostsStr = sessionStorage.getItem(viewedPostsKey);
@@ -310,7 +330,7 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
   };
 
   const handlePostSubmit = async (formData: PostFormData, imagePreview: string) => {
-    if (!user) return;
+    if (!user || !supabase) return;
 
     try {
       if (showEditView && currentPost) {

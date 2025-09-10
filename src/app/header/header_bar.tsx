@@ -6,10 +6,11 @@ import SearchBar from "./components/SearchBar";
 import Navigation from "./components/Navigation";
 import Newsletter from "./components/Newsletter";
 import UserMenu from "./components/UserMenu";
+import HamburgerMenu from "./components/HamburgerMenu";
+import SearchModal from "./components/SearchModal";
+import "./styles/responsive.css";
 
 const GameRankHeader = () => {
-
-
   return (
     <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
@@ -18,13 +19,19 @@ const GameRankHeader = () => {
           <div className="flex items-center gap-3">
             <Logo />
             <SearchBar />
+            <SearchModal />
           </div>
-          {/* 그룹 2: 네비게이션 메뉴 (커뮤니티, PC, 콘솔, 모바일) */}
-          <Navigation />
-          {/* 그룹 3: 소식통 & 로그인 */}
+          {/* 그룹 2: 네비게이션 메뉴 (커뮤니티, PC, 콘솔, 모바일) - 1270px 이상에서만 표시 */}
+          <div className="navigation-desktop">
+            <Navigation />
+          </div>
+          {/* 그룹 3: 소식통 & 로그인 & 햄버거 메뉴 */}
           <div className="flex items-center gap-4">
             <Newsletter />
             <UserMenu />
+            <div className="hamburger-menu">
+              <HamburgerMenu />
+            </div>
           </div>
         </div>
       </div>
