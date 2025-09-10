@@ -3,18 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { supabase } from "@/shared/lib/supabase";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  Avatar,
-  Typography,
-} from "@mui/material";
+
 import Link from "next/link";
 import NewsletterPage from "./blog/newsletter/page";
 import { useRouter } from "next/navigation";

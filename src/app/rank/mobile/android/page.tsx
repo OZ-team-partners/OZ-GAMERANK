@@ -13,14 +13,6 @@ interface AndroidGame {
   rank: number;
 }
 
-interface AndroidRankingResponse {
-  success: boolean;
-  data: AndroidGame[];
-  total: number;
-  lastUpdated: string;
-  source?: string;
-  error?: string;
-}
 
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");
