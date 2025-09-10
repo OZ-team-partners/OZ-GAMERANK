@@ -13,14 +13,6 @@ interface SteamGame {
   rank: number;
 }
 
-interface SteamRankingResponse {
-  success: boolean;
-  data: SteamGame[];
-  total: number;
-  lastUpdated: string;
-  source?: string;
-  error?: string;
-}
 
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -135,9 +127,9 @@ export default function SectionPage() {
           <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
             <div className="text-sm leading-relaxed">
               <strong className="block mb-2">Lesson & Article</strong>
-              <div>2025</div>
-              <div>2024</div>
-              <div>2023</div>
+              <div>2025.8</div>
+              <div>2025.9</div>
+              <div>2025.10</div>
             </div>
             <div className="h-48 border border-slate-700 flex items-center justify-center">
               광고
@@ -174,9 +166,9 @@ export default function SectionPage() {
         <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
           <div className="text-sm leading-relaxed">
             <strong className="block mb-2">Lesson & Article</strong>
-            <div>2025</div>
-            <div>2024</div>
-            <div>2023</div>
+            <div>2025.8</div>
+            <div>2025.9</div>
+            <div>2025.10</div>
           </div>
           <div className="h-48 border border-slate-700 flex items-center justify-center">
             광고

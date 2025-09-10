@@ -13,14 +13,6 @@ interface OnlineGame {
   rank: number;
 }
 
-interface OnlineRankingResponse {
-  success: boolean;
-  data: OnlineGame[];
-  total: number;
-  lastUpdated: string;
-  source?: string;
-  error?: string;
-}
 
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");

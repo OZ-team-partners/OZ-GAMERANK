@@ -210,7 +210,7 @@ export default function SectionPage() {
               )}
               {dataSource && (
                 <span className="ml-4 text-blue-400">
-                  데이터 소스: {dataSource}
+                  데이터 소스: https://apps.apple.com
                 </span>
               )}
             </p>

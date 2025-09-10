@@ -212,7 +212,7 @@ export default function SectionPage() {
               )}
               {dataSource && (
                 <span className="ml-4 text-green-400">
-                  데이터 소스: {dataSource}
+                  데이터 소스: https://www.similarweb.com
                 </span>
               )}
             </p>
