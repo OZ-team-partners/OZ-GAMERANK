@@ -80,7 +80,7 @@ export default function HotIssueSection() {
   return (
     <section className="py-16 bg-slate-900">
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="flex space-x-1">
@@ -113,7 +113,7 @@ export default function HotIssueSection() {
           {hotIssueCards.map((item) => (
             <div
               key={item.id}
-              className="group relative backdrop-blur-sm bg-gradient-to-br from-slate-800/60 to-slate-900/60 rounded-2xl shadow-2xl overflow-hidden border border-orange-500/20 hover:border-orange-500/50 transition-all duration-300 hover:scale-105 cursor-pointer"
+              className="group relative backdrop-blur-sm bg-slate-800/50 rounded-2xl shadow-xl overflow-hidden border border-slate-700/50 hover:border-slate-600/50 transition-all duration-300 hover:scale-105 cursor-pointer"
               onClick={() => router.push("/community/board")}
             >
               <div className="relative h-32 overflow-hidden">
@@ -134,10 +134,10 @@ export default function HotIssueSection() {
               </div>
               
               <div className="p-4">
-                <h4 className="font-bold text-white text-sm mb-2 group-hover:text-orange-400 transition-colors duration-300 line-clamp-2">
+                <h4 className="font-bold text-white text-lg mb-2 group-hover:text-orange-400 transition-colors duration-300 line-clamp-2">
                   {item.title}
                 </h4>
-                <p className="text-slate-400 text-xs leading-relaxed line-clamp-2">
+                <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
                   {item.description}
                 </p>
               </div>
@@ -147,7 +147,7 @@ export default function HotIssueSection() {
         </div>
 
         {/* 메인 게시판 형태의 리스트 */}
-        <div className="backdrop-blur-sm bg-black/20 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+        <div className="backdrop-blur-sm bg-slate-800/50 rounded-2xl border border-slate-700/50 overflow-hidden shadow-xl">
           <div className="bg-gradient-to-r from-orange-600 to-red-600 p-4">
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -161,11 +161,11 @@ export default function HotIssueSection() {
             {hotIssueListItems.map((item) => (
               <div
                 key={item.id}
-                className="group flex items-center p-4 hover:bg-white/5 transition-all duration-200 cursor-pointer"
+                className="group flex items-center p-4 hover:bg-slate-700/30 transition-all duration-200 cursor-pointer"
                 onClick={() => router.push("/community/board")}
               >
                 <div className="flex-shrink-0 mr-4">
-                  <div className="relative w-16 h-12 rounded-lg overflow-hidden border border-white/10">
+                  <div className="relative w-16 h-12 rounded-lg overflow-hidden border border-slate-700/50">
                     <Image
                       src={item.image}
                       alt={item.title}
@@ -195,10 +195,10 @@ export default function HotIssueSection() {
                     </div>
                   </div>
                   
-                  <h4 className="font-semibold text-white text-sm mb-1 truncate group-hover:text-orange-400 transition-colors duration-200">
+                  <h4 className="font-bold text-white text-lg mb-1 truncate group-hover:text-orange-400 transition-colors duration-200">
                     {item.title}
                   </h4>
-                  <p className="text-slate-400 text-xs truncate">
+                  <p className="text-slate-400 text-sm truncate">
                     {item.subtitle}
                   </p>
                 </div>
@@ -214,9 +214,9 @@ export default function HotIssueSection() {
             ))}
           </div>
           
-          <div className="p-4 border-t border-white/10 bg-black/20">
+          <div className="p-4 border-t border-slate-700/50 bg-slate-800/30">
             <button 
-              className="w-full py-3 px-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 rounded-lg text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25"
+              className="w-full py-3 px-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 rounded-lg text-white font-medium transition-all duration-300"
               onClick={() => router.push("/community/board")}
             >
               더 많은 이슈 보기

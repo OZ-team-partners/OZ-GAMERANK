@@ -58,7 +58,7 @@ export default function MainSlider() {
   return (
     <section className="py-16 bg-slate-900 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 opacity-80"></div>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 relative z-10">
         <div className="relative overflow-hidden rounded-2xl backdrop-blur-sm bg-black/20 shadow-2xl border border-white/10">
           <div
             className="flex transition-all duration-700 ease-out"

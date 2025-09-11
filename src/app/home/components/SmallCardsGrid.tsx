@@ -41,7 +41,7 @@ export default function SmallCardsGrid() {
 
   return (
     <section className="py-12 bg-slate-900 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>

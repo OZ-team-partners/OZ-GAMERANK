@@ -5,11 +5,8 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Chip,
   Avatar,
   Typography,
 } from "@mui/material";
@@ -84,82 +81,39 @@ function RankingTable({
   const rows = [1, 2, 3];
 
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        maxWidth: 1200,
-        mx: "auto",
-        backgroundColor: "transparent",
-        backgroundImage: "linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(30, 41, 59, 0.4) 100%)",
-        backdropFilter: "blur(20px)",
-        border: "1px solid rgba(255, 255, 255, 0.1)",
-        borderRadius: "24px",
-        boxShadow: title.includes("두 번째")
-          ? "0 25px 50px rgba(99, 102, 241, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-          : "0 25px 50px rgba(79, 70, 229, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-        mt: title.includes("두 번째") ? 6 : 0,
-        overflow: "hidden",
-        position: "relative",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "1px",
-          background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)",
-        },
-      }}
-    >
-      <Table sx={{ borderCollapse: "separate", borderSpacing: 0 }}>
+    <div className={`w-full ${title.includes("두 번째") ? "mt-6" : ""}`}>
+      <div className="w-full bg-slate-800/40 backdrop-blur-sm border border-slate-700/30 rounded-2xl shadow-xl overflow-hidden">
+        <Table sx={{ borderCollapse: "separate", borderSpacing: 0, width: "100%" }}>
         <TableHead>
           <TableRow>
             <TableCell
               align="center"
               sx={{
-                fontWeight: "bold",
-                fontSize: "0.9rem",
-                background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                fontWeight: "700",
+                fontSize: "1rem",
+                background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
                 color: "white",
                 border: "none",
                 width: "12%",
-                py: 2,
-                position: "relative",
-                "&::after": {
-                  content: '""',
-                  position: "absolute",
-                  right: 0,
-                  top: "20%",
-                  bottom: "20%",
-                  width: "1px",
-                  background: "rgba(255, 255, 255, 0.2)",
-                },
+                py: 2.5,
+                letterSpacing: "0.025em",
               }}
             >
               순위
             </TableCell>
-            {columns.map((col, idx) => (
+            {columns.map((col) => (
               <TableCell
                 key={col.key}
                 align="center"
                 sx={{
-                  fontWeight: "bold",
-                  fontSize: "0.9rem",
-                  background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                  fontWeight: "700",
+                  fontSize: "1rem",
+                  background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
                   color: "white",
                   border: "none",
-                  py: 2,
-                  position: "relative",
+                  py: 2.5,
+                  letterSpacing: "0.025em",
                   width: `${Math.floor(88 / columns.length)}%`,
-                  "&::after": idx < columns.length - 1 ? {
-                    content: '""',
-                    position: "absolute",
-                    right: 0,
-                    top: "20%",
-                    bottom: "20%",
-                    width: "1px",
-                    background: "rgba(255, 255, 255, 0.2)",
-                  } : {},
                 }}
               >
                 {col.label}
@@ -181,72 +135,48 @@ function RankingTable({
               <TableCell
                 align="center"
                 sx={{
-                  backgroundColor: "rgba(30, 41, 59, 0.6)",
+                  backgroundColor: "rgba(51, 65, 85, 0.2)",
                   border: "none",
-                  borderBottom: position !== 3 ? "1px solid rgba(255, 255, 255, 0.1)" : "none",
-                  py: 2,
-                  position: "relative",
-                  "&::after": {
-                    content: '""',
-                    position: "absolute",
-                    right: 0,
-                    top: "10%",
-                    bottom: "10%",
-                    width: "1px",
-                    background: "rgba(255, 255, 255, 0.1)",
-                  },
+                  borderBottom: position !== 3 ? "1px solid rgba(71, 85, 105, 0.2)" : "none",
+                  py: 2.5,
                 }}
               >
-                <Chip
-                  label={position}
-                  sx={{
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: "700",
+                    fontSize: "1rem",
+                    margin: "0 auto",
                     background: position === 1
                       ? "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)"
                       : position === 2
                       ? "linear-gradient(135deg, #e5e7eb 0%, #9ca3af 100%)"
-                      : "linear-gradient(135deg, #cd7f32 0%, #a0522d 100%)",
-                    color: position === 2 ? "#111827" : "white",
-                    fontWeight: "bold",
-                    fontSize: "0.9rem",
-                    width: 36,
-                    height: 36,
-                    boxShadow: position === 1
-                      ? "0 6px 16px rgba(251, 191, 36, 0.4)"
-                      : position === 2
-                      ? "0 6px 16px rgba(156, 163, 175, 0.4)"
-                      : "0 6px 16px rgba(205, 127, 50, 0.4)",
-                    border: "2px solid rgba(255, 255, 255, 0.2)",
-                    "& .MuiChip-label": {
-                      overflow: "visible",
-                      textOverflow: "unset",
-                      whiteSpace: "nowrap",
-                    },
+                      : "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                    color: position === 2 ? "#1e293b" : "white",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
                   }}
-                />
+                >
+                  {position}
+                </div>
               </TableCell>
 
-              {columns.map((col, colIdx) => {
+              {columns.map((col) => {
                 const items = dataByPlatform[col.key] || [];
                 const item = items[position - 1];
                 return (
                   <TableCell
                     key={`${col.key}-${position}`}
                     sx={{
-                      backgroundColor: "rgba(30, 41, 59, 0.3)",
+                      backgroundColor: "transparent",
                       border: "none",
-                      borderBottom: position !== 3 ? "1px solid rgba(255, 255, 255, 0.1)" : "none",
-                      py: 2,
-                      px: 2,
-                      position: "relative",
-                      "&::after": colIdx < columns.length - 1 ? {
-                        content: '""',
-                        position: "absolute",
-                        right: 0,
-                        top: "10%",
-                        bottom: "10%",
-                        width: "1px",
-                        background: "rgba(255, 255, 255, 0.1)",
-                      } : {},
+                      borderBottom: position !== 3 ? "1px solid rgba(71, 85, 105, 0.2)" : "none",
+                      py: 2.5,
+                      px: 3,
                     }}
                   >
                     {item ? (
@@ -264,23 +194,20 @@ function RankingTable({
                           sx={{
                             width: 48,
                             height: 48,
-                            border: "2px solid rgba(255, 255, 255, 0.15)",
-                            boxShadow: "0 6px 20px rgba(0, 0, 0, 0.3)",
-                            transition: "transform 0.2s ease",
-                            "&:hover": {
-                              transform: "scale(1.05)",
-                            },
+                            borderRadius: "8px",
+                            border: "1px solid rgba(71, 85, 105, 0.3)",
+                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                           }}
                         />
                         <div style={{ flex: 1 }}>
                           <Typography
                             variant="h6"
                             sx={{ 
-                              fontWeight: "bold", 
-                              color: "white", 
-                              fontSize: "0.95rem",
-                              mb: 0.3,
-                              textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
+                              fontWeight: "700", 
+                              color: "#f1f5f9", 
+                              fontSize: "1.125rem",
+                              mb: 0.5,
+                              lineHeight: 1.3,
                             }}
                           >
                             {item.title}
@@ -288,9 +215,9 @@ function RankingTable({
                           <Typography 
                             variant="body2" 
                             sx={{ 
-                              color: "#cbd5e1", 
-                              fontSize: "0.8rem",
-                              opacity: 0.8,
+                              color: "#94a3b8", 
+                              fontSize: "0.875rem",
+                              lineHeight: 1.4,
                             }}
                           >
                             {item.subtitle}
@@ -318,7 +245,8 @@ function RankingTable({
           ))}
         </TableBody>
       </Table>
-    </TableContainer>
+      </div>
+    </div>
   );
 }
 
@@ -387,7 +315,7 @@ export default function FrontRankTop3() {
 
   return (
     <section className="py-16 bg-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-4">
             <div className="w-2 h-2 bg-indigo-400 rounded-full animate-pulse"></div>
