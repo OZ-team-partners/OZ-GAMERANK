@@ -1,7 +1,7 @@
 /* Responsive header styles */
 
-/* 1270px 이상에서 Navigation 표시, 햄버거 숨김 */
-@media (min-width: 1270px) {
+/* 1320px 이상에서 Navigation 표시, 햄버거 숨김 */
+@media (min-width: 1320px) {
   .navigation-desktop {
     display: flex !important;
   }
@@ -11,8 +11,8 @@
   }
 }
 
-/* 1270px 미만에서 Navigation 숨김, 햄버거 표시 */
-@media (max-width: 1269px) {
+/* 1320px 미만에서 Navigation 숨김, 햄버거 표시 */
+@media (max-width: 1319px) {
   .navigation-desktop {
     display: none !important;
   }

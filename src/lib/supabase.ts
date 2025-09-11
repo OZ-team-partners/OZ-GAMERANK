@@ -400,7 +400,8 @@ export const nintendoRankingApi = {
   },
 
   // 특정 날짜의 랭킹 데이터 조회
-  async getRankingByDate(date: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async getRankingByDate(_date: string) {
     if (!supabase) {
       console.warn("Supabase client is not initialized");
       return { data: [], error: "Supabase client is not initialized" };
@@ -477,7 +478,8 @@ export const nintendoRankingApi = {
   },
 
   // 랭킹 히스토리 조회 (최근 7일)
-  async getRankingHistory(days: number = 7) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async getRankingHistory(_days: number = 7) {
     if (!supabase) {
       console.warn("Supabase client is not initialized");
       return { data: [], error: "Supabase client is not initialized" };
