@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useCallback } from "react";
+import { useState, FormEvent, useCallback } from "react";
 import { Search } from "lucide-react";
 
 const SearchBar = () => {

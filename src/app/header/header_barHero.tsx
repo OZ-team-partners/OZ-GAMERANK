@@ -49,11 +49,10 @@ export default function HeaderBarHero() {
             className="absolute top-[40%] left-[20%] rotate-[10deg] drop-shadow-[0_2px_8px_rgba(255,255,255,0.7)]"
           />
         </div>
-        <div className="relative z-10 text-center text-white">
-          <h2 className="text-2xl font-bold mb-2">
+        <div className="relative z-10 text-center text-white flex items-center justify-center h-full">
+          <h2 className="text-2xl font-bold">
             흩어져 있는 순위, 이제 한곳에서 모아보자
           </h2>
-          <h3 className="text-1xl font-semibold font-bangers">[GAME RANK]</h3>
         </div>
       </section>
     </>

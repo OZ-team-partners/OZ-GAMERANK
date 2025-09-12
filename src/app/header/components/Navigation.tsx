@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@mui/material";
 import { Gamepad2, Zap, Trophy, Award, ChevronDown } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
@@ -26,12 +26,12 @@ const Navigation = () => {
 
   const pcOptions: DropdownOption[] = [
     {
-      name: "🌐 온라인 게임",
+      name: "온라인 게임",
       path: "/rank/pc/online",
       description: "실시간 멀티플레이어 게임 순위",
     },
     {
-      name: "⚡ Steam",
+      name: "Steam",
       path: "/rank/pc/steam",
       description: "스팀 플랫폼 인기 게임 랭킹",
     },
@@ -39,12 +39,12 @@ const Navigation = () => {
 
   const consoleOptions: DropdownOption[] = [
     {
-      name: "🟦 PlayStation",
+      name: "PlayStation",
       path: "/rank/console/playStation",
       description: "플레이스테이션 독점 게임들",
     },
     {
-      name: "🔴 Nintendo",
+      name: "Nintendo",
       path: "/rank/console/nintendo",
       description: "닌텐도 스위치 인기 타이틀",
     },
@@ -52,12 +52,12 @@ const Navigation = () => {
 
   const mobileOptions: DropdownOption[] = [
     {
-      name: "🍎 iOS",
+      name: "iOS",
       path: "/rank/mobile/ios",
       description: "아이폰 앱스토어 순위",
     },
     {
-      name: "🤖 Android",
+      name: "Android",
       path: "/rank/mobile/android",
       description: "구글 플레이스토어 순위",
     },
@@ -174,19 +174,21 @@ const Navigation = () => {
 
           {/* 드롭다운 메뉴 */}
           {openDropdown === category.name && getDropdownOptions(category.name).length > 0 && (
-            <div className="absolute top-full mt-3 w-80 z-50">
-              <div className="bg-white/98 backdrop-blur-xl border border-slate-200/40 rounded-2xl shadow-lg overflow-hidden ring-1 ring-slate-900/5">
-                <div className="p-2">
-                  {getDropdownOptions(category.name).map((option, index) => (
-                    <DropdownItem
-                      key={option.name}
-                      title={option.name}
-                      description={option.description}
-                      path={option.path}
-                      isLast={index === getDropdownOptions(category.name).length - 1}
-                      onClick={closeDropdown}
-                    />
-                  ))}
+            <div className="absolute top-full mt-3 w-80 z-50 animate-in fade-in-0 slide-in-from-top-2 duration-200">
+              <div className="relative">
+                <div className="relative bg-gradient-to-br from-slate-800/95 via-slate-850/95 to-slate-900/95 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-2xl overflow-hidden">
+                  <div className="p-3">
+                    {getDropdownOptions(category.name).map((option, index) => (
+                      <DropdownItem
+                        key={option.name}
+                        title={option.name}
+                        description={option.description}
+                        path={option.path}
+                        isLast={index === getDropdownOptions(category.name).length - 1}
+                        onClick={closeDropdown}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

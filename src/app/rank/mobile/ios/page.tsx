@@ -13,14 +13,6 @@ interface IOSGame {
   rank: number;
 }
 
-interface IOSRankingResponse {
-  success: boolean;
-  data: IOSGame[];
-  total: number;
-  lastUpdated: string;
-  source?: string;
-  error?: string;
-}
 
 export default function SectionPage() {
   const [searchQuery, setSearchQuery] = useState("");

@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        'custom-lg': '1270px',
+        'custom-lg': '1320px',
       },
       colors: {
         background: "hsl(220 14.75% 11.96%)",
