@@ -51,10 +51,10 @@ export default function SmallCardsGrid() {
             <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
             진행중인 프로모션
           </h2>
-          <p className="text-xl text-slate-300 font-light">
+          <p className="text-lg text-slate-300 font-light">
             놓치면 후회하는 특별 혜택들 🎁
           </p>
           
@@ -86,11 +86,11 @@ export default function SmallCardsGrid() {
                   
                   <div className="p-4 space-y-2">
                     <h3 className={`font-bold text-white group-hover:text-purple-400 transition-colors duration-300 ${
-                      slide.title === "game-bti" ? "font-bangers text-xl" : "text-lg"
+                      slide.title === "game-bti" ? "font-bangers text-lg" : "text-base"
                     }`}>
                       {slide.title}
                     </h3>
-                    <p className="text-sm text-slate-400 leading-relaxed line-clamp-2">
+                    <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">
                       {slide.smallSlides_text}
                     </p>
                     

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { DropdownOption } from "../types";
 import Dropdown from "./Dropdown";
 

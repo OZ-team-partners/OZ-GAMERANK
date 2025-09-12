@@ -98,10 +98,10 @@ export default function HotIssueSection() {
             </div>
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-400 via-red-500 to-orange-400 bg-clip-text text-transparent font-bangers">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-orange-400 via-red-500 to-orange-400 bg-clip-text text-transparent font-bangers">
             GAME RANK : HOT ISSUE
           </h2>
-          <p className="text-xl text-slate-300 font-light">
+          <p className="text-lg text-slate-300 font-light">
             지금 가장 뜨거운 게임 이슈들 🔥
           </p>
           
@@ -134,10 +134,10 @@ export default function HotIssueSection() {
               </div>
               
               <div className="p-4">
-                <h4 className="font-bold text-white text-lg mb-2 group-hover:text-orange-400 transition-colors duration-300 line-clamp-2">
+                <h4 className="font-bold text-white text-base mb-2 group-hover:text-orange-400 transition-colors duration-300 line-clamp-2">
                   {item.title}
                 </h4>
-                <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
+                <p className="text-slate-400 text-xs leading-relaxed line-clamp-2">
                   {item.description}
                 </p>
               </div>
@@ -149,7 +149,7 @@ export default function HotIssueSection() {
         {/* 메인 게시판 형태의 리스트 */}
         <div className="backdrop-blur-sm bg-slate-800/50 rounded-2xl border border-slate-700/50 overflow-hidden shadow-xl">
           <div className="bg-gradient-to-r from-orange-600 to-red-600 p-4">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
               </svg>
@@ -195,10 +195,10 @@ export default function HotIssueSection() {
                     </div>
                   </div>
                   
-                  <h4 className="font-bold text-white text-lg mb-1 truncate group-hover:text-orange-400 transition-colors duration-200">
+                  <h4 className="font-bold text-white text-base mb-1 truncate group-hover:text-orange-400 transition-colors duration-200">
                     {item.title}
                   </h4>
-                  <p className="text-slate-400 text-sm truncate">
+                  <p className="text-slate-400 text-xs truncate">
                     {item.subtitle}
                   </p>
                 </div>

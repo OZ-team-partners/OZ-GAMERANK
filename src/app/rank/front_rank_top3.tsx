@@ -90,7 +90,7 @@ function RankingTable({
               align="center"
               sx={{
                 fontWeight: "700",
-                fontSize: "1rem",
+                fontSize: "0.875rem",
                 background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
                 color: "white",
                 border: "none",
@@ -107,7 +107,7 @@ function RankingTable({
                 align="center"
                 sx={{
                   fontWeight: "700",
-                  fontSize: "1rem",
+                  fontSize: "0.875rem",
                   background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
                   color: "white",
                   border: "none",
@@ -150,7 +150,7 @@ function RankingTable({
                     alignItems: "center",
                     justifyContent: "center",
                     fontWeight: "700",
-                    fontSize: "1rem",
+                    fontSize: "0.875rem",
                     margin: "0 auto",
                     background: position === 1
                       ? "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)"
@@ -205,7 +205,7 @@ function RankingTable({
                             sx={{ 
                               fontWeight: "700", 
                               color: "#f1f5f9", 
-                              fontSize: "1.125rem",
+                              fontSize: "0.875rem",
                               mb: 0.5,
                               lineHeight: 1.3,
                             }}
@@ -216,7 +216,7 @@ function RankingTable({
                             variant="body2" 
                             sx={{ 
                               color: "#94a3b8", 
-                              fontSize: "0.875rem",
+                              fontSize: "0.813rem",
                               lineHeight: 1.4,
                             }}
                           >
@@ -325,10 +325,10 @@ export default function FrontRankTop3() {
             <div className="w-2 h-2 bg-indigo-400 rounded-full animate-pulse"></div>
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
             플랫폼 별 TOP 3
           </h2>
-          <p className="text-xl text-slate-300 font-light">
+          <p className="text-lg text-slate-300 font-light">
             이번 달의 POWER RANKER 🏆
           </p>
           

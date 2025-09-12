@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, X } from "lucide-react";
 import { IconButton, Dialog, DialogContent, TextField, InputAdornment } from "@mui/material";
 

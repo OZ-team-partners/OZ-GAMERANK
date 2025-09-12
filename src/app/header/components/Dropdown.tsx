@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronDown } from 'lucide-react';
 import { dropdownStyles, buttonVariants } from '../styles/dropdownStyles';
 import { useDropdown } from '../hooks/useDropdown';

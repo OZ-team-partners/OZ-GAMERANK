@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { User, ChevronDown, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -90,54 +90,56 @@ const UserMenu = () => {
 
         {profileDropdown.isOpen && (
           <div
-            className="absolute top-full right-0 mt-3 w-56 z-50 animate-in fade-in-0 zoom-in-95 duration-150"
+            className="absolute top-full right-0 mt-3 w-56 z-50 animate-in fade-in-0 slide-in-from-top-2 duration-200"
             data-dropdown
           >
-            <div className={dropdownStyles.content}>
-              <div className={dropdownStyles.padding}>
-                <div className="px-4 py-3 border-b border-slate-200/60">
-                  <div className="flex items-center space-x-3">
-                    {userProfile?.avatar_url ? (
-                      <Image 
-                        src={userProfile.avatar_url} 
-                        alt="프로필" 
-                        width={32}
-                        height={32}
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-semibold">
-                          {(userProfile?.username || user.email)?.[0]?.toUpperCase()}
-                        </span>
+            <div className="relative">
+              <div className="relative bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-2xl overflow-hidden">
+                <div className="p-3">
+                  <div className="px-4 py-3 border-b border-purple-500/20">
+                    <div className="flex items-center space-x-3">
+                      {userProfile?.avatar_url ? (
+                        <Image 
+                          src={userProfile.avatar_url} 
+                          alt="프로필" 
+                          width={32}
+                          height={32}
+                          className="w-8 h-8 rounded-full object-cover ring-2 ring-purple-500/30"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center shadow-lg">
+                          <span className="text-white text-sm font-semibold">
+                            {(userProfile?.username || user.email)?.[0]?.toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm font-semibold text-white">
+                          {userProfile?.username || user.user_metadata?.username || '사용자'}
+                        </p>
+                        <p className="text-xs text-slate-400 truncate">
+                          {user.email}
+                        </p>
                       </div>
-                    )}
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900">
-                        {userProfile?.username || user.user_metadata?.username || '사용자'}
-                      </p>
-                      <p className="text-xs text-slate-600 truncate">
-                        {user.email}
-                      </p>
                     </div>
                   </div>
+                  
+                  <button
+                    onClick={handleProfileClick}
+                    className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-purple-900/30 transition-all duration-200 rounded-xl group"
+                  >
+                    <Settings size={16} className="text-purple-400 group-hover:rotate-90 transition-transform duration-300" />
+                    <span className="text-sm font-medium text-slate-300 group-hover:text-white">프로필 설정</span>
+                  </button>
+                  
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-red-900/30 transition-all duration-200 rounded-xl group"
+                  >
+                    <LogOut size={16} className="text-red-400 group-hover:translate-x-1 transition-transform duration-200" />
+                    <span className="text-sm font-medium text-red-400 group-hover:text-red-300">로그아웃</span>
+                  </button>
                 </div>
-                
-                <button
-                  onClick={handleProfileClick}
-                  className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-slate-50 transition-colors rounded-xl"
-                >
-                  <Settings size={16} className="text-slate-500" />
-                  <span className="text-sm font-medium text-slate-700">프로필 설정</span>
-                </button>
-                
-                <button
-                  onClick={handleSignOut}
-                  className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-red-50 transition-colors rounded-xl"
-                >
-                  <LogOut size={16} className="text-red-500" />
-                  <span className="text-sm font-medium text-red-700">로그아웃</span>
-                </button>
               </div>
             </div>
           </div>

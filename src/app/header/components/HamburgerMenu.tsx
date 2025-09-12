@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IconButton } from "@mui/material";
 import { Menu, X, Gamepad2, Zap, Trophy, Award, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
