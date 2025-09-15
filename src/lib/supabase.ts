@@ -502,7 +502,7 @@ export const nintendoRankingApi = {
 
 // 공통: 임의 플랫폼의 rank_game 저장 헬퍼
 export async function saveRankGameForPlatform(
-  platform: "nintendo" | "steam" | "android" | "ios" | "online",
+  platform: "nintendo" | "steam" | "android" | "ios" | "online" | "playstation",
   rankingData: Array<{
     rank_position: number;
     title: string;

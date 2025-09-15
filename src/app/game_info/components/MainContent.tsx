@@ -1,17 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Home,
-  ChevronRight as BreadcrumbArrow,
-} from "lucide-react";
-import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
-export default function MainContent() {
+export default function MainContent({ platform = "" }: { platform?: string }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const SHOW_MEDIA = false;
+//젤다의 전설 목업데이터를(사진,영상,게임소개) 'true'로 변경하면 데이터가 표시됩니다.
+
 
   const gameMedia = [
     {
@@ -50,7 +47,7 @@ export default function MainContent() {
 
   const prevImage = () => {
     setCurrentImageIndex(
-      (prev) => (prev - 1 + gameMedia.length) % gameMedia.length,
+      (prev) => (prev - 1 + gameMedia.length) % gameMedia.length
     );
   };
 
@@ -60,115 +57,98 @@ export default function MainContent() {
 
   return (
     <div>
-      {/* 브레드크럼 */}
-      <nav className="flex items-center space-x-2 mb-6 text-sm">
-        <Link
-          href="/"
-          className="flex items-center text-slate-400 hover:text-white transition-colors"
-        >
-          <Home size={16} className="mr-1" />홈
-        </Link>
-        <BreadcrumbArrow size={14} className="text-slate-500" />
-        <Link
-          href="/rank/nintendo"
-          className="text-slate-400 hover:text-white transition-colors"
-        >
-          Nintendo
-        </Link>
-        <BreadcrumbArrow size={14} className="text-slate-500" />
-        <span className="text-white font-medium">
-          젤다의 전설: 브레스 오브 더 와일드
-        </span>
-      </nav>
-
       {/* 게임 이미지 캐러셀 */}
-      <div className="relative mb-6">
-        <div className="aspect-video bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl overflow-hidden shadow-2xl relative">
-          {gameMedia[currentImageIndex].type === "youtube" ? (
-            <iframe
-              src={gameMedia[currentImageIndex].embedSrc}
-              title={gameMedia[currentImageIndex].alt}
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          ) : (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img
-              src={gameMedia[currentImageIndex].src}
-              alt={gameMedia[currentImageIndex].alt}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
-            />
-          )}
-
-          {/* 캐러셀 네비게이션 버튼 - 유튜브 재생 중이 아닐 때만 표시 */}
-          {gameMedia[currentImageIndex].type !== "youtube" && (
-            <>
-              <button
-                onClick={prevImage}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-80 hover:scale-110 text-white p-2 rounded-full transition-all duration-200 cursor-pointer"
-              >
-                <ChevronLeft size={20} />
-              </button>
-
-              <button
-                onClick={nextImage}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-80 hover:scale-110 text-white p-2 rounded-full transition-all duration-200 cursor-pointer"
-              >
-                <ChevronRight size={20} />
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* 썸네일 네비게이션 */}
-      <div className="grid grid-cols-5 gap-4 mb-6">
-        {gameMedia.map((media, index) => (
-          <div
-            key={index}
-            className={`aspect-video rounded-lg overflow-hidden cursor-pointer transition-all relative ${
-              index === currentImageIndex
-                ? "ring-4 ring-yellow-400"
-                : "ring-2 ring-transparent hover:ring-slate-400"
-            }`}
-            onClick={() => goToImage(index)}
-          >
-            {media.type === "youtube" ? (
-              <div className="relative w-full h-full group">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={media.thumbnail}
-                  alt={media.alt}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-3 h-3 text-white ml-0.5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M6.3 3.2L14.5 8.5c.7.4.7 1.4 0 1.8L6.3 16.8c-.7.4-1.6-.1-1.6-.9V4.1c0-.8.9-1.3 1.6-.9z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+      {SHOW_MEDIA && (
+        <div className="relative mb-6">
+          <div className="aspect-video bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl overflow-hidden shadow-2xl relative">
+            {gameMedia[currentImageIndex].type === "youtube" ? (
+              <iframe
+                src={gameMedia[currentImageIndex].embedSrc}
+                title={gameMedia[currentImageIndex].alt}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
             ) : (
-              <Image
-                src={media.src}
-                alt={media.alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={gameMedia[currentImageIndex].src}
+                alt={gameMedia[currentImageIndex].alt}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
               />
             )}
+
+            {/* 캐러셀 네비게이션 버튼 - 유튜브 재생 중이 아닐 때만 표시 */}
+            {gameMedia[currentImageIndex].type !== "youtube" && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-80 hover:scale-110 text-white p-2 rounded-full transition-all duration-200 cursor-pointer"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+
+                <button
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-80 hover:scale-110 text-white p-2 rounded-full transition-all duration-200 cursor-pointer"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            )}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+
+      {/* 썸네일 네비게이션 */}
+      {SHOW_MEDIA && (
+        <div className="grid grid-cols-5 gap-4 mb-6">
+          {gameMedia.map((media, index) => (
+            <div
+              key={index}
+              className={`aspect-video rounded-lg overflow-hidden cursor-pointer transition-all relative ${
+                index === currentImageIndex
+                  ? "ring-4 ring-yellow-400"
+                  : "ring-2 ring-transparent hover:ring-slate-400"
+              }`}
+              onClick={() => goToImage(index)}
+            >
+              {media.type === "youtube" ? (
+                <div className="relative w-full h-full group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={media.thumbnail}
+                    alt={media.alt}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-3 h-3 text-white ml-0.5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M6.3 3.2L14.5 8.5c.7.4.7 1.4 0 1.8L6.3 16.8c-.7.4-1.6-.1-1.6-.9V4.1c0-.8.9-1.3 1.6-.9z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Image
+                  src={media.src}
+                  alt={media.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* 레벨업 소식통 뉴스레터 */}
       <div className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 shadow-xl">
@@ -196,22 +176,17 @@ export default function MainContent() {
 
         {/* 게임 소개 */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-white mb-3">
-            게임 소개
-          </h3>
+          <h3 className="text-lg font-semibold text-white mb-3">게임 소개</h3>
           <p className="text-slate-300 leading-relaxed">
-            젤다의 전설: 브레스 오브 더 와일드는 닌텐도가 개발한 오픈 월드
-            액션 어드벤처 게임입니다. 하이랄 왕국을 무대로 링크가 되어
-            광활한 세계를 자유롭게 탐험하며, 100년 전 멸망한 왕국을
-            되살리기 위한 모험을 떠나게 됩니다.
+          여름 한복판, 에어컨이 고장 난 도서관에서 글을 쓰려고 앉아 있었는데, 옆자리 학생이 갑자기 종이비행기를 접더니 창문을 열고 멀리 날려버렸다. 그 비행기가 곡선을 그리며 날아가더니, 지나가던 까마귀의 날개에 걸려 함께 사라졌다.
+          <br />그 순간 도서관 안은 이상하게 조용해졌고, 사람들은 모두 고개를 들어 창문 밖을 바라봤다. 누군가는 “이제 곧 비가 오려나 보다”라고 중얼거렸고, 나는 괜히 가슴이 두근거려서 노트 첫 장에 이렇게 적었다.
+          <br />“게임 내용을 DB에 안넣었어요.”
           </p>
         </div>
 
         {/* 주요 특징 */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-white mb-3">
-            주요 특징
-          </h3>
+          <h3 className="text-lg font-semibold text-white mb-3">주요 특징</h3>
           <ul className="space-y-2 text-slate-300">
             <li className="flex items-start">
               <span className="text-yellow-400 mr-2">▶</span>
@@ -241,7 +216,9 @@ export default function MainContent() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-slate-400">플랫폼:</span>
-                <span className="text-white ml-2">Nintendo Switch</span>
+                <span className="text-white ml-2">
+                  {platform || "정보 없음"}
+                </span>
               </div>
               <div>
                 <span className="text-slate-400">용량:</span>
@@ -261,9 +238,7 @@ export default function MainContent() {
 
         {/* DLC 정보 */}
         <div>
-          <h3 className="text-lg font-semibold text-white mb-3">
-            DLC 확장팩
-          </h3>
+          <h3 className="text-lg font-semibold text-white mb-3">DLC 확장팩</h3>
           <div className="space-y-3">
             <div className="bg-slate-700 rounded-lg p-4">
               <h4 className="text-white font-medium mb-2">확장 패스</h4>
