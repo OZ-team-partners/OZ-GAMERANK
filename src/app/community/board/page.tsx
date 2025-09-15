@@ -28,7 +28,7 @@ type Category =
   | "게임공략"
   | "핫딜";
   
-export const dummyPosts: Post[] = [
+const dummyPosts: Post[] = [
   {
     id: 1,
     title: "스팀 신작 게임 추천해요!",

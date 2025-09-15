@@ -40,15 +40,11 @@ export default function Home() {
       {/* 메인 슬라이더 */}
       <MainSlider />
 
+      {/* 순위 차트 - 핵심 컨텐츠를 먼저 배치 */}
+      <FrontRankTop3 />
+
       {/* 작은 카드 그리드 */}
       <SmallCardsGrid />
-
-      {/* 순위 차트 */}
-      <section className="py-12 bg-slate-900">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
-          <FrontRankTop3 />
-        </div>
-      </section>
 
       {/* HOT ISSUE 섹션 */}
       <HotIssueSection />
