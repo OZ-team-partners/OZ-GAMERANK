@@ -252,45 +252,48 @@ export default function SectionPage() {
           {/* 게임 목록 */}
           {filteredItems.length > 0 ? (
             filteredItems.map((game) => (
-              <div
+              <Link
+                href={`/game_info/${game.id}`}
                 key={game.id}
-                className="card bg-slate-800 border border-slate-700 flex items-center p-2.5 mb-2.5 gap-2.5"
+                className="block"
               >
-                {/* 순위 배지 */}
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
-                    game.rank === 1
-                      ? "bg-yellow-500 text-white"
-                      : game.rank === 2
-                      ? "bg-gray-400 text-white"
-                      : game.rank === 3
-                      ? "bg-amber-600 text-white"
-                      : "bg-slate-600 text-white"
-                  }`}
-                >
-                  {game.rank}
-                </div>
+                <div className="card bg-slate-800 border border-slate-700 flex items-center p-2.5 mb-2.5 gap-2.5 hover:bg-slate-700/60 transition-colors cursor-pointer">
+                  {/* 순위 배지 */}
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
+                      game.rank === 1
+                        ? "bg-yellow-500 text-white"
+                        : game.rank === 2
+                        ? "bg-gray-400 text-white"
+                        : game.rank === 3
+                        ? "bg-amber-600 text-white"
+                        : "bg-slate-600 text-white"
+                    }`}
+                  >
+                    {game.rank}
+                  </div>
 
-                <div className="card-img w-80 h-40 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
-                  <Image
-                    src={game.img || "/icon/rank_icon/console1.jpeg"}
-                    alt={game.title}
-                    width={320}
-                    height={160}
-                    className="w-full h-full object-cover rounded"
-                    placeholder="empty"
-                    unoptimized={true}
-                  />
+                  <div className="card-img w-80 h-40 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
+                    <Image
+                      src={game.img || "/icon/rank_icon/console1.jpeg"}
+                      alt={game.title}
+                      width={320}
+                      height={160}
+                      className="w-full h-full object-cover rounded"
+                      placeholder="empty"
+                      unoptimized={true}
+                    />
+                  </div>
+                  <div className="card-text flex-1">
+                    <p className="card-title font-bold m-0 text-white text-2xl">
+                      {game.title}
+                    </p>
+                    <p className="text-blue-400 text-sm">
+                      개발사: {game.developer}
+                    </p>
+                  </div>
                 </div>
-                <div className="card-text flex-1">
-                  <p className="card-title font-bold m-0 text-white text-2xl">
-                    {game.title}
-                  </p>
-                  <p className="text-blue-400 text-sm">
-                    개발사: {game.developer}
-                  </p>
-                </div>
-              </div>
+              </Link>
             ))
           ) : (
             <div className="text-center py-12">

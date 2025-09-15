@@ -7,9 +7,18 @@ import { Star } from "lucide-react";
 interface SidebarProps {
   userVote: number | null;
   onVote: (rating: number) => void;
+  imageUrl?: string | null;
+  title?: string;
+  platform?: string | null; // 추가
 }
 
-export default function Sidebar({ userVote, onVote }: SidebarProps) {
+export default function Sidebar({
+  userVote,
+  onVote,
+  imageUrl,
+  title,
+  platform, // 추가
+}: SidebarProps) {
   const similarGames = [
     {
       name: "젤다의 전설: 티어스 오브 더 킹덤",
@@ -30,32 +39,31 @@ export default function Sidebar({ userVote, onVote }: SidebarProps) {
   ];
 
   return (
-    <div className="space-y-6" style={{ marginTop: "44px" }}>
+    <div className="space-y-6" style={{ marginTop: "0px" }}>
       <div className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700">
         <div className="space-y-6">
-          {/* 게임 아이콘 */}
+          {/* 게임 이미지 */}
           <div>
-            <div className="w-32 h-20 rounded-2xl flex items-center justify-center relative">
+            <div className="w-20 h-10 rounded-2xl flex items-center justify-center relative overflow-hidden bg-slate-700">
               <Image
-                src="/icon/game_info_icon/zelda/Logo_The Legend of Zelda-Breath of the Wild.webp"
-                alt="젤다 아이콘"
+                src={imageUrl || "/icon/rank_icon/steam1.jpeg"}
+                alt={title || "게임 이미지"}
                 fill
-                className="rounded-xl object-contain"
+                className="rounded-xl object-cover"
                 sizes="128px"
               />
             </div>
           </div>
 
           <div>
-            <p className="text-slate-300 text-lg">
-              젤다의 전설: 브레스 오브 더 와일드
+            <p className="font-bold mono text-slate-100 text-2xl ">
+              {title || "게임 타이틀"}
             </p>
           </div>
 
           <div>
             <p className="text-slate-300">
-              GOTY에서도 높은 점수를 받은 닌텐도의 오픈월드 게임을
-              경험해보세요!
+              이 게임에 대한 여러분들의 평가를 남겨주세요!
             </p>
           </div>
 
@@ -64,21 +72,15 @@ export default function Sidebar({ userVote, onVote }: SidebarProps) {
             <h3 className="text-xl font-bold text-white">유저 평점</h3>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="text-3xl font-bold text-yellow-400">
-                  9.3
-                </div>
+                <div className="text-3xl font-bold text-yellow-400">9.3</div>
                 <div>
-                  <div className="flex text-yellow-400 text-lg">
-                    ★★★★★
-                  </div>
+                  <div className="flex text-yellow-400 text-lg">★★★★★</div>
                   <p className="text-slate-400 text-xs">1,245개 리뷰</p>
                 </div>
               </div>
 
               <div className="flex flex-col items-center space-y-2">
-                <p className="text-slate-300 text-sm font-medium">
-                  내 평점
-                </p>
+                <p className="text-slate-300 text-sm font-medium">내 평점</p>
                 <div className="flex space-x-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -121,9 +123,10 @@ export default function Sidebar({ userVote, onVote }: SidebarProps) {
                 <span className="text-slate-400">출시일:</span>
                 <span className="text-white">2017년 3월 3일</span>
               </div>
+              {/* 플랫폼 표시부 교체 */}
               <div className="flex justify-between">
                 <span className="text-slate-400">플랫폼:</span>
-                <span className="text-white">Nintendo Switch</span>
+                <span className="text-white">{platform || "정보 없음"}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">언어:</span>
@@ -134,7 +137,7 @@ export default function Sidebar({ userVote, onVote }: SidebarProps) {
 
           <div className="space-y-3 pt-4">
             <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
-              Nintendo eShop에서 구매
+              구매 하러 가기
             </button>
             <button className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
               위시리스트에 추가
@@ -148,9 +151,7 @@ export default function Sidebar({ userVote, onVote }: SidebarProps) {
         {/* 광고 배너 */}
         <div className="bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center">
           <div className="text-4xl font-bold text-black mb-2">광고</div>
-          <div className="text-slate-600 text-sm">
-            Advertisement Banner
-          </div>
+          <div className="text-slate-600 text-sm">Advertisement Banner</div>
         </div>
 
         <div className="space-y-4">

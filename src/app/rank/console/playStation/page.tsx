@@ -167,7 +167,8 @@ export default function SectionPage() {
           {/* 헤더 */}
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-white mb-2">
-              PS5 메타크리틱 랭킹( 자료가 없어서 타사이트..크롤링 그만 하고 싶습니다ㅠ)
+              PS5 메타크리틱 랭킹( 자료가 없어서 타사이트..크롤링 그만 하고
+              싶습니다ㅠ)
             </h1>
             <p className="text-slate-400">
               2025년 PS5 메타크리틱 랭킹입니다. [현재 연도, 평점순]
@@ -223,45 +224,48 @@ export default function SectionPage() {
           {/* 게임 목록 */}
           {filteredItems.length > 0 ? (
             filteredItems.map((game) => (
-              <div
+              <Link
+                href={`/game_info/${encodeURIComponent(game.title)}`}
                 key={`${game.rank}-${game.title}`}
-                className="card bg-slate-800 border border-slate-700 flex items-center p-2.5 mb-2.5 gap-2.5"
+                className="block"
               >
-                {/* 순위 배지 */}
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
-                    game.rank === 1
-                      ? "bg-yellow-500 text-white"
-                      : game.rank === 2
-                      ? "bg-gray-400 text-white"
-                      : game.rank === 3
-                      ? "bg-amber-600 text-white"
-                      : "bg-slate-600 text-white"
-                  }`}
-                >
-                  {game.rank}
-                </div>
+                <div className="card bg-slate-800 border border-slate-700 flex items-center p-2.5 mb-2.5 gap-2.5 hover:bg-slate-700/60 transition-colors cursor-pointer">
+                  {/* 순위 배지 */}
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
+                      game.rank === 1
+                        ? "bg-yellow-500 text-white"
+                        : game.rank === 2
+                        ? "bg-gray-400 text-white"
+                        : game.rank === 3
+                        ? "bg-amber-600 text-white"
+                        : "bg-slate-600 text-white"
+                    }`}
+                  >
+                    {game.rank}
+                  </div>
 
-                <div className="card-img w-80 h-40 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
-                  <Image
-                    src={game.image || "/icon/rank_icon/console1.jpeg"}
-                    alt={game.title}
-                    width={320}
-                    height={160}
-                    className="w-full h-full object-cover rounded"
-                    placeholder="empty"
-                    unoptimized={true}
-                  />
+                  <div className="card-img w-80 h-40 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
+                    <Image
+                      src={game.image || "/icon/rank_icon/console1.jpeg"}
+                      alt={game.title}
+                      width={320}
+                      height={160}
+                      className="w-full h-full object-cover rounded"
+                      placeholder="empty"
+                      unoptimized={true}
+                    />
+                  </div>
+                  <div className="card-text flex-1">
+                    <p className="card-title font-bold m-0 text-white text-2xl">
+                      {game.title}
+                    </p>
+                    <p className="text-blue-400 text-sm">
+                      발매일: {game.releaseDate || "정보 없음"}
+                    </p>
+                  </div>
                 </div>
-                <div className="card-text flex-1">
-                  <p className="card-title font-bold m-0 text-white text-2xl">
-                    {game.title}
-                  </p>
-                  <p className="text-blue-400 text-sm">
-                    발매일: {game.releaseDate || "정보 없음"}
-                  </p>
-                </div>
-              </div>
+              </Link>
             ))
           ) : (
             <div className="text-center py-12">
