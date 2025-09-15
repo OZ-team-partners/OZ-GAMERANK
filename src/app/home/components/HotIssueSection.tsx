@@ -80,7 +80,7 @@ export default function HotIssueSection() {
   return (
     <section className="py-16 bg-slate-900">
       
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="flex space-x-1">
