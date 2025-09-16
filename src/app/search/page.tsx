@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { supabase } from "@/shared/lib/supabase";
 
 type SearchResultGame = {
@@ -116,33 +118,36 @@ export default async function SearchPage({
               </p>
             ) : (
               <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-  {games.map((g) => (
-    <li
-      key={`${g.image_url}-${g.platform}-${g.rank}-${g.game_title}`}
-      className="flex items-center gap-4 p-4 bg-slate-900/40 rounded border border-slate-700/60"
-    >
-      <img
-        src={g.image_url || "/icon/rank_icon/console1.jpeg"}
-        alt={g.game_title}
-        className="w-20 h-20 object-cover rounded shrink-0"
-      />
-      <div className="flex-1 min-w-0">
-        <div className="text-slate-300 font-medium truncate">
-          {g.game_title}
-        </div>
-        {g.game_subtitle ? (
-          <div className="text-slate-500 text-sm truncate">
-            {g.game_subtitle}
-          </div>
-        ) : null}
-        <div className="text-slate-400 text-xs mt-1">
-          {g.platform ? `플랫폼: ${g.platform}` : null}
-          {g.rank ? ` · 랭크: ${g.rank}` : null}
-        </div>
-      </div>
-    </li>
-  ))}
-</ul>
+                {games.map((g) => (
+                  <Link key={g.id} href={`/game_info/${g.id}`}>
+                    <li
+                      className="flex items-center gap-4 p-4 bg-slate-900/40 rounded border border-slate-700/60 h-full"
+                    >
+                                            <Image
+                        src={g.image_url || "/icon/rank_icon/console1.jpeg"}
+                        alt={g.game_title}
+                        width={80}
+                        height={80}
+                        className="object-cover rounded shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-slate-300 font-medium truncate">
+                          {g.game_title}
+                        </div>
+                        {g.game_subtitle ? (
+                          <div className="text-slate-500 text-sm truncate">
+                            {g.game_subtitle}
+                          </div>
+                        ) : null}
+                        <div className="text-slate-400 text-xs mt-1">
+                          {g.platform ? `플랫폼: ${g.platform}` : null}
+                          {g.rank ? ` · 랭크: ${g.rank}` : null}
+                        </div>
+                      </div>
+                    </li>
+                  </Link>
+                ))}
+              </ul>
 
             )}
           </ResultSection>
@@ -155,17 +160,18 @@ export default async function SearchPage({
             ) : (
               <ul className="space-y-4">
                 {posts.map((p) => (
-                  <li
-                    key={p.id}
-                    className="p-4 bg-slate-900/40 rounded border border-slate-700/60"
-                  >
-                    <div className="text-slate-200 font-semibold truncate">
-                      {p.title}
-                    </div>
-                    <div className="text-slate-500 text-sm line-clamp-2">
-                      {p.content}
-                    </div>
-                  </li>
+                  <Link key={p.id} href={`/community?post=${p.id}`}>
+                    <li
+                      className="p-4 bg-slate-900/40 rounded border border-slate-700/60 cursor-pointer hover:bg-slate-800/80"
+                    >
+                      <div className="text-slate-200 font-semibold truncate">
+                        {p.title}
+                      </div>
+                      <div className="text-slate-500 text-sm line-clamp-2">
+                        {p.content}
+                      </div>
+                    </li>
+                  </Link>
                 ))}
               </ul>
             )}
