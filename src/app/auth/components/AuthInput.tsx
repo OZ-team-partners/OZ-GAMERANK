@@ -58,7 +58,7 @@ const AuthInput = ({
       sx={{
         mt: 3,
         "& .MuiOutlinedInput-root": {
-          bgcolor: "rgba(51, 65, 85, 0.6)",
+          backgroundColor: "transparent",
           borderRadius: "12px",
           "& fieldset": {
             borderColor: "rgba(148, 163, 184, 0.3)",
@@ -75,6 +75,7 @@ const AuthInput = ({
         },
         "& .MuiInputBase-input": {
           color: "white",
+          backgroundColor: "transparent",
         },
       }}
     />

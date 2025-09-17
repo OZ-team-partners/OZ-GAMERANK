@@ -118,6 +118,29 @@ const ProfilePage = () => {
                 return;
             }
 
+            // auth 메타데이터도 업데이트
+            const { error: authError } = await supabase.auth.updateUser({
+                data: {
+                    username: username,
+                    avatar_url: avatarUrl
+                }
+            });
+
+            if (authError) {
+                console.error('Auth 메타데이터 업데이트 오류:', authError);
+            }
+
+            // 업데이트된 프로필 정보를 다시 로드
+            const { data: updatedProfile } = await supabase
+                .from('users')
+                .select('*')
+                .eq('email', user.email)
+                .single();
+
+            if (updatedProfile) {
+                setUserProfile(updatedProfile);
+            }
+
             setSuccess('프로필이 성공적으로 업데이트되었습니다!');
             setTimeout(() => setSuccess(''), 3000);
         } catch (err: unknown) {

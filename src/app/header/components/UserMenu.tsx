@@ -24,7 +24,7 @@ const UserMenu = () => {
         .select('*')
         .eq('email', user.email)
         .single();
-      
+
       if (profile) {
         setUserProfile(profile);
       }
@@ -99,15 +99,17 @@ const UserMenu = () => {
                   <div className="px-4 py-3 border-b border-purple-500/20">
                     <div className="flex items-center space-x-3">
                       {userProfile?.avatar_url ? (
-                        <Image 
-                          src={userProfile.avatar_url} 
-                          alt="프로필" 
-                          width={32}
-                          height={32}
-                          className="w-8 h-8 rounded-full object-cover ring-2 ring-purple-500/30"
-                        />
+                        <div className="w-8 h-8 flex-shrink-0">
+                          <Image
+                            src={userProfile.avatar_url}
+                            alt="프로필"
+                            width={32}
+                            height={32}
+                            className="w-full h-full rounded-full object-cover ring-2 ring-purple-500/30"
+                          />
+                        </div>
                       ) : (
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center shadow-lg">
+                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
                           <span className="text-white text-sm font-semibold">
                             {(userProfile?.username || user.email)?.[0]?.toUpperCase()}
                           </span>

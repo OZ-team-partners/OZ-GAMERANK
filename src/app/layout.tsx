@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/shared/contexts/AuthContext";
 import ConditionalHeader from "./header/ConditionalHeader";
+import Footer from "./footer/footer";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -36,10 +37,13 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased` }
                 suppressHydrationWarning={true}
-            >     
+            >
                 <AuthProvider>
                     <ConditionalHeader />
-                    {children}
+                    <main className="min-h-screen">
+                        {children}
+                    </main>
+                    <Footer />
                 </AuthProvider>
             </body>
         </html>

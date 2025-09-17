@@ -33,13 +33,14 @@ export const useDropdown = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      
-      // 드롭다운 관련 요소들을 찾기 (클래스명 기반으로 변경)
-      const isDropdownButton = target.closest('.dropdown-button');
-      const isDropdownContent = target.closest('.dropdown-content');
-      
-      // 버튼이나 드롭다운 내용 클릭이 아닌 경우에만 닫기
-      if (!isDropdownButton && !isDropdownContent && isOpen) {
+
+      // 드롭다운 관련 요소들을 찾기 (data-dropdown 속성 또는 클래스명 기반)
+      const isDropdownElement = target.closest('[data-dropdown]') ||
+                               target.closest('.dropdown-button') ||
+                               target.closest('.dropdown-content');
+
+      // 드롭다운 요소 클릭이 아닌 경우에만 닫기
+      if (!isDropdownElement && isOpen) {
         setIsOpen(false);
       }
     };

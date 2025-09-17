@@ -42,6 +42,8 @@ interface CommunityContextType {
   closeDeleteModal: () => void;
   switchToEditMode: () => void;
   handlePostSubmit: (formData: PostFormData, imagePreview: string) => Promise<void>;
+  handleLike: (postId: number) => Promise<void>;
+  isPostLiked: (postId: number) => boolean;
   handleLogin: () => void;
   handleSignup: () => void;
   setShowLoginPrompt: (show: boolean) => void;
@@ -377,21 +379,70 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
         const newUrl = `/community?post=${currentPost.post_id || currentPost.id}`;
         window.history.pushState({ postId: currentPost.post_id || currentPost.id }, '', newUrl);
       } else if (supabase) {
+        // 사용자가 users 테이블에 존재하는지 확인하고, 없으면 생성
+        const { data: existingUser } = await supabase
+          .from('users')
+          .select('*')
+          .eq('email', user.email)
+          .single();
+
+        if (!existingUser) {
+          console.log('사용자가 users 테이블에 없습니다. 생성합니다.');
+          const { error: userInsertError } = await supabase
+            .from('users')
+            .insert([{
+              user_id: user.id,
+              username: user.user_metadata?.username || user.email?.split('@')[0] || 'Unknown User',
+              email: user.email,
+              password_hash: 'supabase_auth_managed',
+              avatar_url: user.user_metadata?.avatar_url || null,
+              join_date: new Date().toISOString(),
+              role: 'user',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            }]);
+
+          if (userInsertError) {
+            console.error('사용자 생성 실패:', userInsertError);
+            throw new Error(`사용자 생성 실패: ${userInsertError.message}`);
+          }
+        }
+
         // 새 게시글 작성 로직
+        const postData = {
+          title: formData.title.trim(),
+          content: formData.content.trim(),
+          category: formData.category,
+          user_id: user.id,
+          image_url: imagePreview || null,
+          view_count: 0,
+          like_count: 0,
+          comment_count: 0,
+          is_pinned: false,
+          is_deleted: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        console.log('게시글 데이터:', postData);
+
         const { data, error } = await supabase
           .from('commu_post')
-          .insert([{
-            title: formData.title,
-            content: formData.content,
-            category: formData.category,
-            user_id: user.id,
-            image_url: imagePreview || null,
-            created_at: new Date().toISOString()
-          }])
+          .insert([postData])
           .select('*, author:users(*)')
           .single();
 
-        if (error) throw error;
+        console.log('Supabase 응답:', { data, error });
+
+        if (error) {
+          console.error('Supabase 오류 세부정보:', {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
+          throw new Error(`데이터베이스 오류: ${error.message}`);
+        }
 
         if (data) {
           setPosts(prev => [data, ...prev]);
@@ -399,8 +450,17 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
         }
       }
     } catch (error) {
-      console.error('게시글 처리 실패:', error);
-      alert('게시글 처리 중 오류가 발생했습니다.');
+      console.error('게시글 처리 실패:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        error: error
+      });
+
+      const errorMessage = error instanceof Error
+        ? error.message
+        : '게시글 처리 중 오류가 발생했습니다.';
+
+      alert(errorMessage);
     }
   };
 
@@ -410,6 +470,65 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
 
   const handleSignup = () => {
     window.location.href = '/auth/signup';
+  };
+
+  const handleLike = async (postId: number) => {
+    if (!user || !supabase) {
+      setShowLoginPrompt(true);
+      return;
+    }
+
+    try {
+      const likedPostsKey = 'community_liked_posts';
+      const likedPostsStr = sessionStorage.getItem(likedPostsKey);
+      const likedPostsSet = likedPostsStr ? new Set<number>(JSON.parse(likedPostsStr)) : new Set<number>();
+
+      const { data: currentPostData } = await supabase
+        .from('commu_post')
+        .select('like_count')
+        .eq('post_id', postId)
+        .single();
+
+      const currentLikeCount = currentPostData?.like_count || 0;
+      const isLiked = likedPostsSet.has(postId);
+      const newLikeCount = isLiked ? currentLikeCount - 1 : currentLikeCount + 1;
+
+      await supabase
+        .from('commu_post')
+        .update({ like_count: newLikeCount })
+        .eq('post_id', postId);
+
+      setPosts(prev => prev.map(p =>
+        (p.post_id || p.id) === postId
+          ? { ...p, like_count: newLikeCount }
+          : p
+      ));
+
+      if (currentPost && (currentPost.post_id || currentPost.id) === postId) {
+        setCurrentPost(prev => prev ? { ...prev, like_count: newLikeCount } : null);
+      }
+
+      // 좋아요 상태 토글
+      if (isLiked) {
+        likedPostsSet.delete(postId);
+        console.log(`게시글 ${postId} 좋아요 취소: ${newLikeCount}`);
+      } else {
+        likedPostsSet.add(postId);
+        console.log(`게시글 ${postId} 좋아요: ${newLikeCount}`);
+      }
+
+      sessionStorage.setItem(likedPostsKey, JSON.stringify([...likedPostsSet]));
+    } catch (error) {
+      console.error('좋아요 처리 실패:', error);
+    }
+  };
+
+  // 좋아요 상태 확인 함수
+  const isPostLiked = (postId: number): boolean => {
+    const likedPostsKey = 'community_liked_posts';
+    const likedPostsStr = sessionStorage.getItem(likedPostsKey);
+    const likedPostsSet = likedPostsStr ? new Set<number>(JSON.parse(likedPostsStr)) : new Set<number>();
+    return likedPostsSet.has(postId);
   };
 
 
@@ -444,6 +563,8 @@ export function CommunityProvider({ children }: CommunityProviderProps) {
     closeDeleteModal,
     switchToEditMode,
     handlePostSubmit,
+    handleLike,
+    isPostLiked,
     handleLogin,
     handleSignup,
     setShowLoginPrompt,

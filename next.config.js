@@ -74,6 +74,12 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "img2.quasarzone.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

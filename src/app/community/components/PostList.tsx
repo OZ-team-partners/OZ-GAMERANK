@@ -79,15 +79,17 @@ export default function PostList({ posts, onViewPost, onEditPost, onDeletePost, 
                 <div className="flex items-center gap-4 text-xs text-slate-500 flex-wrap">
                   <div className="flex items-center gap-2">
                     {post.author?.avatar_url ? (
-                      <Image
-                        src={post.author.avatar_url}
-                        alt={post.author.username || 'User'}
-                        width={16}
-                        height={16}
-                        className="rounded-full object-cover"
-                      />
+                      <div className="w-4 h-4 flex-shrink-0">
+                        <Image
+                          src={post.author.avatar_url}
+                          alt={post.author.username || 'User'}
+                          width={16}
+                          height={16}
+                          className="w-full h-full rounded-full object-cover"
+                        />
+                      </div>
                     ) : (
-                      <User className="w-4 h-4" />
+                      <User className="w-4 h-4 flex-shrink-0" />
                     )}
                     <span>{post.author?.username || 'Unknown'}</span>
                   </div>

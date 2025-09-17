@@ -12,9 +12,11 @@ interface PostDetailViewProps {
   onBack: () => void;
   onEdit?: () => void;
   onDelete?: (id: number) => void;
+  onLike?: (postId: number) => void;
+  isLiked?: boolean;
 }
 
-export default function PostDetailView({ post, user, onBack, onEdit, onDelete }: PostDetailViewProps) {
+export default function PostDetailView({ post, user, onBack, onEdit, onDelete, onLike, isLiked = false }: PostDetailViewProps) {
   const handleEdit = () => {
     if (onEdit) onEdit();
   };
@@ -22,6 +24,12 @@ export default function PostDetailView({ post, user, onBack, onEdit, onDelete }:
   const handleDelete = () => {
     if (onDelete && post && confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
       onDelete(post.post_id || post.id);
+    }
+  };
+
+  const handleLike = () => {
+    if (onLike && post) {
+      onLike(post.post_id || post.id);
     }
   };
 
@@ -79,15 +87,17 @@ export default function PostDetailView({ post, user, onBack, onEdit, onDelete }:
           <div className="flex items-center gap-4 text-sm text-slate-400">
             <div className="flex items-center gap-2">
               {post.author?.avatar_url ? (
-                <Image
-                  src={post.author.avatar_url}
-                  alt={post.author.username || 'User'}
-                  width={24}
-                  height={24}
-                  className="rounded-full object-cover"
-                />
+                <div className="w-6 h-6 flex-shrink-0">
+                  <Image
+                    src={post.author.avatar_url}
+                    alt={post.author.username || 'User'}
+                    width={24}
+                    height={24}
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                </div>
               ) : (
-                <User className="w-6 h-6" />
+                <User className="w-6 h-6 flex-shrink-0" />
               )}
               <span className="text-white">{post.author?.username || 'Unknown'}</span>
             </div>
@@ -144,10 +154,19 @@ export default function PostDetailView({ post, user, onBack, onEdit, onDelete }:
         {/* 좋아요/댓글 액션 바 */}
         <div className="p-6 border-t border-slate-700 bg-slate-800/30">
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-2 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors">
-              <Heart className="w-4 h-4" />
-              <span>좋아요</span>
-              <span className="text-slate-400">({post.like_count || 0})</span>
+            <button
+              onClick={handleLike}
+              className={`flex items-center justify-center w-12 h-12 rounded-lg transition-all duration-200 hover:scale-105 ${
+                isLiked
+                  ? 'bg-red-600/20 text-red-500 hover:bg-red-600/30'
+                  : 'bg-slate-700/50 text-slate-400 hover:bg-slate-700 hover:text-red-400'
+              }`}
+            >
+              <Heart
+                className={`w-5 h-5 transition-all duration-200 ${
+                  isLiked ? 'fill-current' : ''
+                }`}
+              />
             </button>
             <button className="flex items-center gap-2 px-4 py-2 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors">
               <MessageCircle className="w-4 h-4" />

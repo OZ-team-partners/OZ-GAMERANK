@@ -46,6 +46,8 @@ export default function CommunityContainer() {
     closeDeleteModal,
     switchToEditMode,
     handlePostSubmit,
+    handleLike,
+    isPostLiked,
     handleLogin,
     handleSignup,
     setShowLoginPrompt,
@@ -88,7 +90,7 @@ export default function CommunityContainer() {
 
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen">
+    <div className="min-h-screen bg-slate-900">
       <CommunityHeader />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -110,6 +112,8 @@ export default function CommunityContainer() {
                 onBack={backToList}
                 onEdit={switchToEditMode}
                 onDelete={openDeleteModal}
+                onLike={handleLike}
+                isLiked={isPostLiked(currentPost.post_id || currentPost.id)}
               />
             ) : showWriteView ? (
               /* 게시글 작성 뷰 */
