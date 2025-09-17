@@ -78,7 +78,7 @@ http://localhost:3000/admin/newsletter
 
 ### POST /api/send-newsletter
 
-뉴스레터 발송 API
+뉴스레터 발송 APIIIIIII
 
 **요청 본문:**
 
