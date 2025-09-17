@@ -34,7 +34,7 @@ const hotIssueCards: HotIssueCard[] = [
 const hotIssueListItems: HotIssueListItem[] = [
   {
     id: 1,
-    image: "/icon/page_icon/mainUpperIcon1.png",
+    image: "https://cdn.gamemeca.com/data_center/237/709/20221010184620.jpg",
     title: "League of Legends 월드 챔피언십 2024 개최 확정",
     subtitle: "올해도 전 세계 게이머들의 축제가 열립니다",
     topic: "e 스포츠",
@@ -42,7 +42,7 @@ const hotIssueListItems: HotIssueListItem[] = [
   },
   {
     id: 2,
-    image: "/icon/page_icon/mainUpperIcon2.png",
+    image: "https://cdn.gamemeca.com/gmdata/0001/773/907/thumb__220601-valorant-01.jpg",
     title: "Valorant 새로운 요원 'Neon' 공개",
     subtitle: "한국 출신 요원으로 게임 메타 변화 예상",
     topic: "e 스포츠",
@@ -50,7 +50,7 @@ const hotIssueListItems: HotIssueListItem[] = [
   },
   {
     id: 3,
-    image: "/icon/page_icon/mainUpperIcon3.png",
+    image: "https://play-lh.googleusercontent.com/JRd05pyBH41qjgsJuWduRJpDeZG0Hnb0yjf2nWqO7VaGKL10-G5UIygxED-WNOc3pg",
     title: "PUBG Mobile 글로벌 챔피언십 2024",
     subtitle: "모바일 배틀로얄의 최고 권위 대회",
     topic: "e 스포츠",
@@ -58,7 +58,7 @@ const hotIssueListItems: HotIssueListItem[] = [
   },
   {
     id: 4,
-    image: "/icon/page_icon/mainUpperIcon4.png",
+    image: "https://cdn.gamemeca.com/gmdata/0001/809/513/thumb-genshin-01.jpg",
     title: "Genshin Impact 4.0 업데이트 소식",
     subtitle: "새로운 지역과 캐릭터 추가 예정",
     topic: "업데이트",
@@ -66,7 +66,7 @@ const hotIssueListItems: HotIssueListItem[] = [
   },
   {
     id: 5,
-    image: "/icon/page_icon/mainUpperIcon5.png",
+    image: "https://cdn.gamemeca.com/gmdata/0001/837/153/thumb__230929-fc24-01.jpg",
     title: "FIFA 24 e스포츠 리그 개막",
     subtitle: "전 세계 최고의 FIFA 플레이어들이 모입니다",
     topic: "기타",
