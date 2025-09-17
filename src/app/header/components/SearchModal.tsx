@@ -24,7 +24,8 @@ const SearchModal = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      console.log("검색어:", searchQuery);
+      const query = encodeURIComponent(searchQuery.trim());
+      window.location.href = `/search?q=${query}`;
       handleClose();
     }
   };
