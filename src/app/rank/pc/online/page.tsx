@@ -4,6 +4,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import CategoryTabs from "../../components/CategoryTabs";
 import RankingGrid from "../../components/RankingGrid";
+import TopThreeCards from "../../components/TopThreeCards";
 
 interface OnlineGame {
   id: number;
@@ -244,8 +245,26 @@ export default function OnlineRankingPage() {
           </div>
         </div>
 
-        {/* 게임 그리드 */}
-        <RankingGrid items={filteredAndSortedItems} loading={loading} />
+        {/* Top 3 게임 특별 표시 */}
+        {!loading && filteredAndSortedItems.length > 0 && (
+          <TopThreeCards
+            items={filteredAndSortedItems
+              .filter(item => item.rank <= 3)
+              .map(item => ({
+                id: item.id,
+                rank: item.rank,
+                title: item.title,
+                subtitle: item.subtitle,
+                imageUrl: item.img,
+                isNew: item.isNew,
+                isHot: item.isHot
+              }))
+            }
+          />
+        )}
+
+        {/* 나머지 게임 그리드 */}
+        <RankingGrid items={filteredAndSortedItems} loading={loading} showTopThree={false} />
 
         {/* 페이지 하단 정보 */}
         <div className="mt-16 text-center">

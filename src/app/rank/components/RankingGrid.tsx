@@ -17,6 +17,7 @@ interface RankingItem {
 interface RankingGridProps {
   items: RankingItem[];
   loading?: boolean;
+  showTopThree?: boolean; // Top 3를 포함할지 여부
 }
 
 function SkeletonCard() {
@@ -31,7 +32,10 @@ function SkeletonCard() {
   );
 }
 
-export default function RankingGrid({ items, loading = false }: RankingGridProps) {
+export default function RankingGrid({ items, loading = false, showTopThree = true }: RankingGridProps) {
+  // Top 3를 제외할지 결정
+  const filteredItems = showTopThree ? items : items.filter(item => item.rank > 3);
+
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -42,7 +46,7 @@ export default function RankingGrid({ items, loading = false }: RankingGridProps
     );
   }
 
-  if (items.length === 0) {
+  if (filteredItems.length === 0) {
     return (
       <div className="text-center py-16">
         <div className="inline-flex items-center justify-center w-20 h-20 bg-slate-800 rounded-full mb-4">
@@ -50,27 +54,42 @@ export default function RankingGrid({ items, loading = false }: RankingGridProps
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-white mb-2">게임 데이터가 없습니다</h3>
+        <h3 className="text-xl font-semibold text-white mb-2">
+          {showTopThree ? "게임 데이터가 없습니다" : "4위 이하 게임이 없습니다"}
+        </h3>
         <p className="text-slate-400">나중에 다시 시도해주세요.</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {items.map((item) => (
-        <GameRankCard
-          key={item.id}
-          id={item.id}
-          rank={item.rank}
-          title={item.title}
-          subtitle={item.subtitle}
-          imageUrl={item.img}
-          isNew={item.isNew}
-          isHot={item.isHot}
-          rankChange={item.rankChange}
-        />
-      ))}
+    <div>
+      {!showTopThree && filteredItems.length > 0 && (
+        <div className="mb-8">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold text-white mb-2 bg-gradient-to-r from-slate-300 via-slate-200 to-slate-300 bg-clip-text text-transparent">
+              나머지 순위
+            </h3>
+            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-slate-500 to-transparent mx-auto"></div>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {filteredItems.map((item) => (
+          <GameRankCard
+            key={item.id}
+            id={item.id}
+            rank={item.rank}
+            title={item.title}
+            subtitle={item.subtitle}
+            imageUrl={item.img}
+            isNew={item.isNew}
+            isHot={item.isHot}
+            rankChange={item.rankChange}
+          />
+        ))}
+      </div>
     </div>
   );
 }
