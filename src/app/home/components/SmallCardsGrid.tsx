@@ -11,7 +11,7 @@ const smallSlides: SmallSlide[] = [
     title: "디지털 50% sale 지금 바로!",
     smallSlides_text: "지금이 제일 저렴할때!",
     image: "/images/home/ads1.png",
-    href: "/community/board",
+    href: "/community",
   },
   {
     id: 2,

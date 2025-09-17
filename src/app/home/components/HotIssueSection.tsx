@@ -114,7 +114,7 @@ export default function HotIssueSection() {
             <div
               key={item.id}
               className="group relative backdrop-blur-sm bg-slate-800/50 rounded-2xl shadow-xl overflow-hidden border border-slate-700/50 hover:border-slate-600/50 transition-all duration-300 hover:scale-105 cursor-pointer"
-              onClick={() => router.push("/community/board")}
+              onClick={() => router.push("/community")}
             >
               <div className="relative h-32 overflow-hidden">
                 <Image
@@ -162,7 +162,7 @@ export default function HotIssueSection() {
               <div
                 key={item.id}
                 className="group flex items-center p-4 hover:bg-slate-700/30 transition-all duration-200 cursor-pointer"
-                onClick={() => router.push("/community/board")}
+                onClick={() => router.push("/community")}
               >
                 <div className="flex-shrink-0 mr-4">
                   <div className="relative w-16 h-12 rounded-lg overflow-hidden border border-slate-700/50">
@@ -217,7 +217,7 @@ export default function HotIssueSection() {
           <div className="p-4 border-t border-slate-700/50 bg-slate-800/30">
             <button 
               className="w-full py-3 px-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 rounded-lg text-white font-medium transition-all duration-300"
-              onClick={() => router.push("/community/board")}
+              onClick={() => router.push("/community")}
             >
               더 많은 이슈 보기
             </button>

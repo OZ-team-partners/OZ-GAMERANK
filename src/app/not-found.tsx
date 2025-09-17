@@ -48,7 +48,7 @@ export default function NotFound() {
             <Link href="/rank/steam" className="text-slate-400 hover:text-white transition-colors">
               Steam 랭킹
             </Link>
-            <Link href="/community/board" className="text-slate-400 hover:text-white transition-colors">
+            <Link href="/community" className="text-slate-400 hover:text-white transition-colors">
               커뮤니티
             </Link>
             <Link href="/game_info" className="text-slate-400 hover:text-white transition-colors">
@@ -61,7 +61,7 @@ export default function NotFound() {
         <div className="mt-8 p-4 bg-slate-800 rounded-lg border border-slate-700">
           <p className="text-sm text-slate-300">
             문제가 지속되면{" "}
-            <Link href="/community/board" className="text-purple-400 hover:text-purple-300">
+            <Link href="/community" className="text-purple-400 hover:text-purple-300">
               커뮤니티
             </Link>
             에 문의해주세요.
