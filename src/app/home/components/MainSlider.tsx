@@ -4,6 +4,8 @@ import Image from "next/image";
 import NewsletterPage from "@/app/blog/newsletter/page";
 import { MainSlide } from "../types";
 import { useSlider } from "../hooks/useSlider";
+import React, { useEffect, useState } from "react";
+import { communityApi } from "@/lib/supabase";
 
 const mainSlides: MainSlide[] = [
   {
@@ -20,19 +22,19 @@ const mainSlides: MainSlide[] = [
   },
   {
     id: 3,
-    title: "모바일 게임",
-    desc: "인기 모바일 게임 랭킹",
+    title: "online 게임",
+    desc: "인기 online 게임",
     image: "/images/home/mainSlide3.jpg",
   },
   {
     id: 4,
-    title: "인디 게임",
-    desc: "주목받는 인디 게임들",
+    title: "steam 게임",
+    desc: "뜨겁다 뜨거워 steam 게임",
     image: "/images/home/mainSlide4.jpg",
   },
   {
     id: 5,
-    title: "게임 커뮤니티",
+    title: "좋아요 TOP3",
     desc: "게이머들의 소통 공간",
     image: "/images/home/mainSlide5.jpg",
   },
@@ -50,6 +52,13 @@ export default function MainSlider() {
       window.location.href = "/blog/newsletter";
     } else if (slide.id === 2) {
       window.location.href = "/game_info";
+    } else if (slide.id === 3) {
+      window.location.href = "/game_info/1136";
+    } else if (slide.id === 4) {
+      window.location.href = "/game_info/2167";
+    } else if (slide.id === 5) {
+      window.location.href = "/rank/console/playStation";
+    } else if (slide.id === 6) {
     } else {
       goToSlide(index);
     }
@@ -64,7 +73,9 @@ export default function MainSlider() {
             className="flex transition-all duration-700 ease-out"
             style={{
               width: `${mainSlides.length * 100}%`,
-              transform: `translateX(-${currentSlide * (100 / mainSlides.length)}%)`,
+              transform: `translateX(-${
+                currentSlide * (100 / mainSlides.length)
+              }%)`,
             }}
           >
             {mainSlides.map((slide, index) => (
@@ -86,11 +97,11 @@ export default function MainSlider() {
                       fill
                       sizes="100vw"
                       className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                      style={{ 
-                        objectFit: 'cover',
-                        objectPosition: 'center',
-                        width: '100%',
-                        height: '100%'
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                        width: "100%",
+                        height: "100%",
                       }}
                     />
                   ) : (
@@ -120,8 +131,18 @@ export default function MainSlider() {
             className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full backdrop-blur-md bg-black/30 border border-white/20 text-white hover:bg-indigo-600/50 hover:border-indigo-400/50 transition-all duration-300 flex items-center justify-center group"
             aria-label="이전 슬라이드"
           >
-            <svg className="w-6 h-6 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-6 h-6 transition-transform group-hover:-translate-x-0.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
 
@@ -130,8 +151,18 @@ export default function MainSlider() {
             className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full backdrop-blur-md bg-black/30 border border-white/20 text-white hover:bg-indigo-600/50 hover:border-indigo-400/50 transition-all duration-300 flex items-center justify-center group"
             aria-label="다음 슬라이드"
           >
-            <svg className="w-6 h-6 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg
+              className="w-6 h-6 transition-transform group-hover:translate-x-0.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
 
@@ -142,8 +173,8 @@ export default function MainSlider() {
                 key={idx}
                 onClick={() => goToSlide(idx)}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  idx === currentSlide 
-                    ? "bg-indigo-500 shadow-lg shadow-indigo-500/50 scale-110" 
+                  idx === currentSlide
+                    ? "bg-indigo-500 shadow-lg shadow-indigo-500/50 scale-110"
                     : "bg-white/30 hover:bg-white/50"
                 }`}
                 aria-label={`Slide ${idx + 1}`}

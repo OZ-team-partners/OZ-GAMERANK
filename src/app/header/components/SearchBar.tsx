@@ -4,16 +4,22 @@ import { Search } from "lucide-react";
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearch = useCallback((e: FormEvent) => {
-    e.preventDefault();
-    if (!searchTerm.trim()) return;
-    const query = encodeURIComponent(searchTerm.trim());
-    window.open(`https://www.google.com/search?q=${query}`, "_blank");
-  }, [searchTerm]);
+  const handleSearch = useCallback(
+    (e: FormEvent) => {
+      e.preventDefault();
+      if (!searchTerm.trim()) return;
+      const query = encodeURIComponent(searchTerm.trim());
+      window.location.href = `/search?q=${query}`;
+    },
+    [searchTerm]
+  );
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  }, []);
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTerm(e.target.value);
+    },
+    []
+  );
 
   return (
     <div className="relative w-48 desktop-search">
