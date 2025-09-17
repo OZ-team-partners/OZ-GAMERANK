@@ -386,6 +386,7 @@ export async function GET() {
     console.log("=== 데이터 저장 완료 ===");
     return NextResponse.json({
       success: true,
+      message: `총 ${games.length}개의 Nintendo 게임 순위를 성공적으로 업데이트했습니다.`,
       data: games,
       total: games.length,
       lastUpdated: new Date().toISOString(),

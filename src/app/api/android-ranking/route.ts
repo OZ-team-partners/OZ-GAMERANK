@@ -180,6 +180,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
+      message: `총 ${games.length}개의 Android 게임 순위를 성공적으로 업데이트했습니다.`,
       data: games,
       total: games.length,
       lastUpdated: new Date().toISOString(),

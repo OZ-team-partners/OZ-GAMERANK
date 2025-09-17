@@ -192,6 +192,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       success: true,
+      message: `총 ${items.length}개의 PlayStation 게임 순위를 성공적으로 업데이트했습니다.`,
       total: items.length,
       data: items,
       lastUpdated: new Date().toISOString(),
