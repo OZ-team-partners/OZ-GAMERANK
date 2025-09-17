@@ -99,9 +99,10 @@ function ResultSection({
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: { q?: string };
+  searchParams: Promise<{ q?: string }>;
 }) {
-  const q = (searchParams?.q || "").toString();
+  const params = await searchParams;
+  const q = (params?.q || "").toString();
   const { games, posts } = await fetchResults(q);
 
   return (
