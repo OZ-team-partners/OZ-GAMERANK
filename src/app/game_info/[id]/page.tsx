@@ -24,7 +24,7 @@ export default function GameInfoDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [game, setGame] = useState<RankGameRow | null>(null);
-  const [userVote, setUserVote] = useState<number | null>(null);
+  const [] = useState<number | null>(null);
 
   const isNumericId = useMemo(() => /^\d+$/.test(idParam), [idParam]);
 
@@ -69,9 +69,6 @@ export default function GameInfoDetailPage() {
     };
   }, [idParam, isNumericId]);
 
-  const handleVote = (rating: number) => {
-    setUserVote((prev) => (prev === rating ? null : rating));
-  };
 
   if (loading) {
     return (
@@ -136,16 +133,15 @@ export default function GameInfoDetailPage() {
             <MainContent platform={game.platform || ""} />
 
             {/* 댓글 */}
-            <CommentsSection />
+            <CommentsSection gameId={game.id} />
           </div>
 
           {/* 사이드바 */}
           <Sidebar
-            userVote={userVote}
-            onVote={handleVote}
             imageUrl={game.image_url}
             title={game.game_title}
             platform={game.platform || ""}
+            gameId={game.id}
           />
         </div>
       </div>

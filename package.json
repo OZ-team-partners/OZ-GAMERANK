@@ -14,7 +14,7 @@
     "@fontsource/press-start-2p": "^5.2.6",
     "@mui/icons-material": "^7.3.1",
     "@mui/material": "^7.3.1",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.56.0",
     "beautifulsoup4": "^0.0.1-security",
     "cheerio": "^1.1.2",
