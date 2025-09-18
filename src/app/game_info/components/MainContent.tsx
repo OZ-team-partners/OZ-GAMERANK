@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -258,3 +259,4 @@ export default function MainContent({ platform = "" }: { platform?: string }) {
     </div>
   );
 }
+

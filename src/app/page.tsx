@@ -41,7 +41,9 @@ export default function Home() {
       <MainSlider />
 
       {/* 순위 차트 - 핵심 컨텐츠를 먼저 배치 */}
-      <FrontRankTop3 />
+      <div id="front-rank-top-3">
+        <FrontRankTop3 />
+      </div>
 
       {/* 작은 카드 그리드 */}
       <SmallCardsGrid />

@@ -67,7 +67,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/rank/steam"
+                  href="/rank/pc/steam"
                   className="text-slate-400 hover:text-blue-400 transition-all duration-300 text-sm flex items-center gap-1 group hover:bg-blue-500/10 hover:border-blue-500/30 rounded-lg px-2 py-1 border border-transparent"
                 >
                   <ChevronRight size={14} className="group-hover:translate-x-1 transition-all duration-300 group-hover:text-blue-300" />
@@ -76,7 +76,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/rank/online"
+                  href="/rank/pc/online"
                   className="text-slate-400 hover:text-green-400 transition-all duration-300 text-sm flex items-center gap-1 group hover:bg-green-500/10 hover:border-green-500/30 rounded-lg px-2 py-1 border border-transparent"
                 >
                   <ChevronRight size={14} className="group-hover:translate-x-1 transition-all duration-300 group-hover:text-green-300" />
@@ -85,7 +85,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/rank/mobile"
+                  href="/rank/mobile/ios"
                   className="text-slate-400 hover:text-purple-400 transition-all duration-300 text-sm flex items-center gap-1 group hover:bg-purple-500/10 hover:border-purple-500/30 rounded-lg px-2 py-1 border border-transparent"
                 >
                   <ChevronRight size={14} className="group-hover:translate-x-1 transition-all duration-300 group-hover:text-purple-300" />
@@ -94,7 +94,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/rank/console"
+                  href="/rank/console/nintendo"
                   className="text-slate-400 hover:text-orange-400 transition-all duration-300 text-sm flex items-center gap-1 group hover:bg-orange-500/10 hover:border-orange-500/30 rounded-lg px-2 py-1 border border-transparent"
                 >
                   <ChevronRight size={14} className="group-hover:translate-x-1 transition-all duration-300 group-hover:text-orange-300" />
@@ -114,7 +114,7 @@ const Footer = () => {
                   className="text-slate-400 hover:text-cyan-400 transition-all duration-300 text-sm flex items-center gap-1 group hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-lg px-2 py-1 border border-transparent"
                 >
                   <ChevronRight size={14} className="group-hover:translate-x-1 transition-all duration-300 group-hover:text-cyan-300" />
-                  게시판
+                  커뮤니티
                 </Link>
               </li>
               <li>

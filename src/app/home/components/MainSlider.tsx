@@ -10,9 +10,9 @@ import { communityApi } from "@/lib/supabase";
 const mainSlides: MainSlide[] = [
   {
     id: 1,
-    title: "8월 게임 뉘우스",
-    desc: "8월 의 새로운 소식 from Jung-Sik",
-    render: () => <NewsletterPage />,
+    title: "GAME RANK",
+    desc: "",
+    image: "/images/home/GAME_RANK_main.png",
   },
   {
     id: 2,
@@ -34,9 +34,9 @@ const mainSlides: MainSlide[] = [
   },
   {
     id: 5,
-    title: "좋아요 TOP3",
-    desc: "게이머들의 소통 공간",
-    image: "/images/home/mainSlide5.jpg",
+    title: "8월 게임 뉘우스",
+    desc: "8월 의 새로운 소식 from Jung-Sik",
+    render: () => <NewsletterPage />,
   },
 ];
 
@@ -49,15 +49,18 @@ export default function MainSlider() {
 
   const handleSlideClick = (slide: MainSlide, index: number) => {
     if (slide.id === 1) {
-      window.location.href = "/blog/newsletter";
+      const element = document.getElementById("front-rank-top-3");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     } else if (slide.id === 2) {
-      window.location.href = "/game_info";
+      window.location.href = "/game_info/2978";
     } else if (slide.id === 3) {
-      window.location.href = "/game_info/1136";
+      window.location.href = "/game_info/2885";
     } else if (slide.id === 4) {
-      window.location.href = "/game_info/2167";
+      window.location.href = "/game_info/2687";
     } else if (slide.id === 5) {
-      window.location.href = "/rank/console/playStation";
+      window.location.href = "/blog/newsletter";
     } else if (slide.id === 6) {
     } else {
       goToSlide(index);
