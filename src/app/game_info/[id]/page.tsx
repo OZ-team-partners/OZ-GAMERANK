@@ -24,7 +24,15 @@ export default function GameInfoDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [game, setGame] = useState<RankGameRow | null>(null);
-  const [] = useState<number | null>(null);
+  const [userVote, setUserVote] = useState<number | null>(null);
+
+  const handleVote = (rating: number) => {
+    if (userVote === rating) {
+      setUserVote(null);
+    } else {
+      setUserVote(rating);
+    }
+  };
 
   const isNumericId = useMemo(() => /^\d+$/.test(idParam), [idParam]);
 
@@ -142,6 +150,8 @@ export default function GameInfoDetailPage() {
             title={game.game_title}
             platform={game.platform || ""}
             gameId={game.id}
+            userVote={userVote}
+            onVote={handleVote}
           />
         </div>
       </div>
