@@ -75,9 +75,9 @@ export default function CategoryTabs() {
   return (
     <div className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700/50">
       {/* 메인 카테고리 탭 */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center py-4">
-          <div className="flex bg-slate-800/60 rounded-xl p-1 backdrop-blur-sm border border-slate-700/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex items-center justify-center mb-4">
+          <div className="flex gap-2 bg-slate-800/60 rounded-xl p-2 backdrop-blur-sm border border-slate-700/50">
             {tabs.map((tab) => {
               const isActive = currentCategory === tab.id;
               return (
@@ -99,8 +99,8 @@ export default function CategoryTabs() {
         </div>
 
         {/* 플랫폼 서브 탭 */}
-        <div className="flex items-center justify-center pb-4">
-          <div className="flex bg-slate-800/40 rounded-lg p-1 backdrop-blur-sm">
+        <div className="flex items-center justify-center">
+          <div className="flex gap-2 bg-slate-800/40 rounded-lg p-2 backdrop-blur-sm">
             {currentPlatformTabs.map((tab) => {
               const isActive = pathname === tab.href;
               return (

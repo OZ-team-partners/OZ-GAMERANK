@@ -5,6 +5,105 @@ import { supabase } from "@/lib/supabase";
 import CategoryTabs from "../../components/CategoryTabs";
 import RankingGrid from "../../components/RankingGrid";
 import TopThreeCards from "../../components/TopThreeCards";
+import {
+  ChevronDown,
+  Gamepad2,
+  Sword,
+  Wand2,
+  Brain,
+  Trophy,
+  SortAsc,
+  Sparkles,
+  TrendingUp,
+  Calendar,
+  CalendarDays,
+  Activity,
+  Search
+} from "lucide-react";
+
+// 사이트 톤앤매너에 맞춘 게이밍 드롭다운 컴포넌트
+function StyledGameDropdown({ options, value, onChange, placeholder }: {
+  options: Array<{value: string, label: string, icon: React.ComponentType<{ className?: string }>}>;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const currentOption = options.find(opt => opt.value === value);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 150); // 애니메이션 시간과 일치
+  };
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="bg-slate-800/60 border border-slate-700/50 text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium hover:border-orange-500/40 hover:text-white transition-all duration-300 flex items-center gap-2.5 min-w-[140px] justify-between group"
+      >
+        <div className="flex items-center gap-2">
+          {currentOption?.icon ? (
+            <currentOption.icon className="w-4 h-4 text-slate-400 group-hover:text-orange-400 transition-colors" />
+          ) : (
+            <Gamepad2 className="w-4 h-4 text-slate-400 group-hover:text-orange-400 transition-colors" />
+          )}
+          <span className="font-medium">{currentOption?.label || placeholder}</span>
+        </div>
+        <ChevronDown
+          className={`w-4 h-4 text-orange-400 transition-all duration-300 ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {isOpen && (
+        <>
+          {/* 백드롭 */}
+          <div
+            className="fixed inset-0 z-10"
+            onClick={handleClose}
+          />
+
+          {/* 드롭다운 메뉴 */}
+          <div className={`absolute top-full mt-2 left-0 bg-slate-900 border border-slate-700/50 rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-20 min-w-full transition-all duration-150 ${
+            isClosing ? 'animate-fadeOut' : 'animate-fadeIn'
+          }`}>
+            {options.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => {
+                  onChange(option.value);
+                  handleClose();
+                }}
+                className={`w-full px-4 py-3 text-left text-sm font-medium transition-all duration-150 flex items-center gap-3 relative group ${
+                  value === option.value
+                    ? "bg-gradient-to-r from-orange-500/20 to-orange-600/10 text-orange-400"
+                    : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                }`}
+              >
+                {/* 선택된 항목 글로우 효과 */}
+                {value === option.value && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent" />
+                )}
+
+                <option.icon className={`w-4 h-4 relative z-10 ${
+                  value === option.value ? 'text-orange-400' : 'text-slate-500 group-hover:text-orange-400'
+                } transition-colors`} />
+                <span className="relative z-10">{option.label}</span>
+
+                {/* 호버 효과 */}
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/0 to-orange-600/0 group-hover:from-orange-500/5 group-hover:to-orange-600/5 transition-all duration-300" />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 interface OnlineGame {
   id: number;
@@ -14,7 +113,6 @@ interface OnlineGame {
   rank: number;
   isNew?: boolean;
   isHot?: boolean;
-  rankChange?: number;
 }
 
 export default function OnlineRankingPage() {
@@ -25,6 +123,7 @@ export default function OnlineRankingPage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [sortBy, setSortBy] = useState<"rank" | "title" | "new">("rank");
   const [filterGenre, setFilterGenre] = useState<"all" | "action" | "rpg" | "strategy">("all");
+  const [showTrend, setShowTrend] = useState<"hide" | "daily" | "weekly" | "monthly">("hide");
 
   // Online-game 랭킹 데이터 가져오기 (DB)
   useEffect(() => {
@@ -153,7 +252,34 @@ export default function OnlineRankingPage() {
 
   return (
     <div className="bg-slate-900 text-white min-h-screen">
-      <CategoryTabs />
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes fadeOut {
+          from {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          to {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.15s ease-out;
+        }
+        .animate-fadeOut {
+          animation: fadeOut 0.15s ease-in;
+        }
+      `}</style>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 헤더 섹션 */}
@@ -187,60 +313,75 @@ export default function OnlineRankingPage() {
           <div className="w-32 h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent mx-auto mt-6 rounded-full"></div>
         </div>
 
-        {/* 필터 및 검색 영역 */}
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-            {/* 필터 옵션 */}
-            <div className="flex flex-wrap gap-3">
-              <select
+        {/* 필터 및 검색 영역 - 새로운 디자인 */}
+        <div className="bg-slate-900/95 border border-slate-700/50 rounded-2xl p-6 space-y-4 mb-8 shadow-lg shadow-black/20">
+          {/* 첫 번째 줄: 드롭다운들과 검색창 */}
+          <div className="flex items-center justify-between">
+            {/* 드롭다운 필터들 */}
+            <div className="flex items-center gap-3">
+              <StyledGameDropdown
+                options={[
+                  { value: "all", label: "전체 장르", icon: Gamepad2 },
+                  { value: "action", label: "액션/FPS", icon: Sword },
+                  { value: "rpg", label: "RPG", icon: Wand2 },
+                  { value: "strategy", label: "전략", icon: Brain }
+                ]}
                 value={filterGenre}
-                onChange={(e) => setFilterGenre(e.target.value as any)}
-                className="bg-slate-800/60 border border-slate-700/50 text-white text-sm px-4 py-2 rounded-lg backdrop-blur-sm focus:border-orange-500 transition-colors"
-              >
-                <option value="all">전체 장르</option>
-                <option value="action">액션/FPS</option>
-                <option value="rpg">RPG/어드벤처</option>
-                <option value="strategy">전략/시뮬레이션</option>
-              </select>
-
-              <select
+                onChange={(value) => setFilterGenre(value as "all" | "action" | "rpg" | "strategy")}
+                placeholder="장르 선택"
+              />
+              <StyledGameDropdown
+                options={[
+                  { value: "rank", label: "순위순", icon: Trophy },
+                  { value: "title", label: "이름순", icon: SortAsc },
+                  { value: "new", label: "신작순", icon: Sparkles }
+                ]}
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-slate-800/60 border border-slate-700/50 text-white text-sm px-4 py-2 rounded-lg backdrop-blur-sm focus:border-orange-500 transition-colors"
-              >
-                <option value="rank">순위순</option>
-                <option value="title">이름순</option>
-                <option value="new">신작순</option>
-              </select>
+                onChange={(value) => setSortBy(value as "rank" | "title" | "new")}
+                placeholder="정렬 기준"
+              />
+              <StyledGameDropdown
+                options={[
+                  { value: "hide", label: "랭킹 변화 추이", icon: Activity },
+                  { value: "daily", label: "일간 변화", icon: TrendingUp },
+                  { value: "weekly", label: "주간 변화", icon: Calendar },
+                  { value: "monthly", label: "월간 변화", icon: CalendarDays }
+                ]}
+                value={showTrend}
+                onChange={(value) => setShowTrend(value as "hide" | "daily" | "weekly" | "monthly")}
+                placeholder="변화 추이"
+              />
             </div>
 
-            {/* 검색바 */}
-            <div className="relative flex-1 max-w-md">
+            {/* 검색창 */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
                 placeholder="게임 제목이나 설명으로 검색..."
-                className="w-full bg-slate-800/60 border border-slate-700/50 text-white text-sm px-4 py-2 pl-10 rounded-lg backdrop-blur-sm focus:border-orange-500 transition-colors"
+                className="bg-slate-800/60 border border-slate-700/50 text-slate-300 pl-10 pr-4 py-2.5 rounded-xl text-sm placeholder-slate-500 focus:border-orange-500/40 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-300 w-80"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
             </div>
           </div>
 
-          {/* 통계 정보 */}
-          <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-slate-400">
+          {/* 두 번째 줄: 데이터 제공 정보 */}
+          <div className="flex items-center gap-4 text-xs text-slate-500">
             <span>총 {filteredAndSortedItems.length}개의 게임</span>
-            {searchQuery && (
-              <span className="text-orange-400">
-                &quot;{searchQuery}&quot; 검색 결과
-              </span>
-            )}
+            <span className="text-slate-600">·</span>
             {lastUpdated && (
-              <span>
-                마지막 업데이트: {new Date(lastUpdated).toLocaleString("ko-KR")}
-              </span>
+              <>
+                <span>마지막 업데이트: {new Date(lastUpdated).toLocaleString("ko-KR")}</span>
+                <span className="text-slate-600">·</span>
+              </>
+            )}
+            <span>데이터 제공: <a href="https://gamemeca.com" className="text-orange-500 hover:text-orange-400 transition-colors">gamemeca.com</a></span>
+            {searchQuery && (
+              <>
+                <span className="text-slate-600">·</span>
+                <span className="text-orange-400">&quot;{searchQuery}&quot; 검색 결과</span>
+              </>
             )}
           </div>
         </div>
@@ -266,22 +407,6 @@ export default function OnlineRankingPage() {
         {/* 나머지 게임 그리드 */}
         <RankingGrid items={filteredAndSortedItems} loading={loading} showTopThree={false} />
 
-        {/* 페이지 하단 정보 */}
-        <div className="mt-16 text-center">
-          <div className="inline-flex flex-col items-center gap-4 p-6 bg-slate-800/40 rounded-xl backdrop-blur-sm border border-slate-700/50">
-            <div className="text-sm text-slate-400">
-              데이터 제공: gamemeca.com
-            </div>
-            <div className="flex gap-3">
-              <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-medium py-2 px-6 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-200">
-                전체 랭킹 보기
-              </button>
-              <button className="bg-transparent border border-orange-500 text-orange-500 font-medium py-2 px-6 rounded-lg hover:bg-orange-500 hover:text-white transition-all duration-200">
-                랭킹 변화 추이
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

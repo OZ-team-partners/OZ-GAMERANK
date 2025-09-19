@@ -40,3 +40,27 @@ input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s !important;
   background-color: transparent !important;
 }
+
+/* 커스텀 스크롤바 */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #ea580c #1e293b;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #ea580c, #dc2626);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #fb923c, #ef4444);
+}
+

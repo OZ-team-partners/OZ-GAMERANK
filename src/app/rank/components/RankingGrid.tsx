@@ -11,7 +11,6 @@ interface RankingItem {
   img: string;
   isNew?: boolean;
   isHot?: boolean;
-  rankChange?: number;
 }
 
 interface RankingGridProps {
@@ -64,17 +63,6 @@ export default function RankingGrid({ items, loading = false, showTopThree = tru
 
   return (
     <div>
-      {!showTopThree && filteredItems.length > 0 && (
-        <div className="mb-8">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-white mb-2 bg-gradient-to-r from-slate-300 via-slate-200 to-slate-300 bg-clip-text text-transparent">
-              나머지 순위
-            </h3>
-            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-slate-500 to-transparent mx-auto"></div>
-          </div>
-        </div>
-      )}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredItems.map((item) => (
           <GameRankCard
@@ -86,7 +74,6 @@ export default function RankingGrid({ items, loading = false, showTopThree = tru
             imageUrl={item.img}
             isNew={item.isNew}
             isHot={item.isHot}
-            rankChange={item.rankChange}
           />
         ))}
       </div>

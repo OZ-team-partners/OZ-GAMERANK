@@ -4,8 +4,7 @@ import Image from "next/image";
 import NewsletterPage from "@/app/blog/newsletter/page";
 import { MainSlide } from "../types";
 import { useSlider } from "../hooks/useSlider";
-import React, { useEffect, useState } from "react";
-import { communityApi } from "@/lib/supabase";
+import React from "react";
 
 const mainSlides: MainSlide[] = [
   {

@@ -91,6 +91,12 @@ const nextConfig = {
         hostname: "cdn.quasarzone.com",
         port: "",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.metacritic.com",
+        port: "",
+        pathname: "/**",
       }
     ],
   },
