@@ -24,7 +24,7 @@ export default function GameInfoPage() {
             <MainContent />
             <CommentsSection gameId={1} />
           </div>
-          <Sidebar userVote={userVote} onVote={handleVote} />
+          <Sidebar gameId={1} userVote={userVote} onVote={handleVote} />
         </div>
       </div>
     </div>

@@ -11,6 +11,8 @@ interface SidebarProps {
   title?: string;
   platform?: string | null;
   gameId: number;
+  userVote?: number | null;
+  onVote?: (rating: number) => void;
 }
 
 interface GameRating {
@@ -33,6 +35,8 @@ export default function Sidebar({
   title,
   platform,
   gameId,
+  userVote,
+  onVote,
 }: SidebarProps) {
   const router = useRouter();
   const [gameRating, setGameRating] = useState<GameRating>({
