@@ -22,8 +22,8 @@ export async function GET() {
 
     // 이메일이 있는 사용자만 필터링
     const emailList = users
-      .map((user) => user.email)
-      .filter((email) => email && email.trim() !== "");
+      .map((user: { email?: string }) => user.email)
+      .filter((email): email is string => email && email.trim() !== "");
 
     return NextResponse.json({
       userCount: users.length,
