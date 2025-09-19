@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Button, CircularProgress, List, ListItem, ListItemText, Paper, Typography, Alert } from '@mui/material';
+import { Button, CircularProgress, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
 
 const CRAWL_ENDPOINTS = [
   { key: 'android', name: 'Android', url: '/api/android-ranking' },
@@ -36,8 +36,8 @@ const SecretCrawlPage = () => {
           throw new Error(data.error || `HTTP error! status: ${response.status}`);
         }
         return { name: endpoint.name, status: 'success' as Status, message: data.message || '성공적으로 완료되었습니다.' };
-      } catch (error: any) {
-        return { name: endpoint.name, status: 'error' as Status, message: error.message || '알 수 없는 오류가 발생했습니다.' };
+      } catch (error: unknown) {
+        return { name: endpoint.name, status: 'error' as Status, message: (error instanceof Error ? error.message : String(error)) || '알 수 없는 오류가 발생했습니다.' };
       }
     });
 

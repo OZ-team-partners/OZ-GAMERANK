@@ -34,7 +34,7 @@ export function useNewsletter(): UseNewsletterReturn {
     try {
       const result = await NewsletterService.sendTestEmail(email);
       setResult(result);
-    } catch (error) {
+    } catch (_error) {
       setResult({
         success: false,
         message: "테스트 이메일 발송 중 오류가 발생했습니다.",
@@ -52,7 +52,7 @@ export function useNewsletter(): UseNewsletterReturn {
 
       // 발송 후 사용자 데이터 새로고침
       await refreshUserData();
-    } catch (error) {
+    } catch (_error) {
       setResult({
         success: false,
         message: "뉴스레터 발송 중 오류가 발생했습니다.",

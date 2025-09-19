@@ -44,8 +44,16 @@ export default function PCGamesPage() {
         if (onlineError) throw new Error(onlineError.message);
         if (steamError) throw new Error(steamError.message);
 
+        type RankGameRow = {
+          id: number;
+          game_title: string;
+          game_subtitle: string | null;
+          image_url: string | null;
+          rank: number;
+        };
+
         const combinedGames: PCGame[] = [
-          ...(onlineData || []).map((item: any) => ({
+          ...(onlineData || []).map((item: RankGameRow) => ({
             id: item.id,
             title: item.game_title,
             subtitle: item.game_subtitle || "",
@@ -55,7 +63,7 @@ export default function PCGamesPage() {
             isNew: Math.random() > 0.7,
             isHot: item.rank <= 5 && Math.random() > 0.6,
           })),
-          ...(steamData || []).map((item: any) => ({
+          ...(steamData || []).map((item: RankGameRow) => ({
             id: item.id + 1000, // ID 충돌 방지
             title: item.game_title,
             subtitle: item.game_subtitle || "",

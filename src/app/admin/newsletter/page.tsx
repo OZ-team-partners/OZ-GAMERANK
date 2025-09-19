@@ -188,7 +188,7 @@ export default function NewsletterAdminPage() {
                 <div className="mt-4">
                   <h4 className="font-medium text-gray-900 mb-2">상세 결과:</h4>
                   <div className="max-h-40 overflow-y-auto border rounded-lg bg-white">
-                    {result.results.map((res: any, index: number) => (
+                    {result.results.map((res: { email: string; success: boolean; error?: string }, index: number) => (
                       <div
                         key={index}
                         className="text-xs p-3 border-b last:border-b-0"
