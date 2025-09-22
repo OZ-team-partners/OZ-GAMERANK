@@ -1,17 +1,43 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
+import NewsletterModal from "./NewsletterModal";
+import { mockNewsletters } from "./mock-newsletters";
+
+interface NewsletterItem {
+  id: number;
+  title: string;
+  content: string;
+  author?: string;
+  date?: string;
+  category?: string;
+  imageUrl?: string;
+}
 
 export default function NewsletterPage() {
+  const [selectedItem, setSelectedItem] = useState<NewsletterItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleItemClick = (item: NewsletterItem) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedItem(null);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-900 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* 메인 컨테이너 */}
         <div className="bg-gray-100 rounded-xl shadow-2xl overflow-hidden">
           {/* 상단 헤더 */}
           <div className="bg-gradient-to-r from-gray-700 to-gray-800 text-white px-6 py-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">2025년 8월 11일</span>
+              <span className="text-sm font-medium">2025년 9월 11일</span>
               <span className="text-sm font-medium bg-gray-700 px-3 py-1 rounded-full">
                 제29호
               </span>
@@ -47,27 +73,40 @@ export default function NewsletterPage() {
               <h3 className="text-xl font-bold mb-6 text-gray-100">
                 이번 주 주요 소식
               </h3>
-              <div className="space-y-4">
-                <div className="group cursor-pointer transition-all duration-300 hover:bg-gray-600 p-3 rounded-lg">
-                  <p className="text-sm font-medium text-gray-100 group-hover:text-white">
-                    이번 주 새로운 게임 출시
-                  </p>
-                </div>
-                <div className="group cursor-pointer transition-all duration-300 hover:bg-gray-600 p-3 rounded-lg">
-                  <p className="text-sm font-medium text-gray-100 group-hover:text-white">
-                    게임 멘탈 관리에 도움 되는 차
-                  </p>
-                </div>
-                <div className="group cursor-pointer transition-all duration-300 hover:bg-gray-600 p-3 rounded-lg">
-                  <p className="text-sm font-medium text-gray-100 group-hover:text-white">
-                    초보자 가이드: 게임 공략
-                  </p>
-                </div>
-                <div className="group cursor-pointer transition-all duration-300 hover:bg-gray-600 p-3 rounded-lg">
-                  <p className="text-sm font-medium text-gray-100 group-hover:text-white">
-                    다음 호 예고
-                  </p>
-                </div>
+              <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+                {[...mockNewsletters]
+                  .slice()
+                  .sort((a, b) => b.id - a.id)
+                  .map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() =>
+                        handleItemClick({
+                          id: item.id,
+                          title: item.title,
+                          content: item.content,
+                          author: "게임랭킹 편집팀",
+                          date: "2025년 9월 11일",
+                          category: "게임 소식",
+                          imageUrl: item.imageUrl,
+                        })
+                      }
+                      className="group cursor-pointer transition-all duration-300 hover:bg-gray-600 p-3 rounded-lg border border-gray-600 hover:border-gray-500"
+                    >
+                      <p className="text-sm font-medium text-gray-100 group-hover:text-white leading-relaxed">
+                        {item.title}
+                      </p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-xs text-gray-400">소식통 제{31 - (item?.id ?? 0)}호</span>
+                        <span className="text-xs text-gray-400">읽기</span>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+              <div className="mt-4 text-center">
+                <p className="text-xs text-gray-400">
+                  총 {mockNewsletters.length}개의 소식
+                </p>
               </div>
             </div>
 
@@ -149,6 +188,13 @@ export default function NewsletterPage() {
           </div>
         </div>
       </div>
+
+      {/* 모달 컴포넌트 */}
+      <NewsletterModal
+        item={selectedItem}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }
