@@ -35,8 +35,6 @@ export default function Sidebar({
   title,
   platform,
   gameId,
-  userVote,
-  onVote,
 }: SidebarProps) {
   const router = useRouter();
   const [gameRating, setGameRating] = useState<GameRating>({
