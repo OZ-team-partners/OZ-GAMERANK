@@ -8,30 +8,30 @@ import { SmallSlide } from "../types";
 const smallSlides: SmallSlide[] = [
   {
     id: 1,
+    title: "game-bti",
+    smallSlides_text: "게임도 적성검사가 있는거 아세요?",
+    image: "/icon/page_icon/small_contents_game_mbti.png",
+    href: "/small_contents/game_mbti/",
+  },
+  {
+    id: 2,
+    title: "GAMERANK 뉴스레터 구독하기",
+    smallSlides_text: "매주 최신 게임 소식과 독점 정보를 받아보세요!",
+    image: "https://images.unsplash.com/photo-1532012197267-da84d127e765",
+    href: "/blog/newsletter",
+  },
+  {
+    id: 3,
     title: "디지털 50% sale 지금 바로!",
     smallSlides_text: "지금이 제일 저렴할때!",
     image: "/images/home/ads1.png",
     href: "/community",
   },
   {
-    id: 2,
+    id: 4,
     title: "모여봐요 동물의 숲!",
     smallSlides_text: "지금이 제일 할인률이 높은거 아시죠?",
     image: "/images/home/ads2.jpg",
-    href: "/small_contents/game_mbti/",
-  },
-  {
-    id: 3,
-    title: "강호동과 함께 기적의검",
-    smallSlides_text: "총 1억 상당의 감사제 선물증정!",
-    image: "/images/home/ads3.jpg",
-    href: "/small_contents/game_mbti/",
-  },
-  {
-    id: 4,
-    title: "game-bti",
-    smallSlides_text: "게임도 적성검사가 있는거 아세요?",
-    image: "/icon/page_icon/small_contents_game_mbti.png",
     href: "/small_contents/game_mbti/",
   },
 ];
@@ -76,6 +76,18 @@ export default function SmallCardsGrid() {
                       className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                    {/* 뉴스레터 카드에만 텍스트 오버레이 추가 */}
+                    {slide.id === 2 && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <div className="text-center">
+                          <h3 className="text-3xl font-black text-white mb-2 drop-shadow-lg">렙업 소식통</h3>
+                          <p className="text-base font-bold text-white/95 drop-shadow-md">게임랭킹 사이트 공식 뉴스레터</p>
+                        </div>
+                      </div>
+                    )}
+
+
                     <div className="absolute top-3 right-3">
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>

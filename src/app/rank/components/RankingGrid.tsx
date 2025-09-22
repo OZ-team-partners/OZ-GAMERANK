@@ -11,6 +11,7 @@ interface RankingItem {
   img: string;
   isNew?: boolean;
   isHot?: boolean;
+  rankChange?: number;
 }
 
 interface RankingGridProps {
@@ -74,6 +75,7 @@ export default function RankingGrid({ items, loading = false, showTopThree = tru
             imageUrl={item.img}
             isNew={item.isNew}
             isHot={item.isHot}
+            rankChange={item.rankChange}
           />
         ))}
       </div>

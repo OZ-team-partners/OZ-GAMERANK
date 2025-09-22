@@ -7,27 +7,27 @@ import { HotIssueCard, HotIssueListItem } from "../types";
 const hotIssueCards: HotIssueCard[] = [
   {
     id: 1,
-    image: "/icon/page_icon/mainUpperIcon1.png",
-    title: "게임 랭킹 최신 업데이트",
-    description: "인기 게임들의 최신 랭킹 정보를 확인하세요",
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/2933620/header.jpg",
+    title: "블랙 미스 2 개발 중단 공식 발표",
+    description: "크라우드 펀딩 프로젝트의 갑작스런 중단 소식",
   },
   {
     id: 2,
-    image: "/icon/page_icon/mainUpperIcon2.png",
-    title: "커뮤니티 게시판",
-    description: "게이머들과 정보를 공유하고 소통하세요",
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1086940/header.jpg",
+    title: "발더스 게이트 3 GOTY 수상",
+    description: "2024년 최고의 게임으로 선정된 화제작",
   },
   {
     id: 3,
-    image: "/icon/page_icon/mainUpperIcon3.png",
-    title: "게임 MBTI 테스트",
-    description: "나만의 게임 성향을 알아보는 재미있는 테스트",
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1623730/header.jpg",
+    title: "팰월드 신규 업데이트 예고",
+    description: "새로운 팰과 지역 추가 예정, 유저들 기대감 상승",
   },
   {
     id: 4,
-    image: "/icon/page_icon/mainUpperIcon4.png",
-    title: "게임 뉴스레터",
-    description: "최신 게임 소식과 트렌드를 메일로 받아보세요",
+    image: "https://cdn.akamai.steamstatic.com/steam/apps/1174180/header.jpg",
+    title: "레드 데드 리뎀션 PC 출시",
+    description: "콘솔 독점작이 드디어 PC로 이식 확정",
   },
 ];
 
@@ -113,7 +113,7 @@ export default function HotIssueSection() {
           {hotIssueCards.map((item) => (
             <div
               key={item.id}
-              className="group relative backdrop-blur-sm bg-slate-800/50 rounded-2xl shadow-xl overflow-hidden border border-slate-700/50 hover:border-slate-600/50 transition-all duration-300 hover:scale-105 cursor-pointer"
+              className="group relative backdrop-blur-sm bg-gradient-to-br from-slate-800/60 to-slate-900/60 rounded-2xl shadow-2xl overflow-hidden border border-orange-500/20 hover:border-orange-500/50 transition-all duration-300 hover:scale-105 cursor-pointer"
               onClick={() => router.push("/community")}
             >
               <div className="relative h-32 overflow-hidden">

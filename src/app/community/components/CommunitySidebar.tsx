@@ -1,12 +1,96 @@
 "use client";
 
-import React from "react";
-import { Mail, TrendingUp, Star } from "lucide-react";
+import React, { useMemo } from "react";
+import { Star, Flame, Mail, Eye } from "lucide-react";
+import { useCommunity } from "./CommunityProvider";
+import type { CommunityPost } from "../types";
 
 export default function CommunitySidebar() {
+  const { posts, openPostDetail } = useCommunity();
+
+  // 오늘의 핫 토픽: 최신 + 조회수 조합으로 인기 게시글 계산
+  const todaysHotTopics = useMemo(() => {
+    const now = new Date();
+
+    // 최근 7일 내 게시글 필터링
+    const recentPosts = posts.filter(post => {
+      const postDate = new Date(post.created_at);
+      const daysDiff = (now.getTime() - postDate.getTime()) / (1000 * 60 * 60 * 24);
+      return daysDiff <= 7;
+    });
+
+    // 점수 계산: (조회수 * 0.7) + (최신도 점수 * 0.3)
+    const scoredPosts = recentPosts.map(post => {
+      const postDate = new Date(post.created_at);
+      const daysDiff = (now.getTime() - postDate.getTime()) / (1000 * 60 * 60 * 24);
+      const recencyScore = Math.max(0, 100 - daysDiff * 10); // 최신일수록 높은 점수
+      const viewScore = (post.view_count || 0);
+      const totalScore = (viewScore * 0.7) + (recencyScore * 0.3);
+
+      return {
+        ...post,
+        hotScore: totalScore
+      };
+    });
+
+    // 점수 순으로 정렬하고 상위 5개 선택
+    const hotPosts = scoredPosts
+      .sort((a, b) => b.hotScore - a.hotScore)
+      .slice(0, 5);
+
+    return hotPosts;
+  }, [posts]);
+
+  const handleTopicClick = (post: CommunityPost) => {
+    openPostDetail(post);
+  };
+
+  const truncateTitle = (title: string, maxLength = 20) => {
+    return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
+  };
+
   return (
     <div className="lg:col-span-1 flex flex-col gap-4">
-      {/* 구독 카드 */}
+      {/* 오늘의 핫 토픽 카드 */}
+      <div className="bg-slate-800/50 backdrop-blur-sm p-5 rounded-2xl border border-slate-700 shadow-xl">
+        <div className="flex items-center gap-2 mb-3">
+          <Flame className="w-5 h-5 text-orange-400" />
+          <h4 className="font-semibold text-lg">오늘의 핫 토픽</h4>
+        </div>
+        <p className="text-sm mb-4 opacity-90">
+          최신 + 조회수 기반 인기글
+        </p>
+        <div className="space-y-2">
+          {todaysHotTopics.length > 0 ? (
+            todaysHotTopics.map((post, index) => (
+              <div
+                key={post.post_id || post.id}
+                className="flex items-center justify-between py-2 px-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors cursor-pointer"
+                onClick={() => handleTopicClick(post)}
+              >
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <span className="text-xs font-bold text-yellow-300 w-4 flex-shrink-0">
+                    {index + 1}
+                  </span>
+                  <span className="text-sm font-medium truncate">
+                    {truncateTitle(post.title)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <Eye className="w-3 h-3 text-slate-400" />
+                  <span className="text-xs opacity-80">{post.view_count || 0}</span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-4 text-slate-400">
+              <p className="text-sm">아직 핫 토픽이 없습니다</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 뉴스레터 구독 카드 */}
       <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-5 rounded-2xl shadow-xl">
         <div className="flex items-center gap-2 mb-3">
           <Mail className="w-5 h-5" />
@@ -24,25 +108,6 @@ export default function CommunitySidebar() {
           <button className="w-full p-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-white/90 transition-all cursor-pointer">
             구독하기
           </button>
-        </div>
-      </div>
-
-      {/* 트렌딩 카드 */}
-      <div className="bg-slate-800/50 backdrop-blur-sm p-5 rounded-2xl border border-slate-700 shadow-xl">
-        <div className="flex items-center gap-2 mb-4">
-          <TrendingUp className="w-5 h-5 text-green-400" />
-          <h4 className="font-semibold">인기 토픽</h4>
-        </div>
-        <div className="space-y-2">
-          <div className="p-2 bg-slate-700/50 rounded-lg text-sm hover:bg-slate-700 transition-colors cursor-pointer">
-            #발더스게이트3
-          </div>
-          <div className="p-2 bg-slate-700/50 rounded-lg text-sm hover:bg-slate-700 transition-colors cursor-pointer">
-            #스팀세일
-          </div>
-          <div className="p-2 bg-slate-700/50 rounded-lg text-sm hover:bg-slate-700 transition-colors cursor-pointer">
-            #PS5신작
-          </div>
         </div>
       </div>
 

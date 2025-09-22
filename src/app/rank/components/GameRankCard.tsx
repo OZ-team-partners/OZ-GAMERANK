@@ -12,6 +12,7 @@ interface GameRankCardProps {
   imageUrl: string;
   isNew?: boolean;
   isHot?: boolean;
+  rankChange?: number; // 순위 변화 (-는 하락, +는 상승, 0은 동일)
 }
 
 export default function GameRankCard({
@@ -22,6 +23,7 @@ export default function GameRankCard({
   imageUrl,
   isNew = false,
   isHot = false,
+  rankChange = 0,
 }: GameRankCardProps) {
 
 
@@ -68,13 +70,32 @@ export default function GameRankCard({
         </div>
 
         {/* 정보 영역 */}
-        <div className="p-4">
+        <div className="p-4 relative">
           <h3 className="font-bold text-white text-lg line-clamp-1 group-hover:text-orange-400 transition-colors duration-200 mb-2">
             {title}
           </h3>
           <p className="text-slate-400 text-sm line-clamp-2">
             {subtitle}
           </p>
+
+          {/* 순위 변화 표시 - 우측 하단 */}
+          <div className="absolute bottom-4 right-4">
+            {rankChange === 0 ? (
+              <div className="flex items-center justify-center w-6 h-6 bg-slate-600/80 rounded-full">
+                <span className="text-slate-300 text-xs font-bold">-</span>
+              </div>
+            ) : rankChange > 0 ? (
+              <div className="flex items-center gap-1 px-2 py-1 bg-green-500/20 rounded-full border border-green-500/30">
+                <span className="text-green-400 text-xs">▲</span>
+                <span className="text-green-400 text-xs font-bold">{rankChange}</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 px-2 py-1 bg-red-500/20 rounded-full border border-red-500/30">
+                <span className="text-red-400 text-xs">▼</span>
+                <span className="text-red-400 text-xs font-bold">{Math.abs(rankChange)}</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </Link>

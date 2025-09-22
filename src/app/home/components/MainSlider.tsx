@@ -89,7 +89,7 @@ export default function MainSlider() {
                 }}
               >
                 <div
-                  className="rounded-xl overflow-hidden relative cursor-pointer h-96 w-full group hover:scale-[0.98] transition-all duration-300"
+                  className="rounded-xl overflow-hidden relative cursor-pointer h-[500px] w-full group hover:scale-[0.98] transition-all duration-300"
                   onClick={() => handleSlideClick(slide, index)}
                 >
                   {typeof slide.image === "string" ? (

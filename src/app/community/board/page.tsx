@@ -328,16 +328,50 @@ export default function BoardPage() {
 
         {/* LEFT: small card + big vertical ad */}
         <div className="lg:col-span-1 flex flex-col gap-4 items-center order-2 lg:order-1">
-          <div className="w-full bg-indigo-500 text-white p-3.5 rounded-lg flex flex-col gap-2 items-start shadow-lg">
-            <h4 className="m-0 text-sm">Subscribe</h4>
-            <div className="text-xs opacity-95">
-              Get our latest posts and news
+          <div className="w-full bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-4 rounded-lg shadow-lg">
+            <h4 className="m-0 text-base font-bold mb-3 flex items-center gap-2">
+              <span className="text-yellow-300">🔥</span> 인기 토픽
+            </h4>
+            <div className="flex flex-col gap-2">
+              {/* 인기 카테고리 목록 */}
+              {[
+                { name: "steam", count: 42, trend: "up" },
+                { name: "PS", count: 38, trend: "up" },
+                { name: "닌텐도", count: 25, trend: "down" },
+                { name: "모바일", count: 19, trend: "same" },
+                { name: "핫딜", count: 15, trend: "up" },
+              ].map((topic, index) => (
+                <div
+                  key={topic.name}
+                  className="flex items-center justify-between py-1.5 px-2 bg-white/10 rounded hover:bg-white/20 transition-colors cursor-pointer"
+                  onClick={() => setSelectedCategory(topic.name as Category)}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-yellow-300">
+                      {index + 1}
+                    </span>
+                    <span className="text-sm">{topic.name}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs opacity-80">{topic.count}</span>
+                    {topic.trend === "up" && (
+                      <span className="text-green-300 text-xs">▲</span>
+                    )}
+                    {topic.trend === "down" && (
+                      <span className="text-red-300 text-xs">▼</span>
+                    )}
+                    {topic.trend === "same" && (
+                      <span className="text-gray-300 text-xs">-</span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full p-2 rounded-md border-none outline-none"
-            />
+            <div className="mt-3 pt-3 border-t border-white/20">
+              <p className="text-xs opacity-80 text-center">
+                실시간 업데이트
+              </p>
+            </div>
           </div>
 
           <div className="w-full h-[420px] border-2 border-gray-300 rounded-md flex items-center justify-center text-xl text-gray-500">

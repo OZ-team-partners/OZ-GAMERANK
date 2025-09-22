@@ -35,7 +35,7 @@ const SearchBar = () => {
           value={searchTerm}
           onChange={handleInputChange}
           className="
-            w-full pl-9 pr-16 py-2 
+            w-full pl-9 pr-3 py-2
             bg-slate-800/80 border border-slate-700/60 rounded-lg
             text-slate-300 placeholder-slate-500 text-sm
             focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400/50
@@ -44,17 +44,6 @@ const SearchBar = () => {
             backdrop-blur-sm
           "
         />
-        <button
-          type="submit"
-          className="
-            absolute right-1 top-1/2 transform -translate-y-1/2
-            bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold
-            px-3 py-1 rounded
-            transition-colors duration-150
-          "
-        >
-          검색
-        </button>
       </form>
     </div>
   );
