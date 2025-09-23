@@ -50,11 +50,11 @@ export default function MainSlider() {
     if (slide.id === 1) {
       document.getElementById("front-rank-top-3")?.scrollIntoView();
     } else if (slide.id === 2) {
-      window.location.href = "/game_info/2978";
+      window.location.href = "/game_info/3595"; //젤다
     } else if (slide.id === 3) {
-      window.location.href = "/game_info/3503";
+      window.location.href = "/game_info/3503"; //FC 온라인
     } else if (slide.id === 4) {
-      window.location.href = "/game_info/2687";
+      window.location.href = "/game_info/3307"; //보더랜드4
     } else if (slide.id === 5) {
       window.location.href = "/blog/newsletter";
     } else {
