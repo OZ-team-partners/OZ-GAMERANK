@@ -19,7 +19,17 @@ export default function NewsletterPage() {
   const [selectedItem, setSelectedItem] = useState<NewsletterItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleItemClick = (item: NewsletterItem) => {
+  // State for Preview (onMouseEnter)
+  const [previewItem, setPreviewItem] = useState<Newsletter>(
+    mockNewsletters[0]
+  );
+
+  // State for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7;
+
+  // Modal handlers
+  const handleItemClick = (item: Newsletter) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
@@ -30,54 +40,47 @@ export default function NewsletterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-900 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* 메인 컨테이너 */}
-        <div className="bg-gray-100 rounded-xl shadow-2xl overflow-hidden">
-          {/* 상단 헤더 */}
-          <div className="bg-gradient-to-r from-gray-700 to-gray-800 text-white px-6 py-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">2025년 9월 11일</span>
-              <span className="text-sm font-medium bg-gray-700 px-3 py-1 rounded-full">
-                제29호
-              </span>
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-900 py-8 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-gray-100 rounded-xl shadow-2xl overflow-hidden">
+            {/* Title Section */}
+            <div className="text-center py-8 px-6 bg-gradient-to-b from-slate-300 to-slate-800 border-b border-gray-200">
+              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-800 to-black bg-clip-text text-transparent mb-2">
+                렙업 소식통
+              </h1>
+              <p className="text-gray-600 text-lg font-medium mb-4">
+                게임랭킹 사이트 공식 뉴스레터
+              </p>
+              <div
+                className="relative w-full 
+                  max-w-2xl mx-auto h-78 my-6 
+                  rounded-lg overflow-hidden 
+                  shadow-lg"
+              >
+                <Image
+                  src="/images/newsletter/magazine_main.png"
+                  alt="Newsletter Banner"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="w-24 h-1 bg-gradient-to-r from-gray-600 to-gray-800 mx-auto mt-4 rounded-full"></div>
             </div>
           </div>
 
-          {/* 타이틀 섹션 */}
-          <div className="text-center py-8 px-6 bg-gradient-to-b from-gray-50 to-gray-100">
-            <h1 className="text-6xl font-bold bg-gradient-to-r from-gray-800 to-black bg-clip-text text-transparent mb-2">
-              렙업 소식통
-            </h1>
-            <p className="text-gray-700 text-lg font-medium">
-              게임랭킹 사이트 공식 뉴스레터
-            </p>
-            <div className="w-24 h-1 bg-gradient-to-r from-gray-600 to-gray-800 mx-auto mt-4 rounded-full"></div>
-          </div>
-
-          {/* 메인 이미지 */}
-          <div className="relative h-64 md:h-80 overflow-hidden">
-            <Image
-              src="https://images.unsplash.com/photo-1532012197267-da84d127e765"
-              alt="도서관 이미지"
-              fill
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-          </div>
-
-          {/* 콘텐츠 영역 */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
-            {/* 왼쪽 사이드바 */}
-            <div className="bg-gradient-to-b from-gray-700 to-gray-800 text-white p-6 lg:p-8">
-              <h3 className="text-xl font-bold mb-6 text-gray-100">
-                이번 주 주요 소식
-              </h3>
-              <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
-                {[...mockNewsletters]
-                  .slice()
-                  .sort((a, b) => b.id - a.id)
-                  .map((item) => (
+            {/* Content Area */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
+              {/* Left Sidebar - List of Newsletters */}
+              <div className="bg-gradient-to-b from-gray-700 to-gray-800 text-white p-6 lg:p-8">
+                <h3 className="text-2xl text-center font-bold mb-6 text-gray-100">
+                  이번 주 주요 소식
+                </h3>
+                <p className="text-center text-gray-300 text-xs mb-4">
+                  클릭시 자세히 볼수 있습니다
+                </p>
+                <div className="space-y-2 pr-2">
+                  {currentItems.map((item) => (
                     <div
                       key={item.id}
                       onClick={() =>

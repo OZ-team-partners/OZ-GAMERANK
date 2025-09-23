@@ -2,7 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import { IconButton } from "@mui/material";
-import { Menu, X, Gamepad2, Zap, Trophy, Award, ChevronRight } from "lucide-react";
+import {
+  Menu,
+  X,
+  Gamepad2,
+  Zap,
+  Trophy,
+  Award,
+  ChevronRight,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface MenuItem {
@@ -26,7 +34,18 @@ const HamburgerMenu = () => {
     {
       name: "커뮤니티",
       icon: <Gamepad2 size={18} />,
-      path: "/community",
+      subItems: [
+        {
+          name: "Community",
+          path: "/community",
+          description: "게임 커뮤니티와 토론 공간",
+        },
+        {
+          name: "Level Up! 소식통",
+          path: "/blog/newsletter",
+          description: "최신 게임 뉴스와 리뷰",
+        },
+      ],
     },
     {
       name: "PC",
@@ -161,7 +180,9 @@ const HamburgerMenu = () => {
                         className="w-full px-8 py-3 text-left hover:bg-slate-700 transition-colors"
                       >
                         <div className="text-slate-300 hover:text-white">
-                          <div className="font-medium text-sm">{subItem.name}</div>
+                          <div className="font-medium text-sm">
+                            {subItem.name}
+                          </div>
                           <div className="text-xs text-slate-400 mt-1">
                             {subItem.description}
                           </div>

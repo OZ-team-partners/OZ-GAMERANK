@@ -17,7 +17,7 @@ const smallSlides: SmallSlide[] = [
     id: 2,
     title: "GAMERANK 뉴스레터 구독하기",
     smallSlides_text: "매주 최신 게임 소식과 독점 정보를 받아보세요!",
-    image: "https://images.unsplash.com/photo-1532012197267-da84d127e765",
+    image: "/images/newsletter/magazine_main.png",
     href: "/blog/newsletter",
   },
   {
@@ -81,8 +81,8 @@ export default function SmallCardsGrid() {
                     {slide.id === 2 && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                         <div className="text-center">
-                          <h3 className="text-3xl font-black text-white mb-2 drop-shadow-lg">렙업 소식통</h3>
-                          <p className="text-base font-bold text-white/95 drop-shadow-md">게임랭킹 사이트 공식 뉴스레터</p>
+                          <h3 className="text-2xl font-black text-white mb-2 drop-shadow-lg">렙업 소식통</h3>
+                          <p className="text-xs font-bold text-white/95 drop-shadow-md">게임랭킹 사이트 공식 뉴스레터</p>
                         </div>
                       </div>
                     )}
@@ -106,16 +106,6 @@ export default function SmallCardsGrid() {
                       {slide.smallSlides_text}
                     </p>
                     
-                    <div className="flex items-center justify-between pt-2">
-                      <span className="text-xs text-purple-400 font-medium uppercase tracking-wide">
-                        
-                      </span>
-                      <div className="w-8 h-8 rounded-full bg-purple-600/20 flex items-center justify-center group-hover:bg-purple-600 transition-colors duration-300">
-                        <svg className="w-4 h-4 text-purple-400 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </div>
                   </div>
                   
                 </div>

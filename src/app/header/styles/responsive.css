@@ -1,22 +1,22 @@
 /* Responsive header styles */
 
-/* 1320px 이상에서 Navigation 표시, 햄버거 숨김 */
-@media (min-width: 1320px) {
+/* 1101px 이상에서 Navigation 표시, 햄버거 숨김 */
+@media (min-width: 1101px) {
   .navigation-desktop {
     display: flex !important;
   }
-  
+
   .hamburger-menu {
     display: none !important;
   }
 }
 
-/* 1320px 미만에서 Navigation 숨김, 햄버거 표시 */
-@media (max-width: 1319px) {
+/* 1100px 미만에서 Navigation 숨김, 햄버거 표시 */
+@media (max-width: 1100px) {
   .navigation-desktop {
     display: none !important;
   }
-  
+
   .hamburger-menu {
     display: inline-flex !important;
   }
@@ -28,48 +28,48 @@
   .desktop-search {
     display: none !important;
   }
-  
+
   .mobile-search-icon {
     display: inline-flex !important;
   }
-  
+
   /* 드롭다운 버튼 라벨과 화살표 숨기기 */
   .dropdown-label,
   .dropdown-chevron {
     display: none !important;
   }
-  
+  /* 하단에 주석처리 한 내용들은 프로필 창을 간소화 했던 부분이었습니다. */
   /* 프로필 버튼 라벨과 화살표 숨기기 */
-  .user-menu-label,
+  /* .user-menu-label,
   .user-menu-chevron {
     display: none !important;
-  }
-  
+  } */
+
   /* 버튼을 정사각형으로 조정 */
-  .dropdown-button,
+  /* .dropdown-button,
   .user-menu-button {
     padding: 0 !important;
     min-width: 36px !important;
-    width: 36px !important;
+    width: 42px !important;
     height: 36px !important;
-    border-radius: 10px !important;
+    border-radius: 8px !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: right !important;
     gap: 0 !important;
-  }
-  
+  } */
+
   /* 이모지 중앙 정렬 */
-  .newsletter-icon {
+  /* .newsletter-icon {
     display: block !important;
     font-size: 20px !important;
     line-height: 20px !important;
     text-align: center !important;
     margin: 0 !important;
-  }
-  
+  } */
+
   /* User 아이콘 중앙 정렬 */
-  .user-menu-button svg {
-    margin: 0 !important;
-  }
+  /* .user-menu-button svg {
+    margin: 4 !important;
+  } */
 }

@@ -97,9 +97,11 @@ const nextConfig = {
         hostname: "www.metacritic.com",
         port: "",
         pathname: "/**",
-      }
+      },
+      new URL("https://search.pstatic.net/**"),
     ],
   },
 };
 
 module.exports = nextConfig;
+

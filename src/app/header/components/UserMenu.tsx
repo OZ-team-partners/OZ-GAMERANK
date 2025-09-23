@@ -72,9 +72,9 @@ const UserMenu = () => {
             <Image 
               src={userProfile.avatar_url} 
               alt="프로필" 
-              width={16}
-              height={16}
-              className="w-4 h-4 rounded-full object-cover border border-white/20"
+              width={160}
+              height={160}
+              className="w-7 h-7 rounded-full object-cover border border-white/20"
             />
           ) : (
             <User size={16} />
@@ -99,13 +99,13 @@ const UserMenu = () => {
                   <div className="px-4 py-3 border-b border-purple-500/20">
                     <div className="flex items-center space-x-3">
                       {userProfile?.avatar_url ? (
-                        <div className="w-8 h-8 flex-shrink-0">
+                        <div className="w-10 h-10 flex-shrink-0">
                           <Image
                             src={userProfile.avatar_url}
                             alt="프로필"
-                            width={32}
-                            height={32}
-                            className="w-full h-full rounded-full object-cover ring-2 ring-purple-500/30"
+                            width={160}
+                            height={160}
+                            className="w-full h-full rounded-full object-cover ring-3 ring-purple-500/30"
                           />
                         </div>
                       ) : (

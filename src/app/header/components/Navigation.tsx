@@ -3,12 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@mui/material";
 import { Gamepad2, Zap, Trophy, Award, ChevronDown } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import DropdownItem from "./DropdownItem";
 import { Category, DropdownOption } from "../types";
 
 const Navigation = () => {
-  const router = useRouter();
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
@@ -22,6 +21,65 @@ const Navigation = () => {
     { name: "PC", icon: <Zap size={16} /> },
     { name: "Console", icon: <Trophy size={16} /> },
     { name: "Mobile", icon: <Award size={16} /> },
+  ];
+
+  // 카테고리별 색상 테마 매핑 (DropdownItem에 전달되는 Tailwind 클래스)
+  const colorThemes: Record<
+    string,
+    {
+      itemHoverFromClass: string;
+      itemHoverToClass: string;
+      itemBorderHoverClass: string;
+      titleHoverClass: string;
+      arrowColorClass: string;
+      panelBorderClass: string; // 드롭다운 패널 외곽선 색
+    }
+  > = {
+    Community: {
+      itemHoverFromClass: "hover:from-emerald-900/30",
+      itemHoverToClass: "hover:to-teal-900/30",
+      itemBorderHoverClass: "hover:border-emerald-500/40",
+      titleHoverClass: "group-hover:text-emerald-300",
+      arrowColorClass: "text-emerald-400",
+      panelBorderClass: "border-emerald-500/30",
+    },
+    PC: {
+      itemHoverFromClass: "hover:from-indigo-900/30",
+      itemHoverToClass: "hover:to-blue-900/30",
+      itemBorderHoverClass: "hover:border-indigo-500/40",
+      titleHoverClass: "group-hover:text-indigo-300",
+      arrowColorClass: "text-indigo-400",
+      panelBorderClass: "border-indigo-500/30",
+    },
+    Console: {
+      itemHoverFromClass: "hover:from-purple-900/30",
+      itemHoverToClass: "hover:to-fuchsia-900/30",
+      itemBorderHoverClass: "hover:border-purple-500/40",
+      titleHoverClass: "group-hover:text-purple-300",
+      arrowColorClass: "text-purple-400",
+      panelBorderClass: "border-purple-500/30",
+    },
+    Mobile: {
+      itemHoverFromClass: "hover:from-rose-900/30",
+      itemHoverToClass: "hover:to-orange-900/30",
+      itemBorderHoverClass: "hover:border-rose-500/40",
+      titleHoverClass: "group-hover:text-rose-300",
+      arrowColorClass: "text-rose-400",
+      panelBorderClass: "border-rose-500/30",
+    },
+  };
+
+  const communityOptions: DropdownOption[] = [
+    {
+      name: "Community",
+      path: "/community",
+      description: "게임을 주제로 친해져보아요",
+    },
+    {
+      name: "Level Up! 소식통",
+      path: "/blog/newsletter",
+      description: "개발팀이 전하는 게임 news",
+    },
   ];
 
   const pcOptions: DropdownOption[] = [
@@ -39,14 +97,14 @@ const Navigation = () => {
 
   const consoleOptions: DropdownOption[] = [
     {
-      name: "PlayStation",
-      path: "/rank/console/playStation",
-      description: "플레이스테이션 독점 게임들",
-    },
-    {
       name: "Nintendo",
       path: "/rank/console/nintendo",
       description: "닌텐도 스위치 인기 타이틀",
+    },
+    {
+      name: "PlayStation",
+      path: "/rank/console/playStation",
+      description: "플레이스테이션 독점 게임들",
     },
   ];
 
@@ -81,8 +139,8 @@ const Navigation = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // 경로 변경시 드롭다운 닫기
@@ -91,11 +149,6 @@ const Navigation = () => {
   }, [pathname]);
 
   const handleCategoryClick = (categoryName: string) => {
-    if (categoryName === "Community") {
-      router.push("/community");
-      return;
-    }
-
     if (openDropdown === categoryName) {
       setOpenDropdown(null);
     } else {
@@ -109,18 +162,24 @@ const Navigation = () => {
 
   const getDropdownOptions = (categoryName: string) => {
     switch (categoryName) {
-      case "PC": return pcOptions;
-      case "Console": return consoleOptions;
-      case "Mobile": return mobileOptions;
-      default: return [];
+      case "Community":
+        return communityOptions;
+      case "PC":
+        return pcOptions;
+      case "Console":
+        return consoleOptions;
+      case "Mobile":
+        return mobileOptions;
+      default:
+        return [];
     }
   };
 
   return (
     <nav className="flex items-center justify-center flex-1 relative">
       {categories.map((category) => (
-        <div 
-          key={category.name} 
+        <div
+          key={category.name}
           className="relative"
           ref={(el) => {
             dropdownRefs.current[category.name] = el;
@@ -129,21 +188,15 @@ const Navigation = () => {
           <Button
             onClick={() => handleCategoryClick(category.name)}
             variant="text"
-            aria-label={`${category.name} 카테고리${
-              category.name !== "Community" ? " 메뉴 열기" : "로 이동"
-            }`}
+            aria-label={`${category.name} 카테고리 메뉴 열기`}
             startIcon={category.icon}
             endIcon={
-              category.name === "PC" ||
-              category.name === "Console" ||
-              category.name === "Mobile" ? (
-                <ChevronDown
-                  size={14}
-                  className={`transition-transform duration-150 ${
-                    openDropdown === category.name ? "rotate-180" : "rotate-0"
-                  }`}
-                />
-              ) : null
+              <ChevronDown
+                size={14}
+                className={`transition-transform duration-150 ${
+                  openDropdown === category.name ? "rotate-180" : "rotate-0"
+                }`}
+              />
             }
             sx={{
               width: 130,
@@ -173,26 +226,52 @@ const Navigation = () => {
           </Button>
 
           {/* 드롭다운 메뉴 */}
-          {openDropdown === category.name && getDropdownOptions(category.name).length > 0 && (
-            <div className="absolute top-full mt-3 w-80 z-50 animate-in fade-in-0 slide-in-from-top-2 duration-200">
-              <div className="relative">
-                <div className="relative bg-gradient-to-br from-slate-800/95 via-slate-850/95 to-slate-900/95 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-2xl overflow-hidden">
-                  <div className="p-3">
-                    {getDropdownOptions(category.name).map((option, index) => (
-                      <DropdownItem
-                        key={option.name}
-                        title={option.name}
-                        description={option.description}
-                        path={option.path}
-                        isLast={index === getDropdownOptions(category.name).length - 1}
-                        onClick={closeDropdown}
-                      />
-                    ))}
+          {openDropdown === category.name &&
+            getDropdownOptions(category.name).length > 0 && (
+              <div className="absolute top-full mt-3 w-80 z-50 animate-in fade-in-0 slide-in-from-top-2 duration-200">
+                <div className="relative">
+                  <div
+                    className={`relative bg-gradient-to-br from-slate-800/95 via-slate-850/95 to-slate-900/95 backdrop-blur-xl border ${
+                      colorThemes[category.name]?.panelBorderClass ??
+                      "border-purple-500/30"
+                    } rounded-2xl shadow-2xl overflow-hidden`}
+                  >
+                    <div className="p-3">
+                      {getDropdownOptions(category.name).map(
+                        (option, index) => (
+                          <DropdownItem
+                            key={option.name}
+                            title={option.name}
+                            description={option.description}
+                            path={option.path}
+                            isLast={
+                              index ===
+                              getDropdownOptions(category.name).length - 1
+                            }
+                            onClick={closeDropdown}
+                            itemHoverFromClass={
+                              colorThemes[category.name]?.itemHoverFromClass
+                            }
+                            itemHoverToClass={
+                              colorThemes[category.name]?.itemHoverToClass
+                            }
+                            itemBorderHoverClass={
+                              colorThemes[category.name]?.itemBorderHoverClass
+                            }
+                            titleHoverClass={
+                              colorThemes[category.name]?.titleHoverClass
+                            }
+                            arrowColorClass={
+                              colorThemes[category.name]?.arrowColorClass
+                            }
+                          />
+                        )
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       ))}
     </nav>
