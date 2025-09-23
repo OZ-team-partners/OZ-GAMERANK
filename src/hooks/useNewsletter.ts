@@ -21,6 +21,20 @@ export function useNewsletter(): UseNewsletterReturn {
   const [userCount, setUserCount] = useState(0);
   const [emailList, setEmailList] = useState<string[]>([]);
 
+  const refreshUserData = useCallback(async () => {
+    try {
+      const [count, emails] = await Promise.all([
+        NewsletterService.getUserCount(),
+        NewsletterService.getEmailList(),
+      ]);
+
+      setUserCount(count);
+      setEmailList(emails);
+    } catch (error) {
+      console.error("사용자 데이터 새로고침 오류:", error);
+    }
+  }, []);
+
   const sendTestEmail = useCallback(async (email: string) => {
     if (!email.trim()) {
       setResult({
@@ -34,7 +48,7 @@ export function useNewsletter(): UseNewsletterReturn {
     try {
       const result = await NewsletterService.sendTestEmail(email);
       setResult(result);
-    } catch (_error) {
+    } catch {
       setResult({
         success: false,
         message: "테스트 이메일 발송 중 오류가 발생했습니다.",
@@ -52,7 +66,7 @@ export function useNewsletter(): UseNewsletterReturn {
 
       // 발송 후 사용자 데이터 새로고침
       await refreshUserData();
-    } catch (_error) {
+    } catch {
       setResult({
         success: false,
         message: "뉴스레터 발송 중 오류가 발생했습니다.",
@@ -60,21 +74,7 @@ export function useNewsletter(): UseNewsletterReturn {
     } finally {
       setIsLoading(false);
     }
-  }, []);
-
-  const refreshUserData = useCallback(async () => {
-    try {
-      const [count, emails] = await Promise.all([
-        NewsletterService.getUserCount(),
-        NewsletterService.getEmailList(),
-      ]);
-
-      setUserCount(count);
-      setEmailList(emails);
-    } catch (error) {
-      console.error("사용자 데이터 새로고침 오류:", error);
-    }
-  }, []);
+  }, [refreshUserData]);
 
   const clearResult = useCallback(() => {
     setResult(null);

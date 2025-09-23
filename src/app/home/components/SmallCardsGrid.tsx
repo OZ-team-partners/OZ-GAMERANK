@@ -106,16 +106,6 @@ export default function SmallCardsGrid() {
                       {slide.smallSlides_text}
                     </p>
                     
-                    <div className="flex items-center justify-between pt-2">
-                      <span className="text-xs text-purple-400 font-medium uppercase tracking-wide">
-                        
-                      </span>
-                      <div className="w-8 h-8 rounded-full bg-purple-600/20 flex items-center justify-center group-hover:bg-purple-600 transition-colors duration-300">
-                        <svg className="w-4 h-4 text-purple-400 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </div>
                   </div>
                   
                 </div>

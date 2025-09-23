@@ -1,10 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
-
-// Supabase 클라이언트 생성 (클라이언트 사이드에서 anon key 사용)
-const _supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+// Note: Supabase client is not needed for this service as it uses API routes
 
 export interface NewsletterSendResult {
   success: boolean;

@@ -48,19 +48,15 @@ export default function MainSlider() {
 
   const handleSlideClick = (slide: MainSlide, index: number) => {
     if (slide.id === 1) {
-      const element = document.getElementById("front-rank-top-3");
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+      document.getElementById("front-rank-top-3")?.scrollIntoView();
     } else if (slide.id === 2) {
       window.location.href = "/game_info/2978";
     } else if (slide.id === 3) {
-      window.location.href = "/game_info/2885";
+      window.location.href = "/game_info/3503";
     } else if (slide.id === 4) {
       window.location.href = "/game_info/2687";
     } else if (slide.id === 5) {
       window.location.href = "/blog/newsletter";
-    } else if (slide.id === 6) {
     } else {
       goToSlide(index);
     }
