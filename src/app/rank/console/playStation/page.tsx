@@ -33,32 +33,27 @@ export default function SectionPage() {
 
         const { data, error } = await supabase
           .from("rank_game")
-          .select(
-            "platform, game_title, game_subtitle, image_url, rank, update_when"
-          )
+          .select("platform, game_title, game_subtitle, image_url, rank, update_when")
           .eq("platform", "playstation")
           .order("rank", { ascending: true });
 
         if (error) throw error;
 
-        const mapped: PsItem[] = (data || []).map(
-          (row: {
-            rank: number;
-            game_title: string;
-            image_url?: string | null;
-            game_subtitle?: string | null;
-            update_when?: string;
-          }) => ({
-            rank: row.rank,
-            title: row.game_title,
-            image: row.image_url || "",
-            releaseDate: row.game_subtitle || "",
-          })
-        );
+        const mapped: PsItem[] = (data || []).map((row: {
+          rank: number;
+          game_title: string;
+          image_url?: string | null;
+          game_subtitle?: string | null;
+          update_when?: string;
+        }) => ({
+          rank: row.rank,
+          title: row.game_title,
+          image: row.image_url || "",
+          releaseDate: row.game_subtitle || "",
+        }));
 
         setGames(mapped);
-        const latestUpdated =
-          data?.[0]?.update_when || new Date().toISOString();
+        const latestUpdated = data?.[0]?.update_when || new Date().toISOString();
         setLastUpdated(latestUpdated);
         setDataSource("rank_game (platform=playstation)");
       } catch (err) {
@@ -207,6 +202,7 @@ export default function SectionPage() {
                   데이터 소스: {dataSource}
                 </span>
               )}
+              
             </p>
           </div>
 
