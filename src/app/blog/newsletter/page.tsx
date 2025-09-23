@@ -2,21 +2,20 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import NewsletterModal from "./NewsletterModal";
 import { mockNewsletters } from "./mock-newsletters";
+import NewsletterModal from "./NewsletterModal";
 
-interface NewsletterItem {
+// Define a type for our newsletter items
+interface Newsletter {
   id: number;
   title: string;
+  imageUrl: string;
   content: string;
-  author?: string;
-  date?: string;
-  category?: string;
-  imageUrl?: string;
 }
 
 export default function NewsletterPage() {
-  const [selectedItem, setSelectedItem] = useState<NewsletterItem | null>(null);
+  // State for Modal (onClick)
+  const [selectedItem, setSelectedItem] = useState<Newsletter | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // State for Preview (onMouseEnter)
@@ -38,6 +37,16 @@ export default function NewsletterPage() {
     setIsModalOpen(false);
     setSelectedItem(null);
   };
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = mockNewsletters.slice(indexOfFirstItem, indexOfLastItem);
+
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(mockNewsletters.length / itemsPerPage); i++) {
+    pageNumbers.push(i);
+  }
 
   return (
     <>
@@ -67,7 +76,6 @@ export default function NewsletterPage() {
               </div>
               <div className="w-24 h-1 bg-gradient-to-r from-gray-600 to-gray-800 mx-auto mt-4 rounded-full"></div>
             </div>
-          </div>
 
             {/* Content Area */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
@@ -83,123 +91,123 @@ export default function NewsletterPage() {
                   {currentItems.map((item) => (
                     <div
                       key={item.id}
-                      onClick={() =>
-                        handleItemClick({
-                          id: item.id,
-                          title: item.title,
-                          content: item.content,
-                          author: "게임랭킹 편집팀",
-                          date: "2025년 9월 11일",
-                          category: "게임 소식",
-                          imageUrl: item.imageUrl,
-                        })
-                      }
-                      className="group cursor-pointer transition-all duration-300 hover:bg-gray-600 p-3 rounded-lg border border-gray-600 hover:border-gray-500"
+                      onClick={() => handleItemClick(item)}
+                      onMouseEnter={() => setPreviewItem(item)}
+                      className={`group cursor-pointer transition-all duration-200 p-4 rounded-lg border border-transparent ${
+                        previewItem.id === item.id
+                          ? "bg-gray-900 border-gray-500"
+                          : "hover:bg-gray-600"
+                      }`}
                     >
                       <p className="text-sm font-medium text-gray-100 group-hover:text-white leading-relaxed">
                         {item.title}
                       </p>
                       <div className="mt-2 flex items-center justify-between">
                         <span className="text-xs text-gray-400">
-                          소식통 제{31 - (item?.id ?? 0)}호
+                          소식통 제{31 - item.id}호
                         </span>
-                        <span className="text-xs text-gray-400">읽기</span>
                       </div>
                     </div>
                   ))}
+                </div>
+                <div className="mt-6 text-center">
+                  <p className="text-xs text-gray-400 mb-3">
+                    총 {mockNewsletters.length}개의 소식
+                  </p>
+                  <div className="flex justify-center items-center space-x-1 mt-3">
+                    {pageNumbers.map((number) => (
+                      <button
+                        key={number}
+                        onClick={() => setCurrentPage(number)}
+                        className={`px-3 py-1 text-xs font-bold rounded-md transition-colors ${
+                          currentPage === number
+                            ? "bg-gray-400 text-gray-900"
+                            : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        }`}
+                      >
+                        [{number}]
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div className="mt-4 text-center">
-                <p className="text-xs text-gray-400">
-                  총 {mockNewsletters.length}개의 소식
-                </p>
+
+              {/* Right Content - DYNAMIC Preview Pane */}
+              <div className="lg:col-span-2 p-6 lg:p-8 bg-white">
+                {previewItem && (
+                  <article className="prose prose-lg max-w-none">
+                    {previewItem.imageUrl && (
+                      <div className="relative h-64 md:h-80 overflow-hidden rounded-lg mb-6">
+                        <Image
+                          src={previewItem.imageUrl}
+                          alt={previewItem.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <header className="mb-6">
+                      <h2 className="text-3xl md:text-4xl font-bold text-black mb-3 leading-tight">
+                        {previewItem.title}
+                      </h2>
+                      <div className="flex items-center space-x-4 text-sm text-gray-600">
+                        <span className="flex items-center">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          글: 게임랭킹 편집팀
+                        </span>
+                        <span className="flex items-center">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          2025년 9월
+                        </span>
+                      </div>
+                    </header>
+                    <div
+                      className="text-black leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html: previewItem.content,
+                      }}
+                    />
+                  </article>
+                )}
               </div>
             </div>
 
-            {/* 오른쪽 본문 */}
-            <div className="lg:col-span-2 p-6 lg:p-8 bg-gray-50">
-              <article className="prose prose-lg max-w-none">
-                <header className="mb-6">
-                  <h2 className="text-2xl md:text-3xl font-bold text-black mb-3 leading-tight">
-                    이번 주 플레이 스테이션 진영 초기대작 출시!
-                  </h2>
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
-                    <span className="flex items-center">
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      글: 게임랭킹
-                    </span>
-                    <span className="flex items-center">
-                      <svg
-                        className="w-4 h-4 mr-2"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      2025년 8월 11일
-                    </span>
-                  </div>
-                </header>
-
-                <div className="space-y-4 text-black leading-relaxed">
-                  <p className="text-base">
-                    호라이즌 제로 던 시리즈의 새 시리즈 호라이즌 제로 던3을
-                    출시한다고 게릴라 게임즈가 공식 발표를 했습니다.
-                  </p>
-
-                  <div className="bg-gradient-to-r from-gray-100 to-gray-200 p-4 rounded-lg border-l-4 border-gray-600">
-                    <p className="text-sm font-medium text-gray-800 mb-2">🏆</p>
-                    <ul className="text-sm text-gray-700 space-y-1">
-                      <li>• 레벨 업 가이드</li>
-                      <li>• 아이템 위치 안내</li>
-                      <li>• 보스 공략법</li>
-                    </ul>
-                  </div>
-
-                  <p className="text-base">
-                    다음 뉴스레터도 알찬 소식과 공략으로 꽉 채워서
-                    돌아오겠습니다!
-                  </p>
-                </div>
-
-                {/* 액션 버튼 */}
-                <div className="mt-8 pt-6 border-t border-gray-300">
-                  <button className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-black text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    전체 기사 보기
-                  </button>
-                </div>
-              </article>
+            {/* Footer */}
+            <div className="bg-gray-200 px-6 py-4 text-center">
+              <p className="text-sm text-gray-700">
+                © 2025 게임랭킹 모든 권리 보유.
+              </p>
             </div>
-          </div>
-
-          {/* 푸터 */}
-          <div className="bg-gray-200 px-6 py-4 text-center">
-            <p className="text-sm text-gray-700">
-              © 2025 게임랭킹 모든 권리 보유.
-            </p>
           </div>
         </div>
       </div>
 
-      {/* 모달 컴포넌트 */}
+      {/* Modal Component Render */}
       <NewsletterModal
         item={selectedItem}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
-    </div>
+    </>
   );
 }
