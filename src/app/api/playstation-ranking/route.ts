@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import puppeteer, { Browser, Page } from "puppeteer";
+import chromium from "@sparticuz/chromium";
 
 interface PsItem {
   rank: number;
@@ -161,15 +162,35 @@ export async function GET(req: Request) {
     ).toLowerCase();
     const headless = !(headlessParam === "false" || headlessParam === "0");
 
-    browser = await puppeteer.launch({
-      headless,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
-    });
+    // Vercel 환경에서는 @sparticuz/chromium 사용, 로컬에서는 기본 puppeteer 사용
+    const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
+
+    if (isVercel) {
+      browser = await puppeteer.launch({
+        args: [
+          ...chromium.args,
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+          "--hide-scrollbars",
+          "--disable-web-security",
+        ],
+        defaultViewport: { width: 1366, height: 900 },
+        executablePath: await chromium.executablePath(),
+        headless: true,
+      });
+    } else {
+      browser = await puppeteer.launch({
+        headless,
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+        ],
+      });
+    }
     const page = await browser.newPage();
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
