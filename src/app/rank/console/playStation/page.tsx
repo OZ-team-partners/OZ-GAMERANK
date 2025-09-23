@@ -3,6 +3,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { supabase } from "@/shared/lib/supabase";
 
 interface PsItem {
   rank: number;
@@ -19,27 +20,47 @@ export default function SectionPage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [dataSource, setDataSource] = useState<string>("");
 
-  // PS5 랭킹 데이터 가져오기 (Metacritic 1페이지 기준)
+  // Supabase rank_game에서 platform=playstation 데이터 로드
   useEffect(() => {
-    const fetchPs5 = async () => {
+    const loadFromSupabase = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const res = await fetch("/api/playstation-ranking", {
-          cache: "no-store",
-        });
-        const json = await res.json();
-        if (!res.ok || !json?.success) {
-          throw new Error(
-            json?.error || "PS5 랭킹 데이터를 불러오지 못했습니다."
-          );
+        if (!supabase) {
+          throw new Error("Supabase 클라이언트가 초기화되지 않았습니다.");
         }
 
-        const list: PsItem[] = (json.data as PsItem[]) || [];
-        setGames(list);
-        setLastUpdated(json.lastUpdated || new Date().toISOString());
-        setDataSource("Metacritic PS5 (page=1)");
+        const { data, error } = await supabase
+          .from("rank_game")
+          .select(
+            "platform, game_title, game_subtitle, image_url, rank, update_when"
+          )
+          .eq("platform", "playstation")
+          .order("rank", { ascending: true });
+
+        if (error) throw error;
+
+        const mapped: PsItem[] = (data || []).map(
+          (row: {
+            rank: number;
+            game_title: string;
+            image_url?: string | null;
+            game_subtitle?: string | null;
+            update_when?: string;
+          }) => ({
+            rank: row.rank,
+            title: row.game_title,
+            image: row.image_url || "",
+            releaseDate: row.game_subtitle || "",
+          })
+        );
+
+        setGames(mapped);
+        const latestUpdated =
+          data?.[0]?.update_when || new Date().toISOString();
+        setLastUpdated(latestUpdated);
+        setDataSource("rank_game (platform=playstation)");
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다."
@@ -49,7 +70,7 @@ export default function SectionPage() {
       }
     };
 
-    fetchPs5();
+    loadFromSupabase();
   }, []);
 
   const filteredItems = useMemo(() => {
@@ -167,11 +188,11 @@ export default function SectionPage() {
           {/* 헤더 */}
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-white mb-2">
-              PS5 메타크리틱 랭킹( 자료가 없어서 타사이트..크롤링 그만 하고
-              싶습니다ㅠ)
+              PS5 메타크리틱 랭킹
             </h1>
             <p className="text-slate-400">
-              2025년 PS5 메타크리틱 랭킹입니다. [현재 연도, 평점순]
+              2025년 PS5 메타크리틱 랭킹입니다. [메타크리틱 내 랭킹 순위를
+              반영합니다.]
             </p>
             <p className="text-sm text-slate-500 mt-2">
               총 {games.length}개의 게임이 등록되어 있습니다.
@@ -186,15 +207,6 @@ export default function SectionPage() {
                   데이터 소스: {dataSource}
                 </span>
               )}
-              <span className="ml-4 text-indigo-400">
-                <a
-                  href="https://www.metacritic.com/browse/game/ps5/all/current-year/metascore/?platform=ps5&page=1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  원문 1페이지
-                </a>
-              </span>
             </p>
           </div>
 
@@ -245,7 +257,7 @@ export default function SectionPage() {
                     {game.rank}
                   </div>
 
-                  <div className="card-img w-80 h-40 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
+                  <div className="card-img w-35 h-50 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
                     <Image
                       src={game.image || "/icon/rank_icon/console1.jpeg"}
                       alt={game.title}

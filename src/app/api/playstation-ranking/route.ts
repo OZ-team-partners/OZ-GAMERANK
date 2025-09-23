@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { saveRankGameForPlatform } from "@/lib/supabase";
 import puppeteer, { Browser, Page } from "puppeteer";
 
 interface PsItem {
@@ -10,6 +11,8 @@ interface PsItem {
 
 const PAGE1_URL =
   "https://www.metacritic.com/browse/game/ps5/all/current-year/metascore/?platform=ps5&page=1";
+const PAGE2_URL =
+  "https://www.metacritic.com/browse/game/ps5/all/current-year/metascore/?platform=ps5&page=2";
 
 async function waitForList(page: Page) {
   const selectors = [
@@ -70,6 +73,24 @@ async function autoScrollToLoadAll(page: Page, minCount = 24, maxScrolls = 24) {
 
 function extractItems(): PsItem[] {
   const results: PsItem[] = [];
+  function pickFromSrcset(srcset: string): string {
+    if (!srcset) return "";
+    const items = srcset.split(",").map((s) => s.trim());
+    const last = items[items.length - 1];
+    const candidate = (last || items[0] || "").split(" ")[0] || "";
+    return candidate;
+  }
+
+  function normalizeUrl(u: string): string {
+    if (!u) return "";
+    if (u.startsWith("//")) return `https:${u}`;
+    try {
+      // document.baseURI 기준으로 절대 URL로 정규화 (상대경로/루트경로 모두 처리)
+      return new URL(u, document.baseURI || location.href).toString();
+    } catch {
+      return u;
+    }
+  }
 
   // 모든 상품 리스트 컨테이너(상/하 2개)를 순회
   const grids = Array.from(
@@ -118,27 +139,56 @@ function extractItems(): PsItem[] {
         timeEl?.getAttribute("datetime") || timeEl?.textContent?.trim() || "";
     }
 
-    // image (prefer large)
+    // image: lazy-load, data-*, picture/source, srcset 모두 대응
     const bigImg = card.querySelector(
       ".c-finderProductCard_img img"
     ) as HTMLImageElement | null;
-    const anyImg =
-      bigImg || (card.querySelector("img") as HTMLImageElement | null);
+    const img = (bigImg ||
+      card.querySelector("img")) as HTMLImageElement | null;
+    const picture = card.querySelector("picture");
 
     let image = "";
-    if (anyImg) {
-      image =
-        anyImg.getAttribute("src") ||
-        anyImg.getAttribute("data-src") ||
-        (() => {
-          const srcset =
-            anyImg.getAttribute("srcset") ||
-            anyImg.getAttribute("data-srcset") ||
-            "";
-          if (!srcset) return "";
-          const first = srcset.split(",")[0]?.trim().split(" ")[0];
-          return first || "";
-        })();
+    const dataSrc = img?.getAttribute("data-src") || "";
+    const dataSrcset = img?.getAttribute("data-srcset") || "";
+    // 여러 <source>의 srcset 중 가장 큰 해상도를 우선 선택
+    const sourceSet = (() => {
+      const list = Array.from(
+        picture?.querySelectorAll("source") || []
+      ) as HTMLSourceElement[];
+      const candidates = list
+        .map(
+          (s) => s.getAttribute("srcset") || s.getAttribute("data-srcset") || ""
+        )
+        .filter(Boolean)
+        .map((s) => pickFromSrcset(s))
+        .filter(Boolean);
+      return candidates[candidates.length - 1] || "";
+    })();
+    const src = img?.getAttribute("src") || "";
+    const srcset = img?.getAttribute("srcset") || "";
+
+    image =
+      dataSrc ||
+      pickFromSrcset(dataSrcset) ||
+      pickFromSrcset(sourceSet) ||
+      src ||
+      pickFromSrcset(srcset) ||
+      "";
+
+    image = normalizeUrl(image);
+
+    // 최후 보루: CSS background-image에서 추출
+    if (!image) {
+      const imgWrap = card.querySelector(
+        ".c-finderProductCard_img, .c-finderProductCard_image"
+      ) as HTMLElement | null;
+      if (imgWrap) {
+        const bg = getComputedStyle(imgWrap).backgroundImage || "";
+        const match = /url\(["']?(.*?)["']?\)/.exec(bg);
+        if (match && match[1]) {
+          image = normalizeUrl(match[1]);
+        }
+      }
     }
 
     results.push({ rank, title, image, releaseDate });
@@ -183,20 +233,55 @@ export async function GET(req: Request) {
     });
     await page.setViewport({ width: 1366, height: 900 });
 
-    await page.goto(PAGE1_URL, { waitUntil: "networkidle2", timeout: 60000 });
-    await waitForList(page);
-    await autoScrollToLoadAll(page, 24, 24);
-    await new Promise((r) => setTimeout(r, 300));
+    // 공통 크롤링 절차 함수
+    const crawlOne = async (url: string) => {
+      await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+      await waitForList(page);
+      await autoScrollToLoadAll(page, 24, 24);
+      // 각 카드를 순차적으로 뷰포트에 노출시켜 lazy-load 이미지 로딩 유도
+      await page.evaluate(async () => {
+        const cards = Array.from(
+          document.querySelectorAll(
+            ".c-productListings_grid .c-finderProductCard, .c-finderProductCard"
+          )
+        );
+        for (const el of cards) {
+          (el as HTMLElement).scrollIntoView({ block: "center" });
+          await new Promise((res) => setTimeout(res, 120));
+        }
+      });
+      await new Promise((r) => setTimeout(r, 300));
+      return (await page.evaluate(extractItems)) as PsItem[];
+    };
 
-    const items = await page.evaluate(extractItems);
+    const items1 = await crawlOne(PAGE1_URL);
+    const items2 = await crawlOne(PAGE2_URL);
+    // 타이틀 기준 중복 제거
+    const seen = new Set<string>();
+    const all = [...items1, ...items2].filter((it) => {
+      if (seen.has(it.title)) return false;
+      seen.add(it.title);
+      return true;
+    });
+
+    // Supabase 저장 (platform = playstation)
+    const mapped = all.map((g) => ({
+      rank_position: g.rank,
+      title: g.title,
+      subtitle: g.releaseDate,
+      img_url: g.image,
+    }));
+    const saveResult = await saveRankGameForPlatform("playstation", mapped);
 
     return NextResponse.json({
       success: true,
-      message: `총 ${items.length}개의 PlayStation 게임 순위를 성공적으로 업데이트했습니다.`,
-      total: items.length,
-      data: items,
+      message: `총 ${all.length}개의 PlayStation 게임 순위를 성공적으로 업데이트했습니다.`,
+      total: all.length,
+      data: all,
       lastUpdated: new Date().toISOString(),
-      source: "Metacritic PS5 (page=1)",
+      source: "Metacritic PS5 (page=1..2)",
+      saved: !saveResult.error,
+      saveError: saveResult.error || null,
     });
   } catch (error) {
     return NextResponse.json(
