@@ -83,7 +83,7 @@ export const mockNewsletters = [
     id: 5,
     title: "VR 게임의 새로운 지평: '어비스 다이브' 체험기",
     imageUrl:
-      "https://images.unsplash.com/photo-1592478411213-6153e4c4a6b4?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=800&h=400&fit=crop",
     content: `
       <h3>🌊 현실보다 더 현실 같은 심해 탐험</h3>
       <p>차세대 VR 기술의 집약체로 평가받는 <strong>'어비스 다이브'</strong>를 게임랭킹에서 직접 체험해보았습니다. 이 게임은 단순한 시뮬레이터를 넘어, 플레이어가 실제로 심해에 있는 듯한 극강의 몰입감을 선사합니다.</p>

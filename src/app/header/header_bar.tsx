@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Logo from "./components/Logo";
 import SearchBar from "./components/SearchBar";
 import Navigation from "./components/Navigation";
-import Newsletter from "./components/Newsletter";
 import UserMenu from "./components/UserMenu";
 import HamburgerMenu from "./components/HamburgerMenu";
 import SearchModal from "./components/SearchModal";
@@ -48,7 +47,6 @@ const GameRankHeader = () => {
           </div>
           {/* 그룹 3: 소식통 & 로그인 & 햄버거 메뉴 */}
           <div className="flex items-center gap-4">
-            <Newsletter />
             <UserMenu />
             <div className="hamburger-menu">
               <HamburgerMenu />

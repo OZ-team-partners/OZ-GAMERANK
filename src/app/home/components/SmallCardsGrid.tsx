@@ -17,7 +17,7 @@ const smallSlides: SmallSlide[] = [
     id: 2,
     title: "GAMERANK 뉴스레터 구독하기",
     smallSlides_text: "매주 최신 게임 소식과 독점 정보를 받아보세요!",
-    image: "https://images.unsplash.com/photo-1532012197267-da84d127e765",
+    image: "/images/newsletter/magazine_main.png",
     href: "/blog/newsletter",
   },
   {
@@ -81,8 +81,8 @@ export default function SmallCardsGrid() {
                     {slide.id === 2 && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                         <div className="text-center">
-                          <h3 className="text-3xl font-black text-white mb-2 drop-shadow-lg">렙업 소식통</h3>
-                          <p className="text-base font-bold text-white/95 drop-shadow-md">게임랭킹 사이트 공식 뉴스레터</p>
+                          <h3 className="text-2xl font-black text-white mb-2 drop-shadow-lg">렙업 소식통</h3>
+                          <p className="text-xs font-bold text-white/95 drop-shadow-md">게임랭킹 사이트 공식 뉴스레터</p>
                         </div>
                       </div>
                     )}
