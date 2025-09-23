@@ -22,7 +22,7 @@ import {
 
 // 사이트 톤앤매너에 맞춘 게이밍 드롭다운 컴포넌트
 function StyledGameDropdown({ options, value, onChange, placeholder }: {
-  options: Array<{value: string, label: string, icon: React.ComponentType<{ className?: string }>}>;
+  options: readonly {value: string, label: string, icon: React.ComponentType<{ className?: string }>}[] | Array<{value: string, label: string, icon: React.ComponentType<{ className?: string }>}>;
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
@@ -112,17 +112,67 @@ interface NintendoGame {
   rank: number;
   isNew?: boolean;
   isHot?: boolean;
+  rankChange?: number;
+  consecutiveWeeks?: number;
 }
+
+// 목업 데이터 상수
+const RANK_CHANGE_VALUES = [0, 0, 0, 2, -1, 8, 0, -4, 3, 1, -2, 6, 0, 4, -5, 2, 0, 7, -1, 3];
+const NEW_RANK_POSITIONS = [3, 7, 12, 16];
+const HOT_THRESHOLD = 3;
+const CONSECUTIVE_WEEKS_FOR_FIRST = 5;
+
+// 장르 필터링 키워드 상수
+const GENRE_KEYWORDS = {
+  action: ["action", "shooting", "fight"],
+  rpg: ["rpg", "role", "adventure"],
+  strategy: ["strategy", "simulation", "tycoon"]
+} as const;
+
+// 드롭다운 옵션 상수
+const GENRE_OPTIONS = [
+  { value: "all", label: "전체 장르", icon: Gamepad2 },
+  { value: "action", label: "액션/FPS", icon: Sword },
+  { value: "rpg", label: "RPG", icon: Wand2 },
+  { value: "strategy", label: "전략", icon: Brain }
+] as const;
+
+const SORT_OPTIONS = [
+  { value: "rank", label: "순위순", icon: Trophy },
+  { value: "title", label: "이름순", icon: SortAsc },
+  { value: "new", label: "신작순", icon: Sparkles }
+] as const;
+
+const TREND_OPTIONS = [
+  { value: "hide", label: "랭킹 변화", icon: Activity },
+  { value: "daily", label: "일간 변화", icon: TrendingUp },
+  { value: "weekly", label: "주간 변화", icon: Calendar },
+  { value: "monthly", label: "월간 변화", icon: CalendarDays }
+] as const;
+
+type SortType = "rank" | "title" | "new";
+type FilterGenreType = "all" | "action" | "rpg" | "strategy";
+type ShowTrendType = "hide" | "daily" | "weekly" | "monthly";
 
 export default function NintendoRankingPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [games, setGames] = useState<NintendoGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>("");
-  const [sortBy, setSortBy] = useState<"rank" | "title" | "new">("rank");
-  const [filterGenre, setFilterGenre] = useState<"all" | "action" | "rpg" | "strategy">("all");
-  const [showTrend, setShowTrend] = useState<"hide" | "daily" | "weekly" | "monthly">("hide");
+  const [sortBy, setSortBy] = useState<SortType>("rank");
+  const [filterGenre, setFilterGenre] = useState<FilterGenreType>("all");
+  const [showTrend, setShowTrend] = useState<ShowTrendType>("hide");
+
+  // 검색어 디바운싱 (300ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Nintendo 랭킹 데이터 가져오기 (DB)
   useEffect(() => {
@@ -147,15 +197,21 @@ export default function NintendoRankingPage() {
         };
 
         const mapped: NintendoGame[] = ((data as RankGameRow[] | null) || []).map(
-          (row, index) => ({
-            id: row.id,
-            title: row.game_title,
-            subtitle: row.game_subtitle || "",
-            img: row.image_url || "/icon/rank_icon/console1.jpeg",
-            rank: row.rank,
-            isNew: index < 3 && Math.random() > 0.7,
-            isHot: row.rank <= 5 && Math.random() > 0.6,
-          })
+          (row, index) => {
+            const rankChange = RANK_CHANGE_VALUES[index % RANK_CHANGE_VALUES.length] || 0;
+
+            return {
+              id: row.id,
+              title: row.game_title,
+              subtitle: row.game_subtitle || "",
+              img: row.image_url || "/icon/rank_icon/console1.jpeg",
+              rank: row.rank,
+              isNew: NEW_RANK_POSITIONS.includes(row.rank),
+              isHot: rankChange >= HOT_THRESHOLD,
+              rankChange,
+              consecutiveWeeks: row.rank === 1 ? CONSECUTIVE_WEEKS_FOR_FIRST : undefined
+            };
+          }
         );
 
         setGames(mapped);
@@ -180,9 +236,9 @@ export default function NintendoRankingPage() {
   const filteredAndSortedItems = useMemo(() => {
     let filtered = games;
 
-    // 검색 필터
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
+    // 검색 필터 (디바운싱된 검색어 사용)
+    if (debouncedSearchQuery.trim()) {
+      const q = debouncedSearchQuery.trim().toLowerCase();
       filtered = filtered.filter(
         (game) =>
           game.title.toLowerCase().includes(q) ||
@@ -190,21 +246,15 @@ export default function NintendoRankingPage() {
       );
     }
 
-    // 장르 필터 (임시로 제목 기반)
+    // 장르 필터 (제목 기반)
     if (filterGenre !== "all") {
-      filtered = filtered.filter((game) => {
-        const title = game.title.toLowerCase();
-        switch (filterGenre) {
-          case "action":
-            return title.includes("action") || title.includes("shooting") || title.includes("fight");
-          case "rpg":
-            return title.includes("rpg") || title.includes("role") || title.includes("adventure");
-          case "strategy":
-            return title.includes("strategy") || title.includes("simulation") || title.includes("tycoon");
-          default:
-            return true;
-        }
-      });
+      const keywords = GENRE_KEYWORDS[filterGenre];
+      if (keywords) {
+        filtered = filtered.filter((game) => {
+          const title = game.title.toLowerCase();
+          return keywords.some(keyword => title.includes(keyword));
+        });
+      }
     }
 
     // 정렬
@@ -221,7 +271,7 @@ export default function NintendoRankingPage() {
     });
 
     return sorted;
-  }, [games, searchQuery, sortBy, filterGenre]);
+  }, [games, debouncedSearchQuery, sortBy, filterGenre]);
 
 
 
@@ -320,36 +370,22 @@ export default function NintendoRankingPage() {
             {/* 드롭다운 필터들 */}
             <div className="flex items-center gap-3">
               <StyledGameDropdown
-                options={[
-                  { value: "all", label: "전체 장르", icon: Gamepad2 },
-                  { value: "action", label: "액션/FPS", icon: Sword },
-                  { value: "rpg", label: "RPG", icon: Wand2 },
-                  { value: "strategy", label: "전략", icon: Brain }
-                ]}
+                options={GENRE_OPTIONS}
                 value={filterGenre}
-                onChange={(value) => setFilterGenre(value as "all" | "action" | "rpg" | "strategy")}
+                onChange={(value) => setFilterGenre(value as FilterGenreType)}
                 placeholder="장르 선택"
               />
               <StyledGameDropdown
-                options={[
-                  { value: "rank", label: "순위순", icon: Trophy },
-                  { value: "title", label: "이름순", icon: SortAsc },
-                  { value: "new", label: "신작순", icon: Sparkles }
-                ]}
+                options={SORT_OPTIONS}
                 value={sortBy}
-                onChange={(value) => setSortBy(value as "rank" | "title" | "new")}
+                onChange={(value) => setSortBy(value as SortType)}
                 placeholder="정렬 기준"
               />
               <StyledGameDropdown
-                options={[
-                  { value: "hide", label: "랭킹 변화 추이", icon: Activity },
-                  { value: "daily", label: "일간 변화", icon: TrendingUp },
-                  { value: "weekly", label: "주간 변화", icon: Calendar },
-                  { value: "monthly", label: "월간 변화", icon: CalendarDays }
-                ]}
+                options={TREND_OPTIONS}
                 value={showTrend}
-                onChange={(value) => setShowTrend(value as "hide" | "daily" | "weekly" | "monthly")}
-                placeholder="변화 추이"
+                onChange={(value) => setShowTrend(value as ShowTrendType)}
+                placeholder="랭킹 변화"
               />
             </div>
 
@@ -377,10 +413,10 @@ export default function NintendoRankingPage() {
               </>
             )}
             <span>데이터 제공: <a href="https://www.nintendo.co.jp" className="text-orange-500 hover:text-orange-400 transition-colors">nintendo.co.jp</a></span>
-            {searchQuery && (
+            {debouncedSearchQuery && (
               <>
                 <span className="text-slate-600">·</span>
-                <span className="text-orange-400">&quot;{searchQuery}&quot; 검색 결과</span>
+                <span className="text-orange-400">&quot;{debouncedSearchQuery}&quot; 검색 결과</span>
               </>
             )}
           </div>
@@ -398,7 +434,9 @@ export default function NintendoRankingPage() {
                 subtitle: item.subtitle,
                 imageUrl: item.img,
                 isNew: item.isNew,
-                isHot: item.isHot
+                isHot: item.isHot,
+                rankChange: item.rankChange,
+                consecutiveWeeks: item.consecutiveWeeks
               }))
             }
           />

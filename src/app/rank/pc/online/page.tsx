@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useCallback, memo } from "react";
 import { supabase } from "@/lib/supabase";
 import CategoryTabs from "../../components/CategoryTabs";
 import RankingGrid from "../../components/RankingGrid";
@@ -21,29 +21,36 @@ import {
   Search
 } from "lucide-react";
 
-// 사이트 톤앤매너에 맞춘 게이밍 드롭다운 컴포넌트
-function StyledGameDropdown({ options, value, onChange, placeholder }: {
-  options: Array<{value: string, label: string, icon: React.ComponentType<{ className?: string }>}>;
+// 사이트 톤앤매너에 맞춘 게이밍 드롭다운 컴포넌트 (메모이제이션 적용)
+const StyledGameDropdown = memo(({ options, value, onChange, placeholder }: {
+  options: readonly {value: string, label: string, icon: React.ComponentType<{ className?: string }>}[] | Array<{value: string, label: string, icon: React.ComponentType<{ className?: string }>}>;
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
-}) {
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const currentOption = options.find(opt => opt.value === value);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       setIsOpen(false);
       setIsClosing(false);
     }, 150); // 애니메이션 시간과 일치
-  };
+  }, []);
+
+  const handleToggle = useCallback(() => setIsOpen(prev => !prev), []);
+
+  const handleOptionClick = useCallback((optionValue: string) => {
+    onChange(optionValue);
+    handleClose();
+  }, [onChange, handleClose]);
 
   return (
     <div className="relative">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
         className="bg-slate-800/60 border border-slate-700/50 text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium hover:border-orange-500/40 hover:text-white transition-all duration-300 flex items-center gap-2.5 min-w-[140px] justify-between group"
       >
         <div className="flex items-center gap-2">
@@ -74,10 +81,7 @@ function StyledGameDropdown({ options, value, onChange, placeholder }: {
             {options.map((option) => (
               <button
                 key={option.value}
-                onClick={() => {
-                  onChange(option.value);
-                  handleClose();
-                }}
+                onClick={() => handleOptionClick(option.value)}
                 className={`w-full px-4 py-3 text-left text-sm font-medium transition-all duration-150 flex items-center gap-3 relative group ${
                   value === option.value
                     ? "bg-gradient-to-r from-orange-500/20 to-orange-600/10 text-orange-400"
@@ -103,7 +107,9 @@ function StyledGameDropdown({ options, value, onChange, placeholder }: {
       )}
     </div>
   );
-}
+});
+
+StyledGameDropdown.displayName = 'StyledGameDropdown';
 
 interface OnlineGame {
   id: number;
@@ -113,17 +119,73 @@ interface OnlineGame {
   rank: number;
   isNew?: boolean;
   isHot?: boolean;
+  rankChange?: number;
+  consecutiveWeeks?: number;
 }
+
+// 목업 데이터 상수
+const RANK_CHANGE_VALUES = [0, 0, 0, 2, -1, 8, 0, -4, 3, 1, -2, 6, 0, 4, -5, 2, 0, 7, -1, 3] as const;
+const NEW_RANK_POSITIONS = new Set([3, 7, 12, 16]); // Set으로 변경하여 조회 성능 향상
+const HOT_THRESHOLD = 3;
+const CONSECUTIVE_WEEKS_FOR_FIRST = 5;
+
+// 장르 필터링 키워드 상수
+const GENRE_KEYWORDS = {
+  action: ["배틀", "액션", "fps"],
+  rpg: ["rpg", "판타지", "어드벤처"],
+  strategy: ["전략", "타이쿤", "시뮬레이션"]
+} as const;
+
+// 드롭다운 옵션 상수
+const GENRE_OPTIONS = [
+  { value: "all", label: "전체 장르", icon: Gamepad2 },
+  { value: "action", label: "액션/FPS", icon: Sword },
+  { value: "rpg", label: "RPG", icon: Wand2 },
+  { value: "strategy", label: "전략", icon: Brain }
+] as const;
+
+const SORT_OPTIONS = [
+  { value: "rank", label: "순위순", icon: Trophy },
+  { value: "title", label: "이름순", icon: SortAsc },
+  { value: "new", label: "신작순", icon: Sparkles }
+] as const;
+
+const TREND_OPTIONS = [
+  { value: "hide", label: "랭킹 변화", icon: Activity },
+  { value: "daily", label: "일간 변화", icon: TrendingUp },
+  { value: "weekly", label: "주간 변화", icon: Calendar },
+  { value: "monthly", label: "월간 변화", icon: CalendarDays }
+] as const;
+
+type SortType = "rank" | "title" | "new";
+type FilterGenreType = "all" | "action" | "rpg" | "strategy";
+type ShowTrendType = "hide" | "daily" | "weekly" | "monthly";
 
 export default function OnlineRankingPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [games, setGames] = useState<OnlineGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>("");
-  const [sortBy, setSortBy] = useState<"rank" | "title" | "new">("rank");
-  const [filterGenre, setFilterGenre] = useState<"all" | "action" | "rpg" | "strategy">("all");
-  const [showTrend, setShowTrend] = useState<"hide" | "daily" | "weekly" | "monthly">("hide");
+  const [sortBy, setSortBy] = useState<SortType>("rank");
+  const [filterGenre, setFilterGenre] = useState<FilterGenreType>("all");
+  const [showTrend, setShowTrend] = useState<ShowTrendType>("hide");
+
+  // 콜백 함수들 메모이제이션
+  const handleGenreChange = useCallback((value: string) => setFilterGenre(value as FilterGenreType), []);
+  const handleSortChange = useCallback((value: string) => setSortBy(value as SortType), []);
+  const handleTrendChange = useCallback((value: string) => setShowTrend(value as ShowTrendType), []);
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value), []);
+
+  // 검색어 디바운싱 (300ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Online-game 랭킹 데이터 가져오기 (DB)
   useEffect(() => {
@@ -148,16 +210,21 @@ export default function OnlineRankingPage() {
         };
 
         const mapped: OnlineGame[] = ((data as RankGameRow[] | null) || []).map(
-          (row, index) => ({
-            id: row.id,
-            title: row.game_title,
-            subtitle: row.game_subtitle || "",
-            img: row.image_url || "/icon/rank_icon/online1.jpeg",
-            rank: row.rank,
-            isNew: index < 3 && Math.random() > 0.7, // 임시로 신작 표시
-            isHot: row.rank <= 5 && Math.random() > 0.6, // 임시로 HOT 표시
-            rankChange: Math.random() > 0.5 ? Math.floor(Math.random() * 5) - 2 : 0, // 임시 순위 변동
-          })
+          (row, index) => {
+            const rankChange = RANK_CHANGE_VALUES[index % RANK_CHANGE_VALUES.length] || 0;
+
+            return {
+              id: row.id,
+              title: row.game_title,
+              subtitle: row.game_subtitle || "",
+              img: row.image_url || "/icon/rank_icon/online1.jpeg",
+              rank: row.rank,
+              isNew: NEW_RANK_POSITIONS.has(row.rank),
+              isHot: rankChange >= HOT_THRESHOLD,
+              rankChange,
+              consecutiveWeeks: row.rank === 1 ? CONSECUTIVE_WEEKS_FOR_FIRST : undefined
+            };
+          }
         );
 
         setGames(mapped);
@@ -179,12 +246,14 @@ export default function OnlineRankingPage() {
     fetchOnlineRankings();
   }, []);
 
+  // 필터링 및 정렬 로직 최적화
   const filteredAndSortedItems = useMemo(() => {
     let filtered = games;
 
-    // 검색 필터
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
+    // 검색 필터 (디바운싱된 검색어 사용)
+    const trimmedQuery = debouncedSearchQuery.trim();
+    if (trimmedQuery) {
+      const q = trimmedQuery.toLowerCase();
       filtered = filtered.filter(
         (game) =>
           game.title.toLowerCase().includes(q) ||
@@ -192,38 +261,34 @@ export default function OnlineRankingPage() {
       );
     }
 
-    // 장르 필터 (임시로 제목 기반)
+    // 장르 필터 (제목 기반)
     if (filterGenre !== "all") {
-      filtered = filtered.filter((game) => {
-        const title = game.title.toLowerCase();
-        switch (filterGenre) {
-          case "action":
-            return title.includes("배틀") || title.includes("액션") || title.includes("fps");
-          case "rpg":
-            return title.includes("rpg") || title.includes("판타지") || title.includes("어드벤처");
-          case "strategy":
-            return title.includes("전략") || title.includes("타이쿤") || title.includes("시뮬레이션");
-          default:
-            return true;
-        }
-      });
+      const keywords = GENRE_KEYWORDS[filterGenre];
+      if (keywords) {
+        filtered = filtered.filter((game) => {
+          const title = game.title.toLowerCase();
+          return keywords.some(keyword => title.includes(keyword));
+        });
+      }
     }
 
-    // 정렬
-    const sorted = [...filtered].sort((a, b) => {
+    // 정렬 (불필요한 스프레드 연산자 최적화)
+    if (sortBy === "rank") {
+      // 이미 rank 순으로 정렬되어 있는 경우 그대로 반환
+      return filtered;
+    }
+
+    return [...filtered].sort((a, b) => {
       switch (sortBy) {
         case "title":
-          return a.title.localeCompare(b.title);
+          return a.title.localeCompare(b.title, 'ko');
         case "new":
-          return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
-        case "rank":
+          return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0) || a.rank - b.rank;
         default:
           return a.rank - b.rank;
       }
     });
-
-    return sorted;
-  }, [games, searchQuery, sortBy, filterGenre]);
+  }, [games, debouncedSearchQuery, sortBy, filterGenre]);
 
   if (error) {
     return (
@@ -320,36 +385,22 @@ export default function OnlineRankingPage() {
             {/* 드롭다운 필터들 */}
             <div className="flex items-center gap-3">
               <StyledGameDropdown
-                options={[
-                  { value: "all", label: "전체 장르", icon: Gamepad2 },
-                  { value: "action", label: "액션/FPS", icon: Sword },
-                  { value: "rpg", label: "RPG", icon: Wand2 },
-                  { value: "strategy", label: "전략", icon: Brain }
-                ]}
+                options={GENRE_OPTIONS}
                 value={filterGenre}
-                onChange={(value) => setFilterGenre(value as "all" | "action" | "rpg" | "strategy")}
+                onChange={handleGenreChange}
                 placeholder="장르 선택"
               />
               <StyledGameDropdown
-                options={[
-                  { value: "rank", label: "순위순", icon: Trophy },
-                  { value: "title", label: "이름순", icon: SortAsc },
-                  { value: "new", label: "신작순", icon: Sparkles }
-                ]}
+                options={SORT_OPTIONS}
                 value={sortBy}
-                onChange={(value) => setSortBy(value as "rank" | "title" | "new")}
+                onChange={handleSortChange}
                 placeholder="정렬 기준"
               />
               <StyledGameDropdown
-                options={[
-                  { value: "hide", label: "랭킹 변화 추이", icon: Activity },
-                  { value: "daily", label: "일간 변화", icon: TrendingUp },
-                  { value: "weekly", label: "주간 변화", icon: Calendar },
-                  { value: "monthly", label: "월간 변화", icon: CalendarDays }
-                ]}
+                options={TREND_OPTIONS}
                 value={showTrend}
-                onChange={(value) => setShowTrend(value as "hide" | "daily" | "weekly" | "monthly")}
-                placeholder="변화 추이"
+                onChange={handleTrendChange}
+                placeholder="랭킹 변화"
               />
             </div>
 
@@ -361,7 +412,7 @@ export default function OnlineRankingPage() {
                 placeholder="게임 제목이나 설명으로 검색..."
                 className="bg-slate-800/60 border border-slate-700/50 text-slate-300 pl-10 pr-4 py-2.5 rounded-xl text-sm placeholder-slate-500 focus:border-orange-500/40 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-300 w-80"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
               />
             </div>
           </div>
@@ -377,10 +428,10 @@ export default function OnlineRankingPage() {
               </>
             )}
             <span>데이터 제공: <a href="https://gamemeca.com" className="text-orange-500 hover:text-orange-400 transition-colors">gamemeca.com</a></span>
-            {searchQuery && (
+            {debouncedSearchQuery && (
               <>
                 <span className="text-slate-600">·</span>
-                <span className="text-orange-400">&quot;{searchQuery}&quot; 검색 결과</span>
+                <span className="text-orange-400">&quot;{debouncedSearchQuery}&quot; 검색 결과</span>
               </>
             )}
           </div>
@@ -390,7 +441,7 @@ export default function OnlineRankingPage() {
         {!loading && filteredAndSortedItems.length > 0 && (
           <TopThreeCards
             items={filteredAndSortedItems
-              .filter(item => item.rank <= 3)
+              .slice(0, 3)
               .map(item => ({
                 id: item.id,
                 rank: item.rank,
@@ -398,7 +449,9 @@ export default function OnlineRankingPage() {
                 subtitle: item.subtitle,
                 imageUrl: item.img,
                 isNew: item.isNew,
-                isHot: item.isHot
+                isHot: item.isHot,
+                rankChange: item.rankChange,
+                consecutiveWeeks: item.consecutiveWeeks
               }))
             }
           />

@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Flame, Trophy } from "lucide-react";
 
 interface GameRankCardProps {
   id: number;
@@ -13,6 +14,7 @@ interface GameRankCardProps {
   isNew?: boolean;
   isHot?: boolean;
   rankChange?: number; // 순위 변화 (-는 하락, +는 상승, 0은 동일)
+  consecutiveWeeks?: number; // 연속 1위 주차
 }
 
 export default function GameRankCard({
@@ -24,6 +26,7 @@ export default function GameRankCard({
   isNew = false,
   isHot = false,
   rankChange = 0,
+  consecutiveWeeks,
 }: GameRankCardProps) {
 
 
@@ -39,6 +42,10 @@ export default function GameRankCard({
         <div className={`absolute top-4 left-4 w-12 h-12 ${
           rank === 1
             ? "bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-600"
+            : rank === 2
+            ? "bg-gradient-to-b from-gray-300 via-gray-400 to-gray-500"
+            : rank === 3
+            ? "bg-gradient-to-b from-orange-400 via-orange-500 to-orange-600"
             : "bg-slate-600"
         } rounded-full flex items-center justify-center font-bold text-white text-lg z-10 shadow-lg`}>
           {rank}
@@ -46,14 +53,21 @@ export default function GameRankCard({
 
         {/* 뱃지들 */}
         <div className="absolute top-4 right-4 flex gap-2 z-10">
+          {consecutiveWeeks && rank === 1 && (
+            <div className="px-3 py-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-lg">
+              <Trophy className="w-3 h-3" />
+              <span>{consecutiveWeeks}주 연속</span>
+            </div>
+          )}
           {isNew && (
-            <div className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-full uppercase">
+            <div className="px-2 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold rounded-full uppercase shadow-md">
               NEW
             </div>
           )}
           {isHot && (
-            <div className="px-2 py-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold rounded-full uppercase animate-pulse">
-              HOT
+            <div className="px-2 py-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold rounded-full uppercase flex items-center gap-1 animate-pulse shadow-md">
+              <Flame className="w-3 h-3" />
+              <span>HOT</span>
             </div>
           )}
         </div>

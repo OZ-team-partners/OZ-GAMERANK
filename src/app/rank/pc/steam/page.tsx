@@ -23,7 +23,7 @@ import {
 
 // 사이트 톤앤매너에 맞춘 게이밍 드롭다운 컴포넌트
 function StyledGameDropdown({ options, value, onChange, placeholder }: {
-  options: Array<{value: string, label: string, icon: React.ComponentType<{ className?: string }>}>;
+  options: readonly {value: string, label: string, icon: React.ComponentType<{ className?: string }>}[] | Array<{value: string, label: string, icon: React.ComponentType<{ className?: string }>}>;
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
@@ -113,17 +113,67 @@ interface SteamGame {
   rank: number;
   isNew?: boolean;
   isHot?: boolean;
+  rankChange?: number;
+  consecutiveWeeks?: number;
 }
+
+// 목업 데이터 상수
+const RANK_CHANGE_VALUES = [0, 0, 0, 2, -1, 8, 0, -4, 3, 1, -2, 6, 0, 4, -5, 2, 0, 7, -1, 3];
+const NEW_RANK_POSITIONS = [3, 7, 12, 16];
+const HOT_THRESHOLD = 3;
+const CONSECUTIVE_WEEKS_FOR_FIRST = 5;
+
+// 장르 필터링 키워드 상수
+const GENRE_KEYWORDS = {
+  action: ["배틀", "액션", "fps"],
+  rpg: ["rpg", "판타지", "어드벤처"],
+  strategy: ["전략", "타이쿤", "시뮬레이션"]
+} as const;
+
+// 드롭다운 옵션 상수
+const GENRE_OPTIONS = [
+  { value: "all", label: "전체 장르", icon: Gamepad2 },
+  { value: "action", label: "액션/FPS", icon: Sword },
+  { value: "rpg", label: "RPG", icon: Wand2 },
+  { value: "strategy", label: "전략", icon: Brain }
+] as const;
+
+const SORT_OPTIONS = [
+  { value: "rank", label: "순위순", icon: Trophy },
+  { value: "title", label: "이름순", icon: SortAsc },
+  { value: "new", label: "신작순", icon: Sparkles }
+] as const;
+
+const TREND_OPTIONS = [
+  { value: "hide", label: "랭킹 변화", icon: Activity },
+  { value: "daily", label: "일간 변화", icon: TrendingUp },
+  { value: "weekly", label: "주간 변화", icon: Calendar },
+  { value: "monthly", label: "월간 변화", icon: CalendarDays }
+] as const;
+
+type SortType = "rank" | "title" | "new";
+type FilterGenreType = "all" | "action" | "rpg" | "strategy";
+type ShowTrendType = "hide" | "daily" | "weekly" | "monthly";
 
 export default function SteamRankingPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [games, setGames] = useState<SteamGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>("");
-  const [sortBy, setSortBy] = useState<"rank" | "title" | "new">("rank");
-  const [filterGenre, setFilterGenre] = useState<"all" | "action" | "rpg" | "strategy">("all");
-  const [showTrend, setShowTrend] = useState<"hide" | "daily" | "weekly" | "monthly">("hide");
+  const [sortBy, setSortBy] = useState<SortType>("rank");
+  const [filterGenre, setFilterGenre] = useState<FilterGenreType>("all");
+  const [showTrend, setShowTrend] = useState<ShowTrendType>("hide");
+
+  // 검색어 디바운싱 (300ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Steam 랭킹 데이터 가져오기 (DB)
   useEffect(() => {
@@ -148,16 +198,21 @@ export default function SteamRankingPage() {
         };
 
         const mapped: SteamGame[] = ((data as RankGameRow[] | null) || []).map(
-          (row, index) => ({
-            id: row.id,
-            title: row.game_title,
-            subtitle: row.game_subtitle || "",
-            img: row.image_url || "/icon/rank_icon/steam1.jpeg",
-            rank: row.rank,
-            isNew: index < 3 && Math.random() > 0.7, // 임시로 신작 표시
-            isHot: row.rank <= 5 && Math.random() > 0.6, // 임시로 HOT 표시
-            rankChange: Math.random() > 0.5 ? Math.floor(Math.random() * 5) - 2 : 0, // 임시 순위 변동
-          })
+          (row, index) => {
+            const rankChange = RANK_CHANGE_VALUES[index % RANK_CHANGE_VALUES.length] || 0;
+
+            return {
+              id: row.id,
+              title: row.game_title,
+              subtitle: row.game_subtitle || "",
+              img: row.image_url || "/icon/rank_icon/steam1.jpeg",
+              rank: row.rank,
+              isNew: NEW_RANK_POSITIONS.includes(row.rank),
+              isHot: rankChange >= HOT_THRESHOLD,
+              rankChange,
+              consecutiveWeeks: row.rank === 1 ? CONSECUTIVE_WEEKS_FOR_FIRST : undefined
+            };
+          }
         );
 
         setGames(mapped);
@@ -182,9 +237,9 @@ export default function SteamRankingPage() {
   const filteredAndSortedItems = useMemo(() => {
     let filtered = games;
 
-    // 검색 필터
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
+    // 검색 필터 (디바운싱된 검색어 사용)
+    if (debouncedSearchQuery.trim()) {
+      const q = debouncedSearchQuery.trim().toLowerCase();
       filtered = filtered.filter(
         (game) =>
           game.title.toLowerCase().includes(q) ||
@@ -192,21 +247,15 @@ export default function SteamRankingPage() {
       );
     }
 
-    // 장르 필터 (임시로 제목 기반)
+    // 장르 필터 (제목 기반)
     if (filterGenre !== "all") {
-      filtered = filtered.filter((game) => {
-        const title = game.title.toLowerCase();
-        switch (filterGenre) {
-          case "action":
-            return title.includes("배틀") || title.includes("액션") || title.includes("fps");
-          case "rpg":
-            return title.includes("rpg") || title.includes("판타지") || title.includes("어드벤처");
-          case "strategy":
-            return title.includes("전략") || title.includes("타이쿤") || title.includes("시뮬레이션");
-          default:
-            return true;
-        }
-      });
+      const keywords = GENRE_KEYWORDS[filterGenre];
+      if (keywords) {
+        filtered = filtered.filter((game) => {
+          const title = game.title.toLowerCase();
+          return keywords.some(keyword => title.includes(keyword));
+        });
+      }
     }
 
     // 정렬
@@ -223,7 +272,7 @@ export default function SteamRankingPage() {
     });
 
     return sorted;
-  }, [games, searchQuery, sortBy, filterGenre]);
+  }, [games, debouncedSearchQuery, sortBy, filterGenre]);
 
   if (error) {
     return (
@@ -320,36 +369,22 @@ export default function SteamRankingPage() {
             {/* 드롭다운 필터들 */}
             <div className="flex items-center gap-3">
               <StyledGameDropdown
-                options={[
-                  { value: "all", label: "전체 장르", icon: Gamepad2 },
-                  { value: "action", label: "액션/FPS", icon: Sword },
-                  { value: "rpg", label: "RPG", icon: Wand2 },
-                  { value: "strategy", label: "전략", icon: Brain }
-                ]}
+                options={GENRE_OPTIONS}
                 value={filterGenre}
-                onChange={(value) => setFilterGenre(value as "all" | "action" | "rpg" | "strategy")}
+                onChange={(value) => setFilterGenre(value as FilterGenreType)}
                 placeholder="장르 선택"
               />
               <StyledGameDropdown
-                options={[
-                  { value: "rank", label: "순위순", icon: Trophy },
-                  { value: "title", label: "이름순", icon: SortAsc },
-                  { value: "new", label: "신작순", icon: Sparkles }
-                ]}
+                options={SORT_OPTIONS}
                 value={sortBy}
-                onChange={(value) => setSortBy(value as "rank" | "title" | "new")}
+                onChange={(value) => setSortBy(value as SortType)}
                 placeholder="정렬 기준"
               />
               <StyledGameDropdown
-                options={[
-                  { value: "hide", label: "랭킹 변화 추이", icon: Activity },
-                  { value: "daily", label: "일간 변화", icon: TrendingUp },
-                  { value: "weekly", label: "주간 변화", icon: Calendar },
-                  { value: "monthly", label: "월간 변화", icon: CalendarDays }
-                ]}
+                options={TREND_OPTIONS}
                 value={showTrend}
-                onChange={(value) => setShowTrend(value as "hide" | "daily" | "weekly" | "monthly")}
-                placeholder="변화 추이"
+                onChange={(value) => setShowTrend(value as ShowTrendType)}
+                placeholder="랭킹 변화"
               />
             </div>
 
@@ -377,10 +412,10 @@ export default function SteamRankingPage() {
               </>
             )}
             <span>데이터 제공: <a href="https://store.steampowered.com/charts/topselling/global" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-orange-400 transition-colors">store.steampowered.com</a></span>
-            {searchQuery && (
+            {debouncedSearchQuery && (
               <>
                 <span className="text-slate-600">·</span>
-                <span className="text-orange-400">&quot;{searchQuery}&quot; 검색 결과</span>
+                <span className="text-orange-400">&quot;{debouncedSearchQuery}&quot; 검색 결과</span>
               </>
             )}
           </div>
@@ -398,7 +433,9 @@ export default function SteamRankingPage() {
                 subtitle: item.subtitle,
                 imageUrl: item.img,
                 isNew: item.isNew,
-                isHot: item.isHot
+                isHot: item.isHot,
+                rankChange: item.rankChange,
+                consecutiveWeeks: item.consecutiveWeeks
               }))
             }
           />

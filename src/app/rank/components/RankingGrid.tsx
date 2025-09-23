@@ -12,6 +12,7 @@ interface RankingItem {
   isNew?: boolean;
   isHot?: boolean;
   rankChange?: number;
+  consecutiveWeeks?: number;
 }
 
 interface RankingGridProps {
@@ -76,6 +77,7 @@ export default function RankingGrid({ items, loading = false, showTopThree = tru
             isNew={item.isNew}
             isHot={item.isHot}
             rankChange={item.rankChange}
+            consecutiveWeeks={item.consecutiveWeeks}
           />
         ))}
       </div>
