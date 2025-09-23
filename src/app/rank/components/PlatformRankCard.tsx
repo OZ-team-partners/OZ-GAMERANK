@@ -26,15 +26,15 @@ export default function PlatformRankCard({
   isMobile = false,
 }: PlatformRankCardProps) {
   const rows = [1, 2, 3];
-  
+
   const getRouteUrl = () => {
     const platformRoutes: Record<string, string> = {
-      online: '/rank/pc/online',
-      steam: '/rank/pc/steam',
-      playstation: '/rank/console/playstation',
-      nintendo: '/rank/console/nintendo',
-      ios: '/rank/mobile/ios',
-      android: '/rank/mobile/android',
+      online: "/rank/pc/online",
+      steam: "/rank/pc/steam",
+      playstation: "/rank/console/playStation",
+      nintendo: "/rank/console/nintendo",
+      ios: "/rank/mobile/ios",
+      android: "/rank/mobile/android",
     };
     return platformRoutes[platformKey] || `/rank/${platformKey}`;
   };
@@ -61,10 +61,12 @@ export default function PlatformRankCard({
           {rows.map((position) => {
             const item = items[position - 1];
             return item ? (
-              <Link href={`/game_info/${item.id}`} key={position} className="block">
-                <div
-                  className="flex items-center gap-5 py-5 px-6 cursor-pointer hover:bg-slate-700/30 transition-colors duration-200 group"
-                >
+              <Link
+                href={`/game_info/${item.id}`}
+                key={position}
+                className="block"
+              >
+                <div className="flex items-center gap-5 py-5 px-6 cursor-pointer hover:bg-slate-700/30 transition-colors duration-200 group">
                   <div
                     className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
                     style={getRankBadgeStyle(position)}
@@ -93,19 +95,14 @@ export default function PlatformRankCard({
                 </div>
               </Link>
             ) : (
-              <div
-                key={position}
-                className="flex items-center gap-5 py-5 px-6"
-              >
+              <div key={position} className="flex items-center gap-5 py-5 px-6">
                 <div
                   className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
                   style={getRankBadgeStyle(position)}
                 >
                   {position}
                 </div>
-                <span className="text-slate-500 text-sm italic">
-                  준비중...
-                </span>
+                <span className="text-slate-500 text-sm italic">준비중...</span>
               </div>
             );
           })}
@@ -126,10 +123,12 @@ export default function PlatformRankCard({
         {rows.map((position) => {
           const item = items[position - 1];
           return item ? (
-            <Link href={`/game_info/${item.id}`} key={position} className="block">
-              <div
-                className="flex items-center gap-5 py-5 px-6 cursor-pointer hover:bg-slate-700/30 transition-colors duration-200 group"
-              >
+            <Link
+              href={`/game_info/${item.id}`}
+              key={position}
+              className="block"
+            >
+              <div className="flex items-center gap-5 py-5 px-6 cursor-pointer hover:bg-slate-700/30 transition-colors duration-200 group">
                 <div
                   className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-lg"
                   style={getRankBadgeStyle(position)}
@@ -159,10 +158,7 @@ export default function PlatformRankCard({
               </div>
             </Link>
           ) : (
-            <div
-              key={position}
-              className="flex items-center gap-5 py-5 px-6"
-            >
+            <div key={position} className="flex items-center gap-5 py-5 px-6">
               <div
                 className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-lg"
                 style={getRankBadgeStyle(position)}

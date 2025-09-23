@@ -98,10 +98,14 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
-      new URL("https://search.pstatic.net/**"),
+      {
+        protocol: "https",
+        hostname: "search.pstatic.net",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };
 
 module.exports = nextConfig;
-

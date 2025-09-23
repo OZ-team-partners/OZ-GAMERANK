@@ -1,155 +1,316 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { supabase } from "@/shared/lib/supabase";
+import { supabase } from "@/lib/supabase";
+import RankingGrid from "../../components/RankingGrid";
+import TopThreeCards from "../../components/TopThreeCards";
+import {
+  ChevronDown,
+  Gamepad2,
+  Sword,
+  Wand2,
+  Brain,
+  Trophy,
+  SortAsc,
+  Sparkles,
+  TrendingUp,
+  Calendar,
+  CalendarDays,
+  Activity,
+  Search,
+} from "lucide-react";
 
-interface PsItem {
-  rank: number;
-  title: string;
-  image: string;
-  releaseDate: string;
+function StyledGameDropdown({
+  options,
+  value,
+  onChange,
+  placeholder,
+}: {
+  options:
+    | readonly {
+        value: string;
+        label: string;
+        icon: React.ComponentType<{ className?: string }>;
+      }[]
+    | Array<{
+        value: string;
+        label: string;
+        icon: React.ComponentType<{ className?: string }>;
+      }>;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const currentOption = options.find((opt) => opt.value === value);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 150);
+  };
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="bg-slate-800/60 border border-slate-700/50 text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium hover:border-indigo-500/40 hover:text-white transition-all duration-300 flex items-center gap-2.5 min-w-[140px] justify-between group"
+      >
+        <div className="flex items-center gap-2">
+          {currentOption?.icon ? (
+            <currentOption.icon className="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors" />
+          ) : (
+            <Gamepad2 className="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors" />
+          )}
+          <span className="font-medium">
+            {currentOption?.label || placeholder}
+          </span>
+        </div>
+        <ChevronDown
+          className={`w-4 h-4 text-indigo-400 transition-all duration-300 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={handleClose} />
+          <div
+            className={`absolute top-full mt-2 left-0 bg-slate-900 border border-slate-700/50 rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-20 min-w-full transition-all duration-150 ${
+              isClosing ? "animate-fadeOut" : "animate-fadeIn"
+            }`}
+          >
+            {options.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => {
+                  onChange(option.value);
+                  handleClose();
+                }}
+                className={`w-full px-4 py-3 text-left text-sm font-medium transition-all duration-150 flex items-center gap-3 relative group ${
+                  value === option.value
+                    ? "bg-gradient-to-r from-indigo-500/20 to-indigo-600/10 text-indigo-400"
+                    : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                }`}
+              >
+                {value === option.value && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-transparent" />
+                )}
+
+                <option.icon
+                  className={`w-4 h-4 relative z-10 ${
+                    value === option.value
+                      ? "text-indigo-400"
+                      : "text-slate-500 group-hover:text-indigo-400"
+                  } transition-colors`}
+                />
+                <span className="relative z-10">{option.label}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 to-indigo-600/0 group-hover:from-indigo-500/5 group-hover:to-indigo-600/5 transition-all duration-300" />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
 
-export default function SectionPage() {
+interface PsGame {
+  id: number;
+  title: string;
+  subtitle: string;
+  img: string;
+  rank: number;
+  isNew?: boolean;
+  isHot?: boolean;
+  rankChange?: number;
+  consecutiveWeeks?: number;
+}
+
+const RANK_CHANGE_VALUES = [
+  0, 0, 0, 2, -1, 8, 0, -4, 3, 1, -2, 6, 0, 4, -5, 2, 0, 7, -1, 3,
+];
+const NEW_RANK_POSITIONS = [3, 7, 12, 16];
+const HOT_THRESHOLD = 3;
+const CONSECUTIVE_WEEKS_FOR_FIRST = 5;
+
+const GENRE_KEYWORDS = {
+  action: ["action", "shooting", "fight"],
+  rpg: ["rpg", "role", "adventure"],
+  strategy: ["strategy", "simulation", "tycoon"],
+} as const;
+
+const GENRE_OPTIONS = [
+  { value: "all", label: "전체 장르", icon: Gamepad2 },
+  { value: "action", label: "액션/FPS", icon: Sword },
+  { value: "rpg", label: "RPG", icon: Wand2 },
+  { value: "strategy", label: "전략", icon: Brain },
+] as const;
+
+const SORT_OPTIONS = [
+  { value: "rank", label: "순위순", icon: Trophy },
+  { value: "title", label: "이름순", icon: SortAsc },
+  { value: "new", label: "신작순", icon: Sparkles },
+] as const;
+
+const TREND_OPTIONS = [
+  { value: "hide", label: "랭킹 변화", icon: Activity },
+  { value: "daily", label: "일간 변화", icon: TrendingUp },
+  { value: "weekly", label: "주간 변화", icon: Calendar },
+  { value: "monthly", label: "월간 변화", icon: CalendarDays },
+] as const;
+
+type SortType = "rank" | "title" | "new";
+type FilterGenreType = "all" | "action" | "rpg" | "strategy";
+type ShowTrendType = "hide" | "daily" | "weekly" | "monthly";
+
+export default function PlaystationRankingPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [games, setGames] = useState<PsItem[]>([]);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [games, setGames] = useState<PsGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>("");
-  const [dataSource, setDataSource] = useState<string>("");
+  const [sortBy, setSortBy] = useState<SortType>("rank");
+  const [filterGenre, setFilterGenre] = useState<FilterGenreType>("all");
+  const [showTrend, setShowTrend] = useState<ShowTrendType>("hide");
 
-  // Supabase rank_game에서 platform=playstation 데이터 로드
   useEffect(() => {
-    const loadFromSupabase = async () => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const fetchPlaystationRankings = async () => {
       try {
         setLoading(true);
-        setError(null);
-
-        if (!supabase) {
-          throw new Error("Supabase 클라이언트가 초기화되지 않았습니다.");
-        }
-
         const { data, error } = await supabase
           .from("rank_game")
-          .select("platform, game_title, game_subtitle, image_url, rank, update_when")
+          .select("id, game_title, game_subtitle, image_url, rank, update_when")
           .eq("platform", "playstation")
           .order("rank", { ascending: true });
 
-        if (error) throw error;
+        if (error) throw new Error(error.message);
 
-        const mapped: PsItem[] = (data || []).map((row: {
-          rank: number;
+        type RankGameRow = {
+          id: number;
           game_title: string;
-          image_url?: string | null;
-          game_subtitle?: string | null;
-          update_when?: string;
-        }) => ({
-          rank: row.rank,
-          title: row.game_title,
-          image: row.image_url || "",
-          releaseDate: row.game_subtitle || "",
-        }));
+          game_subtitle: string | null;
+          image_url: string | null;
+          rank: number;
+          update_when: string | null;
+        };
+
+        const mapped: PsGame[] = ((data as RankGameRow[] | null) || []).map(
+          (row, index) => {
+            const rankChange =
+              RANK_CHANGE_VALUES[index % RANK_CHANGE_VALUES.length] || 0;
+            return {
+              id: row.id,
+              title: row.game_title,
+              subtitle: row.game_subtitle || "",
+              img: row.image_url || "/icon/rank_icon/console3.jpeg",
+              rank: row.rank,
+              isNew: NEW_RANK_POSITIONS.includes(row.rank),
+              isHot: rankChange >= HOT_THRESHOLD,
+              rankChange,
+              consecutiveWeeks:
+                row.rank === 1 ? CONSECUTIVE_WEEKS_FOR_FIRST : undefined,
+            };
+          }
+        );
 
         setGames(mapped);
-        const latestUpdated = data?.[0]?.update_when || new Date().toISOString();
-        setLastUpdated(latestUpdated);
-        setDataSource("rank_game (platform=playstation)");
+        setLastUpdated(
+          data && (data as RankGameRow[])[0]?.update_when
+            ? new Date(
+                (data as RankGameRow[])[0].update_when as string
+              ).toISOString()
+            : new Date().toISOString()
+        );
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다."
+          "PlayStation 게임 랭킹 데이터를 불러오는 중 오류가 발생했습니다."
         );
+        console.error("PlayStation 게임 랭킹 가져오기 실패:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadFromSupabase();
+    fetchPlaystationRankings();
   }, []);
 
-  const filteredItems = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return games;
-    return games.filter(
-      (game) =>
-        game.title.toLowerCase().includes(q) ||
-        (game.releaseDate || "").toLowerCase().includes(q)
-    );
-  }, [games, searchQuery]);
+  const filteredAndSortedItems = useMemo(() => {
+    let filtered = games;
+    if (debouncedSearchQuery.trim()) {
+      const q = debouncedSearchQuery.trim().toLowerCase();
+      filtered = filtered.filter(
+        (game) =>
+          game.title.toLowerCase().includes(q) ||
+          game.subtitle.toLowerCase().includes(q)
+      );
+    }
+    if (filterGenre !== "all") {
+      const keywords = GENRE_KEYWORDS[filterGenre];
+      if (keywords) {
+        filtered = filtered.filter((game) => {
+          const title = game.title.toLowerCase();
+          return keywords.some((keyword) => title.includes(keyword));
+        });
+      }
+    }
+    const sorted = [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case "title":
+          return a.title.localeCompare(b.title);
+        case "new":
+          return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
+        case "rank":
+        default:
+          return a.rank - b.rank;
+      }
+    });
+    return sorted;
+  }, [games, debouncedSearchQuery, sortBy, filterGenre]);
 
-  // 로딩 상태
-  if (loading) {
-    return (
-      <div className="bg-slate-900 text-white min-h-screen">
-        <div className="m-0 font-sans flex flex-col md:flex-row min-h-screen">
-          <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
-            <div className="text-sm leading-relaxed">
-              <strong className="block mb-2">Lesson & Article</strong>
-              <div>2025 상반기</div>
-              <div>2025 하반기</div>
-              <div>2026 상반기</div>
-            </div>
-            <div className="h-48 border border-slate-700 flex items-center justify-center">
-              광고
-            </div>
-            <div className="flex-grow"></div>
-          </aside>
-
-          <main className="flex-1 p-5">
-            <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5">
-              광고
-            </div>
-
-            <div className="flex items-center justify-center h-64">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-                <p className="text-red-400">
-                  PS5 메타크리틱 랭킹을 불러오는 중...
-                </p>
-              </div>
-            </div>
-          </main>
-        </div>
-      </div>
-    );
-  }
-
-  // 에러 상태
   if (error) {
     return (
       <div className="bg-slate-900 text-white min-h-screen">
-        <div className="m-0 font-sans flex flex-col md:flex-row min-h-screen">
-          <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
-            <div className="text-sm leading-relaxed">
-              <strong className="block mb-2">Lesson & Article</strong>
-              <div>2025 상반기</div>
-              <div>2025 하반기</div>
-              <div>2026 상반기</div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-red-500/20 rounded-full mb-4">
+              <svg
+                className="w-10 h-10 text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
             </div>
-            <div className="h-48 border border-slate-700 flex items-center justify-center">
-              광고
-            </div>
-            <div className="flex-grow"></div>
-          </aside>
-
-          <main className="flex-1 p-5">
-            <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5">
-              광고
-            </div>
-
-            <div className="flex items-center justify-center h-64">
-              <div className="text-center">
-                <p className="text-red-400 mb-4">{error}</p>
-                <button
-                  onClick={() => window.location.reload()}
-                  className="bg-indigo-500 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-indigo-600 transition-colors"
-                >
-                  다시 시도
-                </button>
-              </div>
-            </div>
-          </main>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              오류가 발생했습니다
+            </h3>
+            <p className="text-red-400 mb-4">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-medium py-2 px-6 rounded-lg hover:from-indigo-600 hover:to-blue-600 transition-all duration-200"
+            >
+              다시 시도
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -157,143 +318,160 @@ export default function SectionPage() {
 
   return (
     <div className="bg-slate-900 text-white min-h-screen">
-      <div className="m-0 font-sans flex flex-col md:flex-row min-h-screen">
-        {/* 사이드바 */}
-        <aside className="w-full md:w-52 bg-slate-800 border-slate-700 border-b md:border-b-0 md:border-r p-5 flex flex-col gap-5 text-white">
-          <div className="text-sm leading-relaxed">
-            <strong className="block mb-2">Lesson & Article</strong>
-            <div>2025 상반기</div>
-            <div>2025 하반기</div>
-            <div>2026 상반기</div>
-          </div>
-          <div className="h-48 border border-slate-700 flex items-center justify-center">
-            광고
-          </div>
-          <div className="flex-grow"></div>
-        </aside>
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes fadeOut {
+          from {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          to {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.15s ease-out;
+        }
+        .animate-fadeOut {
+          animation: fadeOut 0.15s ease-in;
+        }
+      `}</style>
 
-        {/* 메인 영역 */}
-        <main className="flex-1 p-5">
-          <Link href="/blog/newsletter" className="block">
-            <div className="ad-banner bg-slate-800 border border-slate-700 h-20 flex items-center justify-center mb-5 cursor-pointer hover:opacity-90 transition-opacity">
-              광고
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* 헤더 섹션 */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <div className="flex space-x-1">
+              <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-100"></div>
+              <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce delay-200"></div>
             </div>
-          </Link>
+            <span className="text-indigo-400 text-sm font-medium uppercase tracking-wider">
+              Console PlayStation Games
+            </span>
+            <div className="flex space-x-1">
+              <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce delay-200"></div>
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-100"></div>
+              <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
+            </div>
+          </div>
 
-          {/* 헤더 */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-white mb-2">
-              PS5 메타크리틱 랭킹
-            </h1>
-            <p className="text-slate-400">
-              2025년 PS5 메타크리틱 랭킹입니다. [메타크리틱 내 랭킹 순위를
-              반영합니다.]
-            </p>
-            <p className="text-sm text-slate-500 mt-2">
-              총 {games.length}개의 게임이 등록되어 있습니다.
-              {lastUpdated && (
-                <span className="ml-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-indigo-400 via-blue-500 to-indigo-400 bg-clip-text text-transparent">
+            PlayStation 게임 랭킹
+          </h1>
+          <p className="text-lg text-slate-300 font-light mb-2">
+            메타크리틱 내 가장 높은 투표를 받은 playStation게임입니다. 🎮
+          </p>
+          <p className="text-sm text-slate-500">
+            다운로드 순위 · 판매량 · 유저 리뷰 · 플레이 시간 기준
+          </p>
+
+          <div className="w-32 h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto mt-6 rounded-full"></div>
+        </div>
+
+        {/* 필터 및 검색 영역 */}
+        <div className="bg-slate-900/95 border border-slate-700/50 rounded-2xl p-6 space-y-4 mb-8 shadow-lg shadow-black/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <StyledGameDropdown
+                options={GENRE_OPTIONS}
+                value={filterGenre}
+                onChange={(value) => setFilterGenre(value as FilterGenreType)}
+                placeholder="장르 선택"
+              />
+              <StyledGameDropdown
+                options={SORT_OPTIONS}
+                value={sortBy}
+                onChange={(value) => setSortBy(value as SortType)}
+                placeholder="정렬 기준"
+              />
+              <StyledGameDropdown
+                options={TREND_OPTIONS}
+                value={showTrend}
+                onChange={(value) => setShowTrend(value as ShowTrendType)}
+                placeholder="랭킹 변화"
+              />
+            </div>
+
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="게임 제목이나 설명으로 검색..."
+                className="bg-slate-800/60 border border-slate-700/50 text-slate-300 pl-10 pr-4 py-2.5 rounded-xl text-sm placeholder-slate-500 focus:border-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all duration-300 w-80"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 text-xs text-slate-500">
+            <span>총 {filteredAndSortedItems.length}개의 게임</span>
+            <span className="text-slate-600">·</span>
+            {lastUpdated && (
+              <>
+                <span>
                   마지막 업데이트:{" "}
                   {new Date(lastUpdated).toLocaleString("ko-KR")}
                 </span>
-              )}
-              {dataSource && (
-                <span className="ml-4 text-blue-400">
-                  데이터 소스: {dataSource}
-                </span>
-              )}
-              
-            </p>
-          </div>
-
-          <div className="flex gap-2.5 mb-5">
-            <select className="bg-slate-800 border border-slate-700 text-white text-sm p-1.5">
-              <option>언어</option>
-            </select>
-            <select className="bg-slate-800 border border-slate-700 text-white text-sm p-1.5">
-              <option>정렬</option>
-            </select>
-            <input
-              type="text"
-              placeholder="검색 (제목/발매일)"
-              className="bg-slate-800 border border-slate-700 text-white text-sm p-1.5 flex-grow"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          {/* 검색 결과 통계 */}
-          {searchQuery && (
-            <div className="mb-4 text-sm text-slate-400">
-              &quot;{searchQuery}&quot; 검색 결과: {filteredItems.length}개
-            </div>
-          )}
-
-          {/* 게임 목록 */}
-          {filteredItems.length > 0 ? (
-            filteredItems.map((game) => (
-              <Link
-                href={`/game_info/${encodeURIComponent(game.title)}`}
-                key={`${game.rank}-${game.title}`}
-                className="block"
+                <span className="text-slate-600">·</span>
+              </>
+            )}
+            <span>
+              데이터 제공:{" "}
+              <a
+                href="https://www.metacritic.com"
+                className="text-indigo-500 hover:text-indigo-400 transition-colors"
               >
-                <div className="card bg-slate-800 border border-slate-700 flex items-center p-2.5 mb-2.5 gap-2.5 hover:bg-slate-700/60 transition-colors cursor-pointer">
-                  {/* 순위 배지 */}
-                  <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
-                      game.rank === 1
-                        ? "bg-yellow-500 text-white"
-                        : game.rank === 2
-                        ? "bg-gray-400 text-white"
-                        : game.rank === 3
-                        ? "bg-amber-600 text-white"
-                        : "bg-slate-600 text-white"
-                    }`}
-                  >
-                    {game.rank}
-                  </div>
-
-                  <div className="card-img w-35 h-50 bg-slate-700 flex items-center justify-center text-xl rounded overflow-hidden">
-                    <Image
-                      src={game.image || "/icon/rank_icon/console1.jpeg"}
-                      alt={game.title}
-                      width={320}
-                      height={160}
-                      className="w-full h-full object-cover rounded"
-                      placeholder="empty"
-                      unoptimized={true}
-                    />
-                  </div>
-                  <div className="card-text flex-1">
-                    <p className="card-title font-bold m-0 text-white text-2xl">
-                      {game.title}
-                    </p>
-                    <p className="text-blue-400 text-sm">
-                      발매일: {game.releaseDate || "정보 없음"}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-slate-400">
-                {searchQuery
-                  ? "검색 결과가 없습니다."
-                  : "게임 데이터가 없습니다."}
-              </p>
-            </div>
-          )}
-
-          <div className="mt-5 flex gap-2.5">
-            <button className="bg-indigo-500 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-indigo-600 transition-colors">
-              더 많은 랭킹 보기
-            </button>
-            <button className="bg-transparent border border-indigo-500 text-indigo-500 rounded-md py-2 px-4 cursor-pointer hover:bg-indigo-500 hover:text-white transition-colors">
-              필터 설정
-            </button>
+                metacritic.com
+              </a>
+            </span>
+            {debouncedSearchQuery && (
+              <>
+                <span className="text-slate-600">·</span>
+                <span className="text-indigo-400">
+                  &quot;{debouncedSearchQuery}&quot; 검색 결과
+                </span>
+              </>
+            )}
           </div>
-        </main>
+        </div>
+
+        {/* Top 3 */}
+        {!loading && filteredAndSortedItems.length > 0 && (
+          <TopThreeCards
+            items={filteredAndSortedItems
+              .filter((item) => item.rank <= 3)
+              .map((item) => ({
+                id: item.id,
+                rank: item.rank,
+                title: item.title,
+                subtitle: item.subtitle,
+                imageUrl: item.img,
+                isNew: item.isNew,
+                isHot: item.isHot,
+                rankChange: item.rankChange,
+                consecutiveWeeks: item.consecutiveWeeks,
+              }))}
+          />
+        )}
+
+        {/* 나머지 목록 */}
+        <RankingGrid
+          items={filteredAndSortedItems}
+          loading={loading}
+          showTopThree={false}
+        />
       </div>
     </div>
   );
